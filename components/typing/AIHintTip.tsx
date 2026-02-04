@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Lightbulb, Sparkles, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import type { AIHintResponse } from '@/lib/ai/generate-hints';
+import { apiFetch } from '@/lib/api-client';
 
 interface AIHintTipProps {
   challengeContent: string;
@@ -39,7 +40,7 @@ export function AIHintTip({
     setError(null);
 
     try {
-      const response = await fetch('/api/practice/hints', {
+      const response = await apiFetch('/api/practice/hints', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

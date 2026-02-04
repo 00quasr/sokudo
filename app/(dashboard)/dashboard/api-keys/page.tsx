@@ -16,6 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Key, Plus, Copy, Check, Trash2, Loader2 } from 'lucide-react';
+import { apiFetch, apiFetcher } from '@/lib/api-client';
 
 type ApiKeyData = {
   id: number;
@@ -27,8 +28,6 @@ type ApiKeyData = {
   revokedAt: string | null;
   createdAt: string;
 };
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const SCOPE_OPTIONS = [
   { value: 'read', label: 'Read', description: 'Read-only access to your data' },
@@ -146,7 +145,7 @@ function CreateKeyDialog({ onCreated }: { onCreated: () => void }) {
     setError(null);
     setIsCreating(true);
     try {
-      const res = await fetch('/api/keys', {
+      const res = await apiFetch('/api/keys', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -303,7 +302,7 @@ function ApiKeyRow({
   async function handleRevoke() {
     setIsRevoking(true);
     try {
-      const res = await fetch(`/api/keys/${apiKey.id}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/keys/${apiKey.id}`, { method: 'DELETE' });
       if (res.ok) {
         onRevoke(apiKey.id);
       }
@@ -373,7 +372,7 @@ function ApiKeyRow({
 }
 
 export default function ApiKeysPage() {
-  const { data, mutate } = useSWR<{ keys: ApiKeyData[] }>('/api/keys', fetcher);
+  const { data, mutate } = useSWR<{ keys: ApiKeyData[] }>('/api/keys', apiFetcher);
   const keys = data?.keys ?? [];
   const activeKeys = keys.filter((k) => !k.revokedAt && !isExpired(k.expiresAt));
   const inactiveKeys = keys.filter((k) => k.revokedAt || isExpired(k.expiresAt));
