@@ -42,7 +42,7 @@ components/
 └── ui/                # Shadcn components
 
 lib/
-├── auth/              # JWT session handling
+├── auth/              # JWT session handling + NextAuth OAuth
 ├── db/                # Drizzle schema, queries, migrations
 ├── payments/          # Stripe integration
 └── utils.ts           # cn() helper
@@ -63,6 +63,7 @@ lib/
 - Branches: `feature/[name]` or `fix/[name]`
 - Commits: `type(scope): message` (feat, fix, refactor, docs, chore)
 - Run `pnpm build` before committing to catch type errors
+- Never commit as Claude as Co-Author
 
 ## Gotchas
 
@@ -70,6 +71,7 @@ lib/
 - **Stripe webhooks** - Run `stripe listen` in separate terminal during dev
 - **withTeam middleware** - Redirects to sign-in, preserves `priceId` for checkout flow
 - **JWT cookies** - Session stored in httpOnly cookie, check `lib/auth/session.ts`
+- **OAuth** - Google OAuth supported via NextAuth v5, requires GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
 - **Turbopack** - Dev server uses Turbopack, some edge cases may differ from webpack
 - **Typing engine** - Track keystroke latency in ms, calculate WPM as (chars/5)/minutes
 
@@ -117,6 +119,9 @@ POSTGRES_URL=           # Neon or other PostgreSQL
 STRIPE_SECRET_KEY=      # sk_test_...
 STRIPE_WEBHOOK_SECRET=  # whsec_...
 BASE_URL=               # http://localhost:3000 or production URL
+AUTH_SECRET=            # openssl rand -base64 32
+GOOGLE_CLIENT_ID=       # (optional) Google OAuth client ID
+GOOGLE_CLIENT_SECRET=   # (optional) Google OAuth client secret
 ```
 
 ## Test Credentials

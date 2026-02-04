@@ -226,12 +226,12 @@
 
 ### Branding & Content
 
-- [ ] Replace "ACME" logo with "Sokudo (速度)" branding
-- [ ] Update homepage `/` with Sokudo-specific marketing content
-- [ ] Update pricing page `/pricing` with actual tiers and features
-- [ ] Change browser page title from "Next.js SaaS Starter" to "Sokudo"
-- [ ] Update favicon to Sokudo logo
-- [ ] Add proper meta tags for SEO (title, description, OG tags)
+- [x] Replace "ACME" logo with "Sokudo (速度)" branding
+- [x] Update homepage `/` with Sokudo-specific marketing content
+- [x] Update pricing page `/pricing` with actual tiers and features
+- [x] Change browser page title from "Next.js SaaS Starter" to "Sokudo"
+- [x] Update favicon to Sokudo logo
+- [x] Add proper meta tags for SEO (title, description, OG tags)
 
 ### Authentication Enhancements
 
@@ -241,6 +241,20 @@
 - [ ] Add database migrations for OAuth provider fields (provider, providerId, providerData)
 - [ ] Implement OAuth callback handlers (`/api/auth/google/callback`, `/api/auth/github/callback`)
 - [ ] Add OAuth configuration to `.env` (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET)
+
+### UX Improvements
+
+- [x] Fix typing area overlay - show command text before typing starts
+- [ ] Change session complete modal behavior - only show after completing full category/collection, not after every single challenge
+- [ ] Add lightweight progress indicator between challenges (e.g., "Challenge 5/30 complete - Next challenge loading...")
+- [ ] Auto-advance to next challenge after brief delay (1-2 seconds) instead of showing modal each time
+- [ ] Show category completion summary with aggregate stats when finishing all challenges
+- [ ] Change multiplayer races to use full categories/packs instead of single commands
+- [ ] Hide/disable premium categories and challenges for free users (currently visible but should not be accessible)
+- [ ] Redirect unauthorized users to login page instead of showing "Unauthorized" error
+- [ ] Implement dark/light mode toggle with system preference detection
+- [ ] Ensure typing area, syntax highlighting, and all UI components work in both themes
+- [ ] Persist theme preference in user settings/localStorage
 
 ### Bug Fixes
 
@@ -337,7 +351,10 @@ interface TypingSession {
 pnpm db:generate
 pnpm db:migrate
 
-# Seed data
+# Seed data for production (all categories + challenges)
+pnpm db:seed:production         # Recommended: Seeds everything
+
+# Seed data manually (for development)
 pnpm db:seed                    # Users, categories, Stripe products
 pnpm db:seed:git-basics         # Git challenges
 pnpm db:seed:docker             # Docker challenges

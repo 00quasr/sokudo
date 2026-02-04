@@ -9,6 +9,7 @@
     "test:run": "vitest run",
     "db:setup": "npx tsx lib/db/setup.ts",
     "db:seed": "npx tsx lib/db/seed.ts",
+    "db:seed:production": "npx tsx lib/db/seed-production.ts",
     "db:seed:git-basics": "npx tsx lib/db/seed-git-basics.ts",
     "db:seed:react": "npx tsx lib/db/seed-react.ts",
     "db:seed:achievements": "npx tsx lib/db/seed-achievements.ts",
@@ -17,6 +18,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.11.1",
     "@tailwindcss/postcss": "4.1.7",
     "@types/node": "^22.15.18",
     "@types/react": "19.1.4",
@@ -32,6 +34,7 @@
     "jose": "^6.0.11",
     "lucide-react": "^0.511.0",
     "next": "15.6.0-canary.59",
+    "next-auth": "5.0.0-beta.30",
     "postcss": "^8.5.3",
     "postgres": "^3.4.5",
     "radix-ui": "^1.4.2",

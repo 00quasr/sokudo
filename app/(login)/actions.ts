@@ -28,6 +28,7 @@ import {
   validatedAction,
   validatedActionWithUser
 } from '@/lib/auth/middleware';
+import { signIn as nextAuthSignIn } from '@/lib/auth/auth';
 
 async function logActivity(
   teamId: number | null | undefined,
@@ -75,6 +76,15 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
   }
 
   const { user: foundUser, team: foundTeam } = userWithTeam[0];
+
+  // Check if user has a password (not OAuth-only user)
+  if (!foundUser.passwordHash) {
+    return {
+      error: 'This account uses social sign-in. Please use the "Continue with Google" button.',
+      email,
+      password
+    };
+  }
 
   const isPasswordValid = await comparePasswords(
     password,
@@ -243,6 +253,18 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
   redirect('/dashboard');
 });
 
+export async function signInWithGoogle(formData: FormData) {
+  const redirect = formData.get('redirect') as string | null;
+  const priceId = formData.get('priceId') as string | null;
+
+  let redirectUrl = '/dashboard';
+  if (redirect === 'checkout' && priceId) {
+    redirectUrl = `/dashboard?checkout=true&priceId=${priceId}`;
+  }
+
+  await nextAuthSignIn('google', { redirectTo: redirectUrl });
+}
+
 export async function signOut() {
   const user = (await getUser()) as User;
   const userWithTeam = await getUserWithTeam(user.id);
@@ -260,6 +282,16 @@ export const updatePassword = validatedActionWithUser(
   updatePasswordSchema,
   async (data, _, user) => {
     const { currentPassword, newPassword, confirmPassword } = data;
+
+    // Check if user has a password (not OAuth-only user)
+    if (!user.passwordHash) {
+      return {
+        currentPassword,
+        newPassword,
+        confirmPassword,
+        error: 'This account uses social sign-in and does not have a password.'
+      };
+    }
 
     const isPasswordValid = await comparePasswords(
       currentPassword,
@@ -319,12 +351,15 @@ export const deleteAccount = validatedActionWithUser(
   async (data, _, user) => {
     const { password } = data;
 
-    const isPasswordValid = await comparePasswords(password, user.passwordHash);
-    if (!isPasswordValid) {
-      return {
-        password,
-        error: 'Incorrect password. Account deletion failed.'
-      };
+    // For OAuth users, allow deletion with any password (or skip password check)
+    if (user.passwordHash) {
+      const isPasswordValid = await comparePasswords(password, user.passwordHash);
+      if (!isPasswordValid) {
+        return {
+          password,
+          error: 'Incorrect password. Account deletion failed.'
+        };
+      }
     }
 
     const userWithTeam = await getUserWithTeam(user.id);

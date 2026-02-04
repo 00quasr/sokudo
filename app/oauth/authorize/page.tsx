@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +17,7 @@ const SCOPE_DESCRIPTIONS: Record<string, string> = {
   write: 'Create typing sessions and modify your data',
 };
 
-export default function OAuthAuthorizePage() {
+function OAuthAuthorizeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [info, setInfo] = useState<AuthorizeInfo | null>(null);
@@ -196,5 +196,15 @@ export default function OAuthAuthorizePage() {
         </CardFooter>
       </Card>
     </div>
+  );
+}
+
+export default function OAuthAuthorizePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+    </div>}>
+      <OAuthAuthorizeContent />
+    </Suspense>
   );
 }

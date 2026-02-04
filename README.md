@@ -74,11 +74,12 @@ pnpm db:setup
 # Run migrations
 pnpm db:migrate
 
-# Seed categories, challenges, and test user
-pnpm db:seed
-pnpm db:seed:git-basics
-pnpm db:seed:terminal-commands
-pnpm db:seed:react
+# Option 1: Seed everything for production (recommended)
+pnpm db:seed:production
+
+# Option 2: Seed manually (for development/testing)
+pnpm db:seed                    # Users, teams, categories
+pnpm db:seed:git-basics         # Individual category seeds
 pnpm db:seed:achievements
 ```
 
@@ -305,7 +306,7 @@ openssl rand -hex 32
 - [ ] Create Stripe webhook for production endpoint
 - [ ] Configure production PostgreSQL database
 - [ ] Run migrations: `pnpm db:migrate`
-- [ ] Seed categories and challenges
+- [ ] Seed production data: `pnpm db:seed:production`
 - [ ] Set up DNS and SSL certificates
 - [ ] Configure CORS if needed for API access
 - [ ] Monitor webhook delivery failures

@@ -18,13 +18,51 @@ export const users = pgTable('users', {
   name: varchar('name', { length: 100 }),
   username: varchar('username', { length: 39 }).unique(),
   email: varchar('email', { length: 255 }).notNull().unique(),
-  passwordHash: text('password_hash').notNull(),
+  passwordHash: text('password_hash'),
   role: varchar('role', { length: 20 }).notNull().default('member'),
   referralCode: varchar('referral_code', { length: 12 }).unique(),
+  emailVerified: timestamp('email_verified'),
+  image: text('image'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   deletedAt: timestamp('deleted_at'),
 });
+
+export const accounts = pgTable('accounts', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  type: varchar('type', { length: 255 }).notNull(),
+  provider: varchar('provider', { length: 255 }).notNull(),
+  providerAccountId: varchar('provider_account_id', { length: 255 }).notNull(),
+  refresh_token: text('refresh_token'),
+  access_token: text('access_token'),
+  expires_at: integer('expires_at'),
+  token_type: varchar('token_type', { length: 255 }),
+  scope: varchar('scope', { length: 255 }),
+  id_token: text('id_token'),
+  session_state: varchar('session_state', { length: 255 }),
+}, (table) => [
+  uniqueIndex('accounts_provider_account_id_idx').on(table.provider, table.providerAccountId)
+]);
+
+export const sessions = pgTable('sessions', {
+  id: serial('id').primaryKey(),
+  sessionToken: varchar('session_token', { length: 255 }).notNull().unique(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  expires: timestamp('expires').notNull(),
+});
+
+export const verificationTokens = pgTable('verification_tokens', {
+  identifier: varchar('identifier', { length: 255 }).notNull(),
+  token: varchar('token', { length: 255 }).notNull().unique(),
+  expires: timestamp('expires').notNull(),
+}, (table) => [
+  uniqueIndex('verification_tokens_identifier_token_idx').on(table.identifier, table.token)
+]);
 
 export const userProfiles = pgTable('user_profiles', {
   id: serial('id').primaryKey(),
@@ -150,6 +188,22 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   pushSubscriptions: many(pushSubscriptions),
   friendChallengesSent: many(friendChallenges, { relationName: 'challengesSent' }),
   friendChallengesReceived: many(friendChallenges, { relationName: 'challengesReceived' }),
+  accounts: many(accounts),
+  sessions: many(sessions),
+}));
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
 }));
 
 export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
@@ -1177,6 +1231,12 @@ export type NewWebhook = typeof webhooks.$inferInsert;
 export type WebhookDelivery = typeof webhookDeliveries.$inferSelect;
 export type NewWebhookDelivery = typeof webhookDeliveries.$inferInsert;
 
+export type Account = typeof accounts.$inferSelect;
+export type NewAccount = typeof accounts.$inferInsert;
+export type Session = typeof sessions.$inferSelect;
+export type NewSession = typeof sessions.$inferInsert;
+export type VerificationToken = typeof verificationTokens.$inferSelect;
+export type NewVerificationToken = typeof verificationTokens.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type UserProfile = typeof userProfiles.$inferSelect;

@@ -205,8 +205,8 @@ export function TypingInput({
 
         {/* Instructions when not started */}
         {!isStarted && !isComplete && (
-          <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm rounded-lg">
-            <p className="text-muted-foreground">Start typing to begin...</p>
+          <div className="mt-4 pt-4 border-t border-border text-center">
+            <p className="text-muted-foreground text-sm">Start typing to begin...</p>
           </div>
         )}
       </div>
