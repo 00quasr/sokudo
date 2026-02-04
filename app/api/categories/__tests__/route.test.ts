@@ -300,6 +300,117 @@ describe('GET /api/categories', () => {
     });
   });
 
+  describe('premium access control', () => {
+    const testMockCategories = [
+      {
+        id: 1,
+        name: 'Git Basics',
+        slug: 'git-basics',
+        description: 'Learn basic git commands',
+        icon: 'git',
+        difficulty: 'beginner',
+        isPremium: false,
+        displayOrder: 1,
+        createdAt: new Date('2025-01-20T10:00:00Z'),
+        challengeCount: 10,
+      },
+      {
+        id: 2,
+        name: 'Docker Commands',
+        slug: 'docker-commands',
+        description: 'Master docker CLI',
+        icon: 'docker',
+        difficulty: 'intermediate',
+        isPremium: true,
+        displayOrder: 2,
+        createdAt: new Date('2025-01-21T10:00:00Z'),
+        challengeCount: 15,
+      },
+    ];
+
+    it('should filter out premium categories for free users', async () => {
+      const mockUser = { id: 1, email: 'test@test.com' };
+      const mockFreeProfile = { subscriptionTier: 'free' };
+
+      mockGetUser.mockResolvedValue(mockUser);
+
+      // First db call for user profile
+      const mockProfileQuery = vi.fn().mockResolvedValue([mockFreeProfile]);
+      const mockProfileWhere = vi.fn().mockReturnValue({ limit: mockProfileQuery });
+      const mockProfileFrom = vi.fn().mockReturnValue({ where: mockProfileWhere });
+
+      // Second db call for categories (should only return free categories)
+      const freeCategories = [testMockCategories[0]];
+      const mockOrderByFn = vi.fn().mockResolvedValue(freeCategories);
+      const mockGroupByFn = vi.fn().mockReturnValue({ orderBy: mockOrderByFn });
+      const mockWhereFn = vi.fn().mockReturnValue({ groupBy: mockGroupByFn });
+      const mockLeftJoinFn = vi.fn().mockReturnValue({ where: mockWhereFn });
+      const mockFromFn = vi.fn().mockReturnValue({ leftJoin: mockLeftJoinFn });
+
+      mockDb.select
+        .mockReturnValueOnce({ from: mockProfileFrom })
+        .mockReturnValueOnce({ from: mockFromFn });
+
+      const request = createMockGetRequest('http://localhost:3000/api/categories');
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.categories).toBeDefined();
+    });
+
+    it('should include premium categories for pro users', async () => {
+      const mockUser = { id: 1, email: 'test@test.com' };
+      const mockProProfile = { subscriptionTier: 'pro' };
+
+      mockGetUser.mockResolvedValue(mockUser);
+
+      // First db call for user profile
+      const mockProfileQuery = vi.fn().mockResolvedValue([mockProProfile]);
+      const mockProfileWhere = vi.fn().mockReturnValue({ limit: mockProfileQuery });
+      const mockProfileFrom = vi.fn().mockReturnValue({ where: mockProfileWhere });
+
+      // Second db call for categories (should return all categories)
+      const mockOrderByFn = vi.fn().mockResolvedValue(testMockCategories);
+      const mockGroupByFn = vi.fn().mockReturnValue({ orderBy: mockOrderByFn });
+      const mockWhereFn = vi.fn().mockReturnValue({ groupBy: mockGroupByFn });
+      const mockLeftJoinFn = vi.fn().mockReturnValue({ where: mockWhereFn });
+      const mockFromFn = vi.fn().mockReturnValue({ leftJoin: mockLeftJoinFn });
+
+      mockDb.select
+        .mockReturnValueOnce({ from: mockProfileFrom })
+        .mockReturnValueOnce({ from: mockFromFn });
+
+      const request = createMockGetRequest('http://localhost:3000/api/categories');
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.categories).toBeDefined();
+    });
+
+    it('should filter out premium categories for unauthenticated users', async () => {
+      mockGetUser.mockResolvedValue(null);
+
+      // Only one db call for categories (should only return free categories)
+      const freeCategories = [testMockCategories[0]];
+      const mockOrderByFn = vi.fn().mockResolvedValue(freeCategories);
+      const mockGroupByFn = vi.fn().mockReturnValue({ orderBy: mockOrderByFn });
+      const mockWhereFn = vi.fn().mockReturnValue({ groupBy: mockGroupByFn });
+      const mockLeftJoinFn = vi.fn().mockReturnValue({ where: mockWhereFn });
+      const mockFromFn = vi.fn().mockReturnValue({ leftJoin: mockLeftJoinFn });
+
+      mockDb.select.mockReturnValue({ from: mockFromFn });
+
+      const request = createMockGetRequest('http://localhost:3000/api/categories');
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.categories).toBeDefined();
+    });
+  });
+
   describe('error handling', () => {
     it('should return 500 on database error', async () => {
       mockGetUser.mockResolvedValue(null);

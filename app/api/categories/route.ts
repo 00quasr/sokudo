@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { eq, sql, asc } from 'drizzle-orm';
+import { eq, sql, asc, and, or } from 'drizzle-orm';
 import { db } from '@/lib/db/drizzle';
-import { categories, challenges, typingSessions } from '@/lib/db/schema';
+import { categories, challenges, typingSessions, userProfiles } from '@/lib/db/schema';
 import { getUser } from '@/lib/db/queries';
 import { apiRateLimit } from '@/lib/rate-limit';
+import { canAccessPremiumCategories } from '@/lib/limits/constants';
 
 const getCategoriesQuerySchema = z.object({
   difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
@@ -44,6 +45,20 @@ export async function GET(request: NextRequest) {
     // Get authenticated user (optional - progress stats require auth)
     const user = await getUser();
 
+    // Check if user can access premium categories
+    let canAccessPremium = false;
+    if (user) {
+      const userProfile = await db
+        .select()
+        .from(userProfiles)
+        .where(eq(userProfiles.userId, user.id))
+        .limit(1);
+
+      if (userProfile.length > 0) {
+        canAccessPremium = canAccessPremiumCategories(userProfile[0].subscriptionTier);
+      }
+    }
+
     // Build where conditions for categories
     const conditions = [];
     if (difficulty) {
@@ -51,6 +66,11 @@ export async function GET(request: NextRequest) {
     }
     if (isPremium !== undefined) {
       conditions.push(eq(categories.isPremium, isPremium));
+    }
+
+    // Filter out premium categories for free users unless explicitly requested
+    if (!canAccessPremium && isPremium === undefined) {
+      conditions.push(eq(categories.isPremium, false));
     }
 
     // Get all categories with challenge counts

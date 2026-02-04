@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getChallengeById, getNextChallengeInCategory, getChallengePosition, getUser, getUserProfile } from '@/lib/db/queries';
-import { hasUnlimitedPractice } from '@/lib/limits/constants';
+import { hasUnlimitedPractice, canAccessPremiumCategories } from '@/lib/limits/constants';
 import { RemainingTimeBar } from '@/components/limits/RemainingTimeBar';
 import { ArrowLeft } from 'lucide-react';
 import { TypingSession } from './typing-session';
@@ -31,6 +31,21 @@ export default async function ChallengePage({
     notFound();
   }
 
+  // Check if user is on free tier and if they can access premium content
+  const user = await getUser();
+  let isFreeTier = true;
+  let canAccessPremium = false;
+  if (user) {
+    const profile = await getUserProfile(user.id);
+    isFreeTier = !hasUnlimitedPractice(profile?.subscriptionTier ?? 'free');
+    canAccessPremium = canAccessPremiumCategories(profile?.subscriptionTier ?? 'free');
+  }
+
+  // Redirect to category page if trying to access premium challenge without access
+  if (challenge.category.isPremium && !canAccessPremium) {
+    redirect(`/practice/${categorySlug}`);
+  }
+
   // Get the next challenge in this category
   const nextChallengeId = await getNextChallengeInCategory(
     challenge.category.id,
@@ -42,14 +57,6 @@ export default async function ChallengePage({
     challenge.category.id,
     challenge.id
   );
-
-  // Check if user is on free tier
-  const user = await getUser();
-  let isFreeTier = true;
-  if (user) {
-    const profile = await getUserProfile(user.id);
-    isFreeTier = !hasUnlimitedPractice(profile?.subscriptionTier ?? 'free');
-  }
 
   return (
     <main className="min-h-screen bg-background">

@@ -15,8 +15,14 @@ vi.mock('@/lib/db/drizzle', () => ({
   },
 }));
 
+// Mock getUser
+vi.mock('@/lib/db/queries', () => ({
+  getUser: vi.fn(),
+}));
+
 // Import mocked modules
 import { db } from '@/lib/db/drizzle';
+import { getUser } from '@/lib/db/queries';
 
 const mockDb = db as unknown as {
   select: ReturnType<typeof vi.fn>;
@@ -435,6 +441,138 @@ describe('GET /api/challenges', () => {
       const request = createMockGetRequest(
         'http://localhost:3000/api/challenges?categoryId=1&difficulty=beginner&syntaxType=bash&sortBy=avgWpm&sortOrder=desc'
       );
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.challenges).toBeDefined();
+    });
+  });
+
+  describe('premium access control', () => {
+    const testMockChallenges = [
+      {
+        id: 1,
+        content: 'git init',
+        difficulty: 'beginner',
+        syntaxType: 'bash',
+        hint: 'Initialize a repository',
+        avgWpm: 45,
+        timesCompleted: 100,
+        createdAt: new Date('2025-01-20T10:00:00Z'),
+        category: {
+          id: 1,
+          name: 'Git Basics',
+          slug: 'git-basics',
+          icon: 'git',
+        },
+      },
+      {
+        id: 2,
+        content: 'docker run',
+        difficulty: 'intermediate',
+        syntaxType: 'bash',
+        hint: 'Run a container',
+        avgWpm: 40,
+        timesCompleted: 50,
+        createdAt: new Date('2025-01-21T10:00:00Z'),
+        category: {
+          id: 2,
+          name: 'Docker Commands',
+          slug: 'docker-commands',
+          icon: 'docker',
+        },
+      },
+    ];
+
+    it('should filter out challenges from premium categories for free users', async () => {
+      // Mock getUser
+      vi.mocked(getUser).mockResolvedValue({ id: 1, email: 'test@test.com' } as any);
+
+      // Mock user profile query
+      const mockProfileQuery = vi.fn().mockResolvedValue([{ subscriptionTier: 'free' }]);
+      const mockProfileWhere = vi.fn().mockReturnValue({ limit: mockProfileQuery });
+      const mockProfileFrom = vi.fn().mockReturnValue({ where: mockProfileWhere });
+
+      // Mock challenges query
+      const freeChallenges = [testMockChallenges[0]]; // Only free category challenges
+      const mockOffsetFn = vi.fn().mockResolvedValue(freeChallenges);
+      const mockLimitFn = vi.fn().mockReturnValue({ offset: mockOffsetFn });
+      const mockOrderByFn = vi.fn().mockReturnValue({ limit: mockLimitFn });
+      const mockWhereFn = vi
+        .fn()
+        .mockResolvedValueOnce([{ count: 1 }])
+        .mockReturnValueOnce({ orderBy: mockOrderByFn });
+      const mockInnerJoinFn = vi.fn().mockReturnValue({ where: mockWhereFn });
+      const mockFromFn = vi.fn().mockReturnValue({ innerJoin: mockInnerJoinFn });
+
+      mockDb.select
+        .mockReturnValueOnce({ from: mockProfileFrom })
+        .mockReturnValueOnce({ from: mockFromFn })
+        .mockReturnValueOnce({ from: mockFromFn });
+
+      const request = createMockGetRequest('http://localhost:3000/api/challenges');
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.challenges).toBeDefined();
+    });
+
+    it('should include challenges from premium categories for pro users', async () => {
+      // Mock getUser
+      vi.mocked(getUser).mockResolvedValue({ id: 1, email: 'test@test.com' } as any);
+
+      // Mock user profile query
+      const mockProfileQuery = vi.fn().mockResolvedValue([{ subscriptionTier: 'pro' }]);
+      const mockProfileWhere = vi.fn().mockReturnValue({ limit: mockProfileQuery });
+      const mockProfileFrom = vi.fn().mockReturnValue({ where: mockProfileWhere });
+
+      // Mock challenges query
+      const mockOffsetFn = vi.fn().mockResolvedValue(mockChallenges);
+      const mockLimitFn = vi.fn().mockReturnValue({ offset: mockOffsetFn });
+      const mockOrderByFn = vi.fn().mockReturnValue({ limit: mockLimitFn });
+      const mockWhereFn = vi
+        .fn()
+        .mockResolvedValueOnce([{ count: 2 }])
+        .mockReturnValueOnce({ orderBy: mockOrderByFn });
+      const mockInnerJoinFn = vi.fn().mockReturnValue({ where: mockWhereFn });
+      const mockFromFn = vi.fn().mockReturnValue({ innerJoin: mockInnerJoinFn });
+
+      mockDb.select
+        .mockReturnValueOnce({ from: mockProfileFrom })
+        .mockReturnValueOnce({ from: mockFromFn })
+        .mockReturnValueOnce({ from: mockFromFn });
+
+      const request = createMockGetRequest('http://localhost:3000/api/challenges');
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.challenges).toBeDefined();
+    });
+
+    it('should filter out challenges from premium categories for unauthenticated users', async () => {
+      // Mock getUser
+      vi.mocked(getUser).mockResolvedValue(null);
+
+      // Mock challenges query
+      const freeChallenges = [testMockChallenges[0]]; // Only free category challenges
+      const mockOffsetFn = vi.fn().mockResolvedValue(freeChallenges);
+      const mockLimitFn = vi.fn().mockReturnValue({ offset: mockOffsetFn });
+      const mockOrderByFn = vi.fn().mockReturnValue({ limit: mockLimitFn });
+      const mockWhereFn = vi
+        .fn()
+        .mockResolvedValueOnce([{ count: 1 }])
+        .mockReturnValueOnce({ orderBy: mockOrderByFn });
+      const mockInnerJoinFn = vi.fn().mockReturnValue({ where: mockWhereFn });
+      const mockFromFn = vi.fn().mockReturnValue({ innerJoin: mockInnerJoinFn });
+
+      mockDb.select
+        .mockReturnValueOnce({ from: mockFromFn })
+        .mockReturnValueOnce({ from: mockFromFn });
+
+      const request = createMockGetRequest('http://localhost:3000/api/challenges');
       const response = await GET(request);
       const data = await response.json();
 
