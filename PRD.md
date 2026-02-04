@@ -235,11 +235,11 @@
 
 ### Authentication Enhancements
 
-- [ ] Add OAuth login with Google (social sign-in)
-- [ ] Add OAuth login with GitHub (social sign-in)
-- [ ] Update sign-in/sign-up pages with social login buttons
-- [ ] Add database migrations for OAuth provider fields (provider, providerId, providerData)
-- [ ] Implement OAuth callback handlers (`/api/auth/google/callback`, `/api/auth/github/callback`)
+- [x] Add OAuth login with Google (social sign-in)
+- [x] Add OAuth login with GitHub (social sign-in)
+- [x] Update sign-in/sign-up pages with social login buttons
+- [x] Add database migrations for OAuth provider fields (provider, providerId, providerData)
+- [x] Implement OAuth callback handlers (`/api/auth/google/callback`, `/api/auth/github/callback`)
 - [ ] Add OAuth configuration to `.env` (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET)
 
 ### UX Improvements
