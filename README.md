@@ -358,9 +358,7 @@ Commit format: `type(scope): message`
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
-
-Built on [Next.js SaaS Starter](https://github.com/nextjs/saas-starter) by Vercel.
+## Acknowledgment
 
 ---
 
