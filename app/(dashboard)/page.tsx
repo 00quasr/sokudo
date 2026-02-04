@@ -2,6 +2,21 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Zap, Target, TrendingUp } from 'lucide-react';
 import { Terminal } from './terminal';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Home',
+  description: 'Build muscle memory for git workflows, terminal commands, React patterns, and AI prompts. Type your way to effortless coding through deliberate practice.',
+  openGraph: {
+    title: 'Sokudo (速度) - Master Developer Commands at Speed',
+    description: 'Build muscle memory for git workflows, terminal commands, React patterns, and AI prompts. Start with 15 minutes a day of free practice.',
+    url: '/',
+  },
+  twitter: {
+    title: 'Sokudo (速度) - Master Developer Commands at Speed',
+    description: 'Build muscle memory for git workflows, terminal commands, React patterns, and AI prompts.',
+  },
+};
 
 export default function HomePage() {
   return (

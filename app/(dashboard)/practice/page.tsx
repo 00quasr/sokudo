@@ -33,8 +33,23 @@ import {
   Brain,
   LucideIcon,
 } from 'lucide-react';
+import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Practice',
+  description: 'Choose from categories including git workflows, Docker commands, React patterns, bash scripts, and AI prompt engineering. Build muscle memory with targeted practice.',
+  openGraph: {
+    title: 'Practice - Choose Your Category',
+    description: 'Master git, Docker, React, bash, and AI prompts through deliberate typing practice.',
+    url: '/practice',
+  },
+  twitter: {
+    title: 'Practice - Choose Your Category',
+    description: 'Master git, Docker, React, bash, and AI prompts through deliberate typing practice.',
+  },
+};
 
 const iconMap: Record<string, LucideIcon> = {
   'git-branch': GitBranch,
