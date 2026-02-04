@@ -204,6 +204,13 @@
       "when": 1770156045364,
       "tag": "0028_watery_domino",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1770243214745,
+      "tag": "0029_typical_firebird",
+      "breakpoints": true
     }
   ]
 }

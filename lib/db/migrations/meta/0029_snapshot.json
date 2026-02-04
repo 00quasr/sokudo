@@ -1,6 +1,6 @@
 {
-  "id": "781a467a-7c5b-4916-be67-fb816e3254fd",
-  "prevId": "574d33e1-2641-4cd5-a006-79f3d2f63dc0",
+  "id": "b76fe5ce-b5e0-4729-b39f-abeccc2e4452",
+  "prevId": "781a467a-7c5b-4916-be67-fb816e3254fd",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -4387,6 +4387,24 @@
         "image": {
           "name": "image",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider": {
+          "name": "provider",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider_data": {
+          "name": "provider_data",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
