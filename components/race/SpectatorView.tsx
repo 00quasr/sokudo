@@ -21,21 +21,23 @@ interface RaceDetail {
   createdAt: string;
   startedAt: string | null;
   updatedAt: string;
-  challenge: {
-    id: number;
-    content: string;
-    difficulty: string;
-    syntaxType: string;
-  };
   category: {
     id: number;
     name: string;
     slug: string;
     icon: string;
+    difficulty: string;
   };
+  challenges: Array<{
+    id: number;
+    content: string;
+    difficulty: string;
+    syntaxType: string;
+  }>;
   participants: Array<{
     id: number;
     userId: number;
+    currentChallengeIndex: number;
     wpm: number | null;
     accuracy: number | null;
     finishedAt: string | null;
@@ -92,6 +94,7 @@ export function SpectatorView({ raceId }: { raceId: string }) {
       userName: p.userName ?? p.userEmail.split('@')[0],
       progress: p.finishedAt ? 100 : 0,
       currentWpm: p.wpm ?? 0,
+      currentChallengeIndex: p.currentChallengeIndex ?? 0,
       wpm: p.wpm,
       accuracy: p.accuracy,
       finishedAt: p.finishedAt,
@@ -129,8 +132,12 @@ export function SpectatorView({ raceId }: { raceId: string }) {
   const isFinished = currentStatus === 'finished';
   const participantStates = getParticipantStates();
   const spectatorCount = wsState?.spectatorCount ?? 0;
+
+  // Show the first challenge for spectators
+  const currentChallenge = race.challenges[0];
+  const totalChallenges = race.challenges.length;
   const difficultyClass =
-    difficultyColors[race.challenge.difficulty] ?? difficultyColors.beginner;
+    difficultyColors[currentChallenge.difficulty] ?? difficultyColors.beginner;
 
   return (
     <div className="space-y-8" data-testid="spectator-view">
@@ -197,21 +204,23 @@ export function SpectatorView({ raceId }: { raceId: string }) {
         {/* Challenge info */}
         <div className="mb-4 flex items-center gap-3 text-sm text-gray-500">
           <span className="font-medium text-gray-700">{race.category.name}</span>
+          <span className="text-gray-600">({totalChallenges} challenges)</span>
           <span
             className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize ${difficultyClass}`}
           >
-            {race.challenge.difficulty}
+            {race.category.difficulty}
           </span>
           <div className="flex items-center gap-1">
             <Zap className="h-3.5 w-3.5" />
-            <span>{race.challenge.syntaxType}</span>
+            <span>{currentChallenge.syntaxType}</span>
           </div>
         </div>
 
-        {/* Challenge preview */}
+        {/* Challenge preview - first challenge */}
         <div className="rounded-lg bg-gray-50 p-4">
+          <div className="mb-2 text-xs text-gray-500">First Challenge:</div>
           <code className="block whitespace-pre-wrap text-sm text-gray-700">
-            {race.challenge.content}
+            {currentChallenge.content}
           </code>
         </div>
       </div>

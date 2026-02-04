@@ -52,22 +52,38 @@ const mockRace = {
   createdAt: new Date().toISOString(),
   startedAt: null,
   updatedAt: new Date().toISOString(),
-  challenge: {
-    id: 1,
-    content: 'git commit -m "initial commit"',
-    difficulty: 'beginner',
-    syntaxType: 'git',
-  },
   category: {
     id: 1,
     name: 'Git Basics',
     slug: 'git-basics',
     icon: 'git-branch',
+    difficulty: 'beginner',
   },
+  challenges: [
+    {
+      id: 1,
+      content: 'git commit -m "initial commit"',
+      difficulty: 'beginner',
+      syntaxType: 'git',
+    },
+    {
+      id: 2,
+      content: 'git push origin main',
+      difficulty: 'beginner',
+      syntaxType: 'git',
+    },
+    {
+      id: 3,
+      content: 'git pull --rebase',
+      difficulty: 'intermediate',
+      syntaxType: 'git',
+    },
+  ],
   participants: [
     {
       id: 1,
       userId: 1,
+      currentChallengeIndex: 0,
       wpm: null,
       accuracy: null,
       finishedAt: null,
@@ -78,6 +94,7 @@ const mockRace = {
     {
       id: 2,
       userId: 2,
+      currentChallengeIndex: 0,
       wpm: null,
       accuracy: null,
       finishedAt: null,
@@ -132,7 +149,7 @@ describe('RaceRoom', () => {
     expect(screen.getByText('Waiting')).toBeDefined();
     expect(screen.getByText('Git Basics')).toBeDefined();
     expect(screen.getByText('beginner')).toBeDefined();
-    expect(screen.getByText('git')).toBeDefined();
+    expect(screen.getByText('Challenge 1 of 3')).toBeDefined();
     expect(screen.getByText('git commit -m "initial commit"')).toBeDefined();
   });
 
@@ -308,6 +325,7 @@ describe('RaceRoom', () => {
       participants: [
         {
           ...mockRace.participants[0],
+          currentChallengeIndex: 3,
           wpm: 85,
           accuracy: 97,
           finishedAt: new Date().toISOString(),
@@ -315,6 +333,7 @@ describe('RaceRoom', () => {
         },
         {
           ...mockRace.participants[1],
+          currentChallengeIndex: 3,
           wpm: 72,
           accuracy: 94,
           finishedAt: new Date().toISOString(),

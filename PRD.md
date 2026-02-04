@@ -251,7 +251,7 @@
 - [x] Show category completion summary with aggregate stats when finishing all challenges
 - [ ] Change multiplayer races to use full categories/packs instead of single commands
 - [ ] Hide/disable premium categories and challenges for free users (currently visible but should not be accessible)
-- [ ] Redirect unauthorized users to login page instead of showing "Unauthorized" error
+- [x] Redirect unauthorized users to login page instead of showing "Unauthorized" error
 - [ ] Implement dark/light mode toggle with system preference detection
 - [ ] Ensure typing area, syntax highlighting, and all UI components work in both themes
 - [ ] Persist theme preference in user settings/localStorage

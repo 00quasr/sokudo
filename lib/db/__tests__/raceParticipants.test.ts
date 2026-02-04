@@ -23,6 +23,7 @@ describe('raceParticipants schema', () => {
       expect(columnNames).toContain('id');
       expect(columnNames).toContain('raceId');
       expect(columnNames).toContain('userId');
+      expect(columnNames).toContain('currentChallengeIndex');
       expect(columnNames).toContain('wpm');
       expect(columnNames).toContain('accuracy');
       expect(columnNames).toContain('finishedAt');
@@ -40,6 +41,16 @@ describe('raceParticipants schema', () => {
 
     it('should have userId as not null', () => {
       expect(raceParticipants.userId.notNull).toBe(true);
+    });
+
+    it('should have currentChallengeIndex as not null', () => {
+      expect(raceParticipants.currentChallengeIndex.notNull).toBe(true);
+    });
+  });
+
+  describe('column defaults', () => {
+    it('should default currentChallengeIndex to 0', () => {
+      expect(raceParticipants.currentChallengeIndex.default).toBe(0);
     });
   });
 
@@ -86,6 +97,7 @@ describe('raceParticipants schema', () => {
       const participant: NewRaceParticipant = {
         raceId: 1,
         userId: 2,
+        currentChallengeIndex: 3,
         wpm: 85,
         accuracy: 97,
         finishedAt: new Date(),
@@ -94,6 +106,7 @@ describe('raceParticipants schema', () => {
 
       expect(participant.raceId).toBe(1);
       expect(participant.userId).toBe(2);
+      expect(participant.currentChallengeIndex).toBe(3);
       expect(participant.wpm).toBe(85);
       expect(participant.accuracy).toBe(97);
       expect(participant.finishedAt).toBeInstanceOf(Date);
@@ -108,6 +121,7 @@ describe('raceParticipants schema', () => {
 
       expect(participant.raceId).toBe(1);
       expect(participant.userId).toBe(2);
+      expect(participant.currentChallengeIndex).toBeUndefined();
       expect(participant.wpm).toBeUndefined();
       expect(participant.accuracy).toBeUndefined();
       expect(participant.finishedAt).toBeUndefined();
@@ -119,6 +133,7 @@ describe('raceParticipants schema', () => {
         id: 1,
         raceId: 1,
         userId: 2,
+        currentChallengeIndex: 5,
         wpm: 85,
         accuracy: 97,
         finishedAt: new Date(),
@@ -129,6 +144,7 @@ describe('raceParticipants schema', () => {
       expect(participant.id).toBe(1);
       expect(participant.raceId).toBe(1);
       expect(participant.userId).toBe(2);
+      expect(participant.currentChallengeIndex).toBe(5);
       expect(participant.wpm).toBe(85);
       expect(participant.accuracy).toBe(97);
       expect(participant.finishedAt).toBeInstanceOf(Date);
@@ -141,6 +157,7 @@ describe('raceParticipants schema', () => {
         id: 1,
         raceId: 1,
         userId: 2,
+        currentChallengeIndex: 0,
         wpm: null,
         accuracy: null,
         finishedAt: null,
@@ -148,10 +165,31 @@ describe('raceParticipants schema', () => {
         createdAt: new Date(),
       };
 
+      expect(participant.currentChallengeIndex).toBe(0);
       expect(participant.wpm).toBeNull();
       expect(participant.accuracy).toBeNull();
       expect(participant.finishedAt).toBeNull();
       expect(participant.rank).toBeNull();
+    });
+  });
+
+  describe('currentChallengeIndex field', () => {
+    it('should accept 0 for first challenge', () => {
+      const participant: NewRaceParticipant = {
+        raceId: 1,
+        userId: 1,
+        currentChallengeIndex: 0,
+      };
+      expect(participant.currentChallengeIndex).toBe(0);
+    });
+
+    it('should accept positive integers for challenge progress', () => {
+      const participant: NewRaceParticipant = {
+        raceId: 1,
+        userId: 1,
+        currentChallengeIndex: 7,
+      };
+      expect(participant.currentChallengeIndex).toBe(7);
     });
   });
 
