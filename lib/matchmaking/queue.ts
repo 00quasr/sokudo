@@ -1,5 +1,5 @@
 import { db } from '@/lib/db/drizzle';
-import { typingSessions, challenges, races, raceParticipants } from '@/lib/db/schema';
+import { typingSessions, challenges, races, raceParticipants, categories } from '@/lib/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
 
 // --- Types ---
@@ -228,8 +228,8 @@ export async function getPlayerAverageWpm(
   return Math.round(total / sessions.length);
 }
 
-/** Pick a random challenge appropriate for the matched players' skill level */
-export async function pickMatchChallenge(
+/** Pick a random category appropriate for the matched players' skill level */
+export async function pickMatchCategory(
   averageWpm: number
 ): Promise<number | null> {
   // Map WPM to difficulty
@@ -242,21 +242,21 @@ export async function pickMatchChallenge(
     difficulty = 'advanced';
   }
 
-  const matchingChallenges = await db
-    .select({ id: challenges.id })
-    .from(challenges)
-    .where(eq(challenges.difficulty, difficulty))
+  const matchingCategories = await db
+    .select({ id: categories.id })
+    .from(categories)
+    .where(eq(categories.difficulty, difficulty))
     .orderBy(sql`RANDOM()`)
     .limit(1);
 
-  if (matchingChallenges.length > 0) {
-    return matchingChallenges[0].id;
+  if (matchingCategories.length > 0) {
+    return matchingCategories[0].id;
   }
 
-  // Fallback: any challenge
+  // Fallback: any category
   const fallback = await db
-    .select({ id: challenges.id })
-    .from(challenges)
+    .select({ id: categories.id })
+    .from(categories)
     .orderBy(sql`RANDOM()`)
     .limit(1);
 
@@ -266,12 +266,12 @@ export async function pickMatchChallenge(
 /** Create a race from a matchmaking result */
 export async function createMatchedRace(
   players: QueueEntry[],
-  challengeId: number
+  categoryId: number
 ): Promise<number> {
   const [race] = await db
     .insert(races)
     .values({
-      challengeId,
+      categoryId,
       maxPlayers: players.length,
       status: 'waiting',
     })

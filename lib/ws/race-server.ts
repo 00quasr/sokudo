@@ -38,6 +38,14 @@ export interface RaceFinishMessage {
   accuracy: number;
 }
 
+export interface RaceAdvanceChallengeMessage {
+  type: 'race:advanceChallenge';
+  raceId: number;
+  userId: number;
+  challengeWpm: number;
+  challengeAccuracy: number;
+}
+
 export interface RaceCountdownMessage {
   type: 'race:countdown';
   raceId: number;
@@ -79,6 +87,7 @@ export type ClientMessage =
   | RaceStartMessage
   | RaceProgressMessage
   | RaceFinishMessage
+  | RaceAdvanceChallengeMessage
   | RaceCountdownMessage
   | LobbySubscribeMessage
   | LobbyUnsubscribeMessage
@@ -104,6 +113,7 @@ export interface ParticipantState {
   userName: string;
   progress: number;
   currentWpm: number;
+  currentChallengeIndex: number;
   wpm: number | null;
   accuracy: number | null;
   finishedAt: string | null;
@@ -231,6 +241,9 @@ export class RaceWebSocketServer {
       case 'race:finish':
         this.handleFinish(client, message);
         break;
+      case 'race:advanceChallenge':
+        this.handleAdvanceChallenge(client, message);
+        break;
       case 'race:countdown':
         this.handleCountdown(client, message);
         break;
@@ -286,6 +299,7 @@ export class RaceWebSocketServer {
         userName,
         progress: 0,
         currentWpm: 0,
+        currentChallengeIndex: 0,
         wpm: null,
         accuracy: null,
         finishedAt: null,
@@ -473,6 +487,25 @@ export class RaceWebSocketServer {
     this.broadcastRaceState(room);
   }
 
+  private handleAdvanceChallenge(
+    _client: ExtendedWebSocket,
+    message: RaceAdvanceChallengeMessage
+  ): void {
+    const { raceId, userId } = message;
+    const room = this.rooms.get(raceId);
+    if (!room) return;
+
+    const participant = room.participants.get(userId);
+    if (!participant) return;
+
+    // Increment challenge index and reset progress
+    participant.currentChallengeIndex += 1;
+    participant.progress = 0;
+    participant.currentWpm = 0;
+
+    this.broadcastRaceState(room);
+  }
+
   private handleSpectate(
     client: ExtendedWebSocket,
     message: RaceSpectateMessage
@@ -533,7 +566,7 @@ export class RaceWebSocketServer {
     this.matchmakingClients.set(userId, client);
 
     // Import and use the matchmaking queue
-    import('@/lib/matchmaking/queue').then(async ({ getMatchmakingQueue, pickMatchChallenge, createMatchedRace }) => {
+    import('@/lib/matchmaking/queue').then(async ({ getMatchmakingQueue, pickMatchCategory, createMatchedRace }) => {
       const queue = getMatchmakingQueue();
 
       if (queue.isInQueue(userId)) {
@@ -558,11 +591,11 @@ export class RaceWebSocketServer {
         const groupAvgWpm =
           result.players.reduce((sum, p) => sum + p.averageWpm, 0) /
           result.players.length;
-        const challengeId = await pickMatchChallenge(groupAvgWpm);
+        const categoryId = await pickMatchCategory(groupAvgWpm);
 
-        if (!challengeId) return;
+        if (!categoryId) return;
 
-        const raceId = await createMatchedRace(result.players, challengeId);
+        const raceId = await createMatchedRace(result.players, categoryId);
 
         // Notify all matched players via WebSocket
         for (const player of result.players) {
@@ -599,10 +632,10 @@ export class RaceWebSocketServer {
         const groupAvgWpm =
           match.players.reduce((sum, p) => sum + p.averageWpm, 0) /
           match.players.length;
-        const challengeId = await pickMatchChallenge(groupAvgWpm);
+        const categoryId = await pickMatchCategory(groupAvgWpm);
 
-        if (challengeId) {
-          const raceId = await createMatchedRace(match.players, challengeId);
+        if (categoryId) {
+          const raceId = await createMatchedRace(match.players, categoryId);
 
           for (const player of match.players) {
             const playerClient = this.matchmakingClients.get(player.userId);

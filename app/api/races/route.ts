@@ -13,7 +13,7 @@ import {
 import { getUser } from '@/lib/db/queries';
 
 const createRaceSchema = z.object({
-  challengeId: z.number().int().positive(),
+  categoryId: z.number().int().positive(),
   maxPlayers: z.number().int().min(2).max(8).default(4),
 });
 
@@ -37,18 +37,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { challengeId, maxPlayers } = result.data;
+    const { categoryId, maxPlayers } = result.data;
 
-    // Verify the challenge exists
-    const [challenge] = await db
+    // Verify the category exists
+    const [category] = await db
       .select()
-      .from(challenges)
-      .where(eq(challenges.id, challengeId))
+      .from(categories)
+      .where(eq(categories.id, categoryId))
       .limit(1);
 
-    if (!challenge) {
+    if (!category) {
       return NextResponse.json(
-        { error: 'Challenge not found' },
+        { error: 'Category not found' },
         { status: 404 }
       );
     }
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     const [race] = await db
       .insert(races)
       .values({
-        challengeId,
+        categoryId,
         maxPlayers,
         status: 'waiting',
       })
@@ -97,24 +97,20 @@ export async function GET(request: NextRequest) {
         maxPlayers: races.maxPlayers,
         createdAt: races.createdAt,
         startedAt: races.startedAt,
-        challenge: {
-          id: challenges.id,
-          content: challenges.content,
-          difficulty: challenges.difficulty,
-          syntaxType: challenges.syntaxType,
-        },
         category: {
           id: categories.id,
           name: categories.name,
           slug: categories.slug,
           icon: categories.icon,
+          difficulty: categories.difficulty,
         },
         participantCount:
           sql<number>`(SELECT count(*) FROM race_participants WHERE race_id = ${races.id})::int`,
+        challengeCount:
+          sql<number>`(SELECT count(*) FROM challenges WHERE category_id = ${categories.id})::int`,
       })
       .from(races)
-      .innerJoin(challenges, eq(races.challengeId, challenges.id))
-      .innerJoin(categories, eq(challenges.categoryId, categories.id))
+      .innerJoin(categories, eq(races.categoryId, categories.id))
       .where(
         statuses.length === 1
           ? eq(races.status, statuses[0])

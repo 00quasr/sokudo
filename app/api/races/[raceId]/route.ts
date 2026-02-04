@@ -37,22 +37,16 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         createdAt: races.createdAt,
         startedAt: races.startedAt,
         updatedAt: races.updatedAt,
-        challenge: {
-          id: challenges.id,
-          content: challenges.content,
-          difficulty: challenges.difficulty,
-          syntaxType: challenges.syntaxType,
-        },
         category: {
           id: categories.id,
           name: categories.name,
           slug: categories.slug,
           icon: categories.icon,
+          difficulty: categories.difficulty,
         },
       })
       .from(races)
-      .innerJoin(challenges, eq(races.challengeId, challenges.id))
-      .innerJoin(categories, eq(challenges.categoryId, categories.id))
+      .innerJoin(categories, eq(races.categoryId, categories.id))
       .where(eq(races.id, raceId))
       .limit(1);
 
@@ -60,11 +54,24 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Race not found' }, { status: 404 });
     }
 
-    // Get participants
+    // Get all challenges for this category
+    const categoryChallenges = await db
+      .select({
+        id: challenges.id,
+        content: challenges.content,
+        difficulty: challenges.difficulty,
+        syntaxType: challenges.syntaxType,
+      })
+      .from(challenges)
+      .where(eq(challenges.categoryId, race.category.id))
+      .orderBy(challenges.id);
+
+    // Get participants with their current challenge index
     const participants = await db
       .select({
         id: raceParticipants.id,
         userId: raceParticipants.userId,
+        currentChallengeIndex: raceParticipants.currentChallengeIndex,
         wpm: raceParticipants.wpm,
         accuracy: raceParticipants.accuracy,
         finishedAt: raceParticipants.finishedAt,
@@ -76,7 +83,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       .innerJoin(users, eq(raceParticipants.userId, users.id))
       .where(eq(raceParticipants.raceId, raceId));
 
-    return NextResponse.json({ ...race, participants });
+    return NextResponse.json({ ...race, challenges: categoryChallenges, participants });
   } catch (error) {
     console.error('Error fetching race:', error);
     return NextResponse.json(
@@ -87,9 +94,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 const joinRaceSchema = z.object({
-  action: z.enum(['join', 'leave', 'start', 'finish']),
+  action: z.enum(['join', 'leave', 'start', 'finish', 'advanceChallenge']),
   wpm: z.number().int().nonnegative().optional(),
   accuracy: z.number().int().min(0).max(100).optional(),
+  challengeWpm: z.number().int().nonnegative().optional(),
+  challengeAccuracy: z.number().int().min(0).max(100).optional(),
 });
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
@@ -122,7 +131,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { action, wpm, accuracy } = result.data;
+    const { action, wpm, accuracy, challengeWpm, challengeAccuracy } = result.data;
 
     // Get the race
     const [race] = await db
@@ -216,6 +225,72 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         .where(eq(races.id, raceId));
 
       return NextResponse.json({ message: 'Race countdown started', startTime: startTime.toISOString() });
+    }
+
+    if (action === 'advanceChallenge') {
+      if (race.status !== 'in_progress') {
+        return NextResponse.json(
+          { error: 'Race is not in progress' },
+          { status: 400 }
+        );
+      }
+
+      // Get participant's current challenge index
+      const [participant] = await db
+        .select()
+        .from(raceParticipants)
+        .where(
+          and(
+            eq(raceParticipants.raceId, raceId),
+            eq(raceParticipants.userId, user.id)
+          )
+        )
+        .limit(1);
+
+      if (!participant) {
+        return NextResponse.json(
+          { error: 'Not a participant in this race' },
+          { status: 400 }
+        );
+      }
+
+      // Get total challenges count for this category
+      const [{ challengeCount }] = await db
+        .select({
+          challengeCount: sql<number>`count(*)::int`,
+        })
+        .from(challenges)
+        .where(eq(challenges.categoryId, race.categoryId));
+
+      const nextIndex = participant.currentChallengeIndex + 1;
+
+      // If this was the last challenge, finish the race for this participant
+      if (nextIndex >= challengeCount) {
+        return NextResponse.json({
+          message: 'Completed all challenges',
+          isLastChallenge: true,
+          currentChallengeIndex: nextIndex,
+        });
+      }
+
+      // Advance to next challenge
+      await db
+        .update(raceParticipants)
+        .set({
+          currentChallengeIndex: nextIndex,
+        })
+        .where(
+          and(
+            eq(raceParticipants.raceId, raceId),
+            eq(raceParticipants.userId, user.id)
+          )
+        );
+
+      return NextResponse.json({
+        message: 'Advanced to next challenge',
+        currentChallengeIndex: nextIndex,
+        isLastChallenge: false,
+      });
     }
 
     if (action === 'finish') {

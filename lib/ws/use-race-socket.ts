@@ -30,6 +30,7 @@ interface UseRaceSocketReturn {
   raceState: RaceStateUpdate | null;
   sendProgress: (progress: number, currentWpm: number) => void;
   sendFinish: (wpm: number, accuracy: number) => void;
+  sendAdvanceChallenge: (challengeWpm: number, challengeAccuracy: number) => void;
   sendStart: () => void;
   sendLeave: () => void;
 }
@@ -142,6 +143,13 @@ export function useRaceSocket({
     [raceId, userId, send]
   );
 
+  const sendAdvanceChallenge = useCallback(
+    (challengeWpm: number, challengeAccuracy: number) => {
+      send({ type: 'race:advanceChallenge', raceId, userId, challengeWpm, challengeAccuracy });
+    },
+    [raceId, userId, send]
+  );
+
   const sendStart = useCallback(() => {
     send({ type: 'race:start', raceId });
   }, [raceId, send]);
@@ -155,6 +163,7 @@ export function useRaceSocket({
     raceState,
     sendProgress,
     sendFinish,
+    sendAdvanceChallenge,
     sendStart,
     sendLeave,
   };

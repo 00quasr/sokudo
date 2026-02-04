@@ -7,6 +7,7 @@ export interface RaceProgressTrackProps {
   participants: ParticipantState[];
   currentUserId?: number;
   raceStatus: 'waiting' | 'countdown' | 'in_progress' | 'finished';
+  totalChallenges?: number;
   className?: string;
 }
 
@@ -40,6 +41,7 @@ export function RaceProgressTrack({
   participants,
   currentUserId,
   raceStatus,
+  totalChallenges,
   className,
 }: RaceProgressTrackProps) {
   const isActive = raceStatus === 'in_progress' || raceStatus === 'countdown';
@@ -133,6 +135,14 @@ export function RaceProgressTrack({
 
                 {/* Stats */}
                 <div className="flex items-center gap-3 text-xs text-gray-500">
+                  {totalChallenges && totalChallenges > 1 && !hasFinished && (
+                    <span
+                      className="font-mono text-gray-600"
+                      data-testid={`challenge-index-${participant.userId}`}
+                    >
+                      {participant.currentChallengeIndex + 1}/{totalChallenges}
+                    </span>
+                  )}
                   {(isActive || isFinished) && participant.currentWpm > 0 && (
                     <span
                       className={`font-mono font-medium ${laneTextColor}`}

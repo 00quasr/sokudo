@@ -240,15 +240,15 @@
 - [x] Update sign-in/sign-up pages with social login buttons
 - [x] Add database migrations for OAuth provider fields (provider, providerId, providerData)
 - [x] Implement OAuth callback handlers (`/api/auth/google/callback`, `/api/auth/github/callback`)
-- [ ] Add OAuth configuration to `.env` (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET)
+- [x] Add OAuth configuration to `.env` (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET)
 
 ### UX Improvements
 
 - [x] Fix typing area overlay - show command text before typing starts
-- [ ] Change session complete modal behavior - only show after completing full category/collection, not after every single challenge
-- [ ] Add lightweight progress indicator between challenges (e.g., "Challenge 5/30 complete - Next challenge loading...")
-- [ ] Auto-advance to next challenge after brief delay (1-2 seconds) instead of showing modal each time
-- [ ] Show category completion summary with aggregate stats when finishing all challenges
+- [x] Change session complete modal behavior - only show after completing full category/collection, not after every single challenge
+- [x] Add lightweight progress indicator between challenges (e.g., "Challenge 5/30 complete - Next challenge loading...")
+- [x] Auto-advance to next challenge after brief delay (1-2 seconds) instead of showing modal each time
+- [x] Show category completion summary with aggregate stats when finishing all challenges
 - [ ] Change multiplayer races to use full categories/packs instead of single commands
 - [ ] Hide/disable premium categories and challenges for free users (currently visible but should not be accessible)
 - [ ] Redirect unauthorized users to login page instead of showing "Unauthorized" error

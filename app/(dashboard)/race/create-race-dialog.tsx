@@ -14,13 +14,6 @@ interface Category {
   challengeCount: number;
 }
 
-interface Challenge {
-  id: number;
-  content: string;
-  difficulty: string;
-  syntaxType: string;
-}
-
 interface CreateRaceDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -34,18 +27,13 @@ export function CreateRaceDialog({
 }: CreateRaceDialogProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
-  );
-  const [selectedChallengeId, setSelectedChallengeId] = useState<number | null>(
     null
   );
   const [maxPlayers, setMaxPlayers] = useState(4);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingCategories, setLoadingCategories] = useState(false);
-  const [loadingChallenges, setLoadingChallenges] = useState(false);
 
   // Fetch categories when dialog opens
   useEffect(() => {
@@ -60,33 +48,8 @@ export function CreateRaceDialog({
       .catch(() => setLoadingCategories(false));
   }, [open]);
 
-  // Fetch challenges when category changes
-  useEffect(() => {
-    if (!selectedCategoryId) {
-      setChallenges([]);
-      setSelectedChallengeId(null);
-      return;
-    }
-    setLoadingChallenges(true);
-    setSelectedChallengeId(null);
-    fetch(`/api/challenges?categoryId=${selectedCategoryId}&limit=50`)
-      .then((res) => res.json())
-      .then((data) => {
-        setChallenges(data.challenges ?? []);
-        setLoadingChallenges(false);
-      })
-      .catch(() => setLoadingChallenges(false));
-  }, [selectedCategoryId]);
-
-  // Pick a random challenge from the selected category
-  function pickRandomChallenge() {
-    if (challenges.length === 0) return;
-    const randomIdx = Math.floor(Math.random() * challenges.length);
-    setSelectedChallengeId(challenges[randomIdx].id);
-  }
-
   async function handleCreate() {
-    if (!selectedChallengeId) return;
+    if (!selectedCategoryId) return;
     setCreating(true);
     setError(null);
 
@@ -95,7 +58,7 @@ export function CreateRaceDialog({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          challengeId: selectedChallengeId,
+          categoryId: selectedCategoryId,
           maxPlayers,
         }),
       });
@@ -117,10 +80,6 @@ export function CreateRaceDialog({
   }
 
   if (!open) return null;
-
-  const selectedChallenge = challenges.find(
-    (c) => c.id === selectedChallengeId
-  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -157,63 +116,13 @@ export function CreateRaceDialog({
             )}
           </div>
 
-          {/* Challenge selection */}
+          {/* Category info */}
           {selectedCategoryId && (
-            <div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="challenge">Challenge</Label>
-                {challenges.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={pickRandomChallenge}
-                    className="text-xs font-medium text-orange-600 hover:text-orange-700"
-                  >
-                    Random
-                  </button>
-                )}
-              </div>
-              {loadingChallenges ? (
-                <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Loading challenges...
-                </div>
-              ) : (
-                <select
-                  id="challenge"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
-                  value={selectedChallengeId ?? ''}
-                  onChange={(e) =>
-                    setSelectedChallengeId(
-                      e.target.value ? Number(e.target.value) : null
-                    )
-                  }
-                >
-                  <option value="">Select a challenge</option>
-                  {challenges.map((ch) => (
-                    <option key={ch.id} value={ch.id}>
-                      {ch.content.slice(0, 50)}
-                      {ch.content.length > 50 ? '...' : ''} ({ch.difficulty})
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-          )}
-
-          {/* Challenge preview */}
-          {selectedChallenge && (
-            <div className="rounded-lg bg-gray-50 p-3">
-              <div className="mb-1 flex items-center gap-2 text-xs text-gray-500">
-                <span className="capitalize">
-                  {selectedChallenge.syntaxType}
-                </span>
-                <span className="capitalize">
-                  {selectedChallenge.difficulty}
-                </span>
-              </div>
-              <code className="block whitespace-pre-wrap text-sm text-gray-700">
-                {selectedChallenge.content}
-              </code>
+            <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-900">
+              <p className="font-medium">Race through the entire category!</p>
+              <p className="mt-1 text-xs text-blue-700">
+                You'll type through all challenges in this category. First to finish wins!
+              </p>
             </div>
           )}
 
@@ -249,7 +158,7 @@ export function CreateRaceDialog({
             </Button>
             <Button
               onClick={handleCreate}
-              disabled={creating || !selectedChallengeId}
+              disabled={creating || !selectedCategoryId}
               className="rounded-full"
             >
               {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

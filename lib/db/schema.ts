@@ -827,9 +827,9 @@ export const userAchievementsRelations = relations(userAchievements, ({ one }) =
 export const races = pgTable('races', {
   id: serial('id').primaryKey(),
   status: varchar('status', { length: 20 }).notNull().default('waiting'),
-  challengeId: integer('challenge_id')
+  categoryId: integer('category_id')
     .notNull()
-    .references(() => challenges.id),
+    .references(() => categories.id),
   startedAt: timestamp('started_at'),
   maxPlayers: integer('max_players').notNull().default(4),
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -846,6 +846,7 @@ export const raceParticipants = pgTable(
     userId: integer('user_id')
       .notNull()
       .references(() => users.id),
+    currentChallengeIndex: integer('current_challenge_index').notNull().default(0),
     wpm: integer('wpm'),
     accuracy: integer('accuracy'),
     finishedAt: timestamp('finished_at'),
@@ -861,9 +862,9 @@ export const raceParticipants = pgTable(
 );
 
 export const racesRelations = relations(races, ({ one, many }) => ({
-  challenge: one(challenges, {
-    fields: [races.challengeId],
-    references: [challenges.id],
+  category: one(categories, {
+    fields: [races.categoryId],
+    references: [categories.id],
   }),
   participants: many(raceParticipants),
 }));

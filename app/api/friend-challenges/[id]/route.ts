@@ -6,6 +6,7 @@ import {
   friendChallenges,
   races,
   raceParticipants,
+  challenges,
 } from '@/lib/db/schema';
 import { getUser } from '@/lib/db/queries';
 import { apiRateLimit } from '@/lib/rate-limit';
@@ -133,11 +134,25 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         );
       }
 
-      // Create a race for the two players
+      // Get the challenge's category to create the race
+      const [challenge] = await db
+        .select()
+        .from(challenges)
+        .where(eq(challenges.id, fc.challengeId))
+        .limit(1);
+
+      if (!challenge) {
+        return NextResponse.json(
+          { error: 'Challenge not found' },
+          { status: 404 }
+        );
+      }
+
+      // Create a race for the two players using the challenge's category
       const [race] = await db
         .insert(races)
         .values({
-          challengeId: fc.challengeId,
+          categoryId: challenge.categoryId,
           maxPlayers: 2,
           status: 'waiting',
         })

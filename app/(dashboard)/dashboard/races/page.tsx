@@ -105,10 +105,10 @@ export default async function RacesPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-medium text-gray-900">
-                          {race.challenge.category.name}
+                          {race.category.name}
                         </h3>
                         <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                          {race.challenge.difficulty}
+                          {race.category.difficulty}
                         </span>
                         <RankBadge rank={participation.rank} />
                       </div>

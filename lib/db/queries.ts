@@ -4446,11 +4446,7 @@ export async function getRaceHistory(limit = 50) {
     with: {
       race: {
         with: {
-          challenge: {
-            with: {
-              category: true,
-            },
-          },
+          category: true,
           participants: {
             with: {
               user: {

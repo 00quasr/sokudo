@@ -4,7 +4,7 @@ import { getUser } from '@/lib/db/queries';
 import {
   getMatchmakingQueue,
   getPlayerAverageWpm,
-  pickMatchChallenge,
+  pickMatchCategory,
   createMatchedRace,
 } from '@/lib/matchmaking/queue';
 
@@ -36,10 +36,10 @@ export async function POST(request: NextRequest) {
       const groupAvgWpm =
         match.players.reduce((sum, p) => sum + p.averageWpm, 0) /
         match.players.length;
-      const challengeId = await pickMatchChallenge(groupAvgWpm);
+      const categoryId = await pickMatchCategory(groupAvgWpm);
 
-      if (challengeId) {
-        const raceId = await createMatchedRace(match.players, challengeId);
+      if (categoryId) {
+        const raceId = await createMatchedRace(match.players, categoryId);
         match.raceId = raceId;
 
         return NextResponse.json({

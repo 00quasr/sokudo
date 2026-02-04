@@ -19,17 +19,17 @@ vi.mock('@/lib/matchmaking/queue', () => {
   return {
     getMatchmakingQueue: () => mockQueue,
     getPlayerAverageWpm: vi.fn(),
-    pickMatchChallenge: vi.fn(),
+    pickMatchCategory: vi.fn(),
     createMatchedRace: vi.fn(),
     __mockQueue: mockQueue,
   };
 });
 
 import { getUser } from '@/lib/db/queries';
-import { getMatchmakingQueue, pickMatchChallenge, createMatchedRace } from '@/lib/matchmaking/queue';
+import { getMatchmakingQueue, pickMatchCategory, createMatchedRace } from '@/lib/matchmaking/queue';
 
 const mockGetUser = getUser as ReturnType<typeof vi.fn>;
-const mockPickMatchChallenge = pickMatchChallenge as ReturnType<typeof vi.fn>;
+const mockPickMatchCategory = pickMatchCategory as ReturnType<typeof vi.fn>;
 const mockCreateMatchedRace = createMatchedRace as ReturnType<typeof vi.fn>;
 
 function getMockQueue() {

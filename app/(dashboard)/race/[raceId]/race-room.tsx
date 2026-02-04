@@ -29,12 +29,20 @@ import { RaceResults } from '@/components/race/RaceResults';
 interface Participant {
   id: number;
   userId: number;
+  currentChallengeIndex: number;
   wpm: number | null;
   accuracy: number | null;
   finishedAt: string | null;
   rank: number | null;
   userName: string | null;
   userEmail: string;
+}
+
+interface Challenge {
+  id: number;
+  content: string;
+  difficulty: string;
+  syntaxType: string;
 }
 
 interface RaceDetail {
@@ -44,18 +52,14 @@ interface RaceDetail {
   createdAt: string;
   startedAt: string | null;
   updatedAt: string;
-  challenge: {
-    id: number;
-    content: string;
-    difficulty: string;
-    syntaxType: string;
-  };
   category: {
     id: number;
     name: string;
     slug: string;
     icon: string;
+    difficulty: string;
   };
+  challenges: Challenge[];
   participants: Participant[];
 }
 
@@ -163,6 +167,7 @@ export function RaceRoom({
       return wsState.participants.map((p: ParticipantState, idx: number) => ({
         id: idx + 1,
         userId: p.userId,
+        currentChallengeIndex: p.currentChallengeIndex,
         wpm: p.wpm,
         accuracy: p.accuracy,
         finishedAt: p.finishedAt,
@@ -190,6 +195,7 @@ export function RaceRoom({
       userName: p.userName ?? p.userEmail.split('@')[0],
       progress: p.finishedAt ? 100 : 0,
       currentWpm: p.wpm ?? 0,
+      currentChallengeIndex: p.currentChallengeIndex,
       wpm: p.wpm,
       accuracy: p.accuracy,
       finishedAt: p.finishedAt,
@@ -229,7 +235,13 @@ export function RaceRoom({
   const participantStates = getParticipantStates();
   const participantCount = participants.length;
   const difficultyClass =
-    difficultyColors[race.challenge.difficulty] ?? difficultyColors.beginner;
+    difficultyColors[race.category.difficulty] ?? difficultyColors.beginner;
+
+  // Get current user's challenge index
+  const currentParticipant = participants.find(p => p.userId === userId);
+  const currentChallengeIndex = currentParticipant?.currentChallengeIndex ?? 0;
+  const currentChallenge = race.challenges[currentChallengeIndex];
+  const totalChallenges = race.challenges.length;
 
   return (
     <div className="space-y-8">
@@ -290,26 +302,50 @@ export function RaceRoom({
           </div>
         </div>
 
-        {/* Challenge info */}
+        {/* Category info */}
         <div className="mb-4 flex items-center gap-3 text-sm text-gray-500">
           <span className="font-medium text-gray-700">{race.category.name}</span>
           <span
             className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize ${difficultyClass}`}
           >
-            {race.challenge.difficulty}
+            {race.category.difficulty}
           </span>
-          <div className="flex items-center gap-1">
-            <Zap className="h-3.5 w-3.5" />
-            <span>{race.challenge.syntaxType}</span>
-          </div>
+          <span className="text-xs text-gray-500">
+            {totalChallenges} challenges total
+          </span>
         </div>
 
+        {/* Current challenge progress */}
+        {currentChallenge && (
+          <div className="mb-4">
+            <div className="mb-2 flex items-center justify-between text-sm">
+              <span className="font-medium text-gray-700">
+                Challenge {currentChallengeIndex + 1} of {totalChallenges}
+              </span>
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <Zap className="h-3 w-3" />
+                <span className="capitalize">{currentChallenge.syntaxType}</span>
+              </div>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+              <div
+                className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300"
+                style={{
+                  width: `${((currentChallengeIndex) / totalChallenges) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Challenge preview */}
-        <div className="rounded-lg bg-gray-50 p-4">
-          <code className="block whitespace-pre-wrap text-sm text-gray-700">
-            {race.challenge.content}
-          </code>
-        </div>
+        {currentChallenge && (
+          <div className="rounded-lg bg-gray-50 p-4">
+            <code className="block whitespace-pre-wrap text-sm text-gray-700">
+              {currentChallenge.content}
+            </code>
+          </div>
+        )}
       </div>
 
       {/* Participants */}
@@ -403,6 +439,7 @@ export function RaceRoom({
           participants={participantStates}
           currentUserId={userId}
           raceStatus={currentStatus as 'waiting' | 'countdown' | 'in_progress' | 'finished'}
+          totalChallenges={totalChallenges}
         />
       )}
 
