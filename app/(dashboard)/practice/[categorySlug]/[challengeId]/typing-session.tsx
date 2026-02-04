@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { TypingInput, TypingStats, KeystrokeEvent, SyntaxType } from '@/components/typing/TypingInput';
 import { SessionComplete, SessionResult, AdaptiveDifficultyInfo } from '@/components/typing/SessionComplete';
@@ -74,6 +74,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
   const [key, setKey] = useState(0);
   const [adaptiveDifficulty, setAdaptiveDifficulty] = useState<AdaptiveDifficultyInfo | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Navigate to next challenge or back to category list
   const navigateToNext = useCallback(() => {
@@ -112,10 +113,22 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
       }
     });
 
+    // Auto-advance to next challenge after 1.5 seconds (if not last challenge)
+    if (!isLastChallenge) {
+      autoAdvanceTimerRef.current = setTimeout(() => {
+        navigateToNext();
+      }, 1500);
+    }
+
     // TODO: Save session to database via API
-  }, [categorySlug, nextChallengeId]);
+  }, [categorySlug, nextChallengeId, navigateToNext]);
 
   const handleRetry = useCallback(() => {
+    // Cancel auto-advance if user presses Escape to retry
+    if (autoAdvanceTimerRef.current) {
+      clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
     setSessionResult(null);
     setShowModal(false);
     setAdaptiveDifficulty(null);
@@ -131,12 +144,26 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
     navigateToNext();
   }, [navigateToNext]);
 
-  // Enter = go to next challenge after completion
+  // Enter = go to next challenge after completion (cancels auto-advance timer)
   const handleNext = useCallback(() => {
+    // Cancel auto-advance timer since user manually pressed Enter
+    if (autoAdvanceTimerRef.current) {
+      clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
     navigateToNext();
   }, [navigateToNext]);
 
   const syntaxType = mapSyntaxType(challenge.syntaxType);
+
+  // Cleanup auto-advance timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimerRef.current) {
+        clearTimeout(autoAdvanceTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>

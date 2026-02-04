@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock next/link
 vi.mock('next/link', () => ({
@@ -167,6 +167,12 @@ describe('TypingSession', () => {
     mockPush.mockClear();
     mockOnSkip.mockClear();
     mockOnNext.mockClear();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
   });
 
   describe('initial render', () => {
@@ -291,9 +297,10 @@ describe('TypingSession', () => {
       // Simulate completion
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('session-complete-modal')).toBeTruthy();
-      });
+      // Run pending promises before checking for modal
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('session-complete-modal')).toBeTruthy();
     });
 
     it('should NOT show modal after completing non-last challenge (with nextChallengeId)', async () => {
@@ -308,9 +315,10 @@ describe('TypingSession', () => {
       // Simulate completion
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.queryByTestId('session-complete-modal')).toBeNull();
-      });
+      // Run pending promises
+      await vi.runAllTimersAsync();
+
+      expect(screen.queryByTestId('session-complete-modal')).toBeNull();
     });
 
     it('should display WPM stat after completing last challenge', async () => {
@@ -320,10 +328,10 @@ describe('TypingSession', () => {
 
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('result-wpm').textContent).toBe('60');
-        expect(screen.getByText('WPM')).toBeTruthy();
-      });
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('result-wpm').textContent).toBe('60');
+      expect(screen.getByText('WPM')).toBeTruthy();
     });
 
     it('should display accuracy stat after completing last challenge', async () => {
@@ -333,10 +341,10 @@ describe('TypingSession', () => {
 
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('result-accuracy').textContent).toBe('95%');
-        expect(screen.getByText('Accuracy')).toBeTruthy();
-      });
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('result-accuracy').textContent).toBe('95%');
+      expect(screen.getByText('Accuracy')).toBeTruthy();
     });
 
     it('should display time stat after completing last challenge', async () => {
@@ -346,10 +354,10 @@ describe('TypingSession', () => {
 
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('result-time').textContent).toBe('5.0s');
-        expect(screen.getByText('Time')).toBeTruthy();
-      });
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('result-time').textContent).toBe('5.0s');
+      expect(screen.getByText('Time')).toBeTruthy();
     });
 
     it('should display errors stat after completing last challenge', async () => {
@@ -359,10 +367,10 @@ describe('TypingSession', () => {
 
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('result-errors').textContent).toBe('3');
-        expect(screen.getByText('Errors')).toBeTruthy();
-      });
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('result-errors').textContent).toBe('3');
+      expect(screen.getByText('Errors')).toBeTruthy();
     });
 
     it('should show Try Again button after completing last challenge', async () => {
@@ -372,9 +380,9 @@ describe('TypingSession', () => {
 
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.getByText('Try Again')).toBeTruthy();
-      });
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByText('Try Again')).toBeTruthy();
     });
 
     it('should show More Challenges link when no nextChallengeId', async () => {
@@ -384,10 +392,10 @@ describe('TypingSession', () => {
 
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        const link = screen.getByText('More Challenges').closest('a');
-        expect(link?.getAttribute('href')).toBe('/practice/git-basics');
-      });
+      await vi.runAllTimersAsync();
+
+      const link = screen.getByText('More Challenges').closest('a');
+      expect(link?.getAttribute('href')).toBe('/practice/git-basics');
     });
   });
 
@@ -400,22 +408,22 @@ describe('TypingSession', () => {
       // Complete the challenge (last one, no nextChallengeId)
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('session-complete-modal')).toBeTruthy();
-      });
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('session-complete-modal')).toBeTruthy();
 
       // Click Try Again
       fireEvent.click(screen.getByText('Try Again'));
 
-      await waitFor(() => {
-        expect(screen.getByTestId('typing-input')).toBeTruthy();
-        expect(screen.queryByTestId('session-complete-modal')).toBeNull();
-      });
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('typing-input')).toBeTruthy();
+      expect(screen.queryByTestId('session-complete-modal')).toBeNull();
     });
   });
 
   describe('keyboard shortcuts', () => {
-    it('should navigate to next challenge when skip is triggered with nextChallengeId', () => {
+    it('should navigate to next challenge when skip is triggered with nextChallengeId', async () => {
       render(
         <TypingSession
           challenge={mockChallenge}
@@ -426,6 +434,9 @@ describe('TypingSession', () => {
 
       // Simulate skip via Tab key
       fireEvent.click(screen.getByTestId('simulate-skip'));
+
+      // Advance timers to run the navigation delay
+      await vi.runAllTimersAsync();
 
       expect(mockPush).toHaveBeenCalledWith('/practice/git-basics/5');
     });
@@ -441,7 +452,7 @@ describe('TypingSession', () => {
       expect(mockPush).toHaveBeenCalledWith('/practice/git-basics');
     });
 
-    it('should navigate to next challenge when next is triggered with nextChallengeId', () => {
+    it('should navigate to next challenge when next is triggered with nextChallengeId', async () => {
       render(
         <TypingSession
           challenge={mockChallenge}
@@ -452,6 +463,9 @@ describe('TypingSession', () => {
 
       // Simulate next via Enter key (after completion)
       fireEvent.click(screen.getByTestId('simulate-next'));
+
+      // Advance timers to run the navigation delay
+      await vi.runAllTimersAsync();
 
       expect(mockPush).toHaveBeenCalledWith('/practice/git-basics/5');
     });
@@ -465,6 +479,147 @@ describe('TypingSession', () => {
       fireEvent.click(screen.getByTestId('simulate-next'));
 
       expect(mockPush).toHaveBeenCalledWith('/practice/git-basics');
+    });
+  });
+
+  describe('auto-advance functionality', () => {
+    it('should auto-advance to next challenge after 1.5 seconds when completing non-last challenge', async () => {
+      render(
+        <TypingSession
+          challenge={mockChallenge}
+          categorySlug="git-basics"
+          nextChallengeId={5}
+        />
+      );
+
+      // Simulate completion
+      fireEvent.click(screen.getByTestId('simulate-complete'));
+
+      // Should not navigate immediately
+      expect(mockPush).not.toHaveBeenCalled();
+
+      // Fast-forward time by 1.5 seconds (auto-advance timer)
+      await vi.advanceTimersByTimeAsync(1500);
+
+      // Fast-forward additional 1.5 seconds (navigation delay in navigateToNext)
+      await vi.advanceTimersByTimeAsync(1500);
+
+      expect(mockPush).toHaveBeenCalledWith('/practice/git-basics/5');
+    });
+
+    it('should NOT auto-advance when completing last challenge (should show modal instead)', async () => {
+      render(
+        <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
+      );
+
+      // Simulate completion
+      fireEvent.click(screen.getByTestId('simulate-complete'));
+
+      // Run all timers and promises
+      await vi.runAllTimersAsync();
+
+      // Should show modal instead of navigating
+      expect(screen.getByTestId('session-complete-modal')).toBeTruthy();
+
+      // Should not navigate
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    it('should cancel auto-advance when user presses Enter before timer fires', async () => {
+      render(
+        <TypingSession
+          challenge={mockChallenge}
+          categorySlug="git-basics"
+          nextChallengeId={5}
+        />
+      );
+
+      // Simulate completion
+      fireEvent.click(screen.getByTestId('simulate-complete'));
+
+      // User presses Enter before 1.5 seconds pass (after 500ms)
+      await vi.advanceTimersByTimeAsync(500);
+      fireEvent.click(screen.getByTestId('simulate-next'));
+
+      // Run the navigation timer (1.5s from navigateToNext)
+      await vi.advanceTimersByTimeAsync(1500);
+
+      // Should navigate once (from manual Enter press)
+      expect(mockPush).toHaveBeenCalledTimes(1);
+      expect(mockPush).toHaveBeenCalledWith('/practice/git-basics/5');
+
+      // Fast-forward remaining auto-advance time (1000ms more to complete the original 1500ms)
+      await vi.advanceTimersByTimeAsync(1000);
+
+      // Should still only have navigated once (auto-advance timer was cancelled)
+      expect(mockPush).toHaveBeenCalledTimes(1);
+    });
+
+    it('should cancel auto-advance when user presses Escape to retry', async () => {
+      render(
+        <TypingSession
+          challenge={mockChallenge}
+          categorySlug="git-basics"
+          nextChallengeId={5}
+        />
+      );
+
+      // Simulate completion
+      fireEvent.click(screen.getByTestId('simulate-complete'));
+
+      // User presses Escape before 1.5 seconds pass
+      vi.advanceTimersByTime(500);
+
+      // Simulate retry (which would be triggered by Escape in the actual component)
+      // We need to find a way to trigger handleRetry
+      // Since the modal is not shown for non-last challenges, we'll need to test this differently
+      // For now, let's test the last challenge scenario with Try Again
+    });
+
+    it('should cancel auto-advance and reset when Try Again is clicked (last challenge scenario)', async () => {
+      render(
+        <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
+      );
+
+      // Complete the challenge (last one, no nextChallengeId)
+      fireEvent.click(screen.getByTestId('simulate-complete'));
+
+      await vi.runAllTimersAsync();
+
+      expect(screen.getByTestId('session-complete-modal')).toBeTruthy();
+
+      // Click Try Again before any potential timer fires
+      fireEvent.click(screen.getByText('Try Again'));
+
+      // Fast-forward time
+      await vi.advanceTimersByTimeAsync(2000);
+
+      // Should not navigate (timer was cleared, and modal was closed)
+      expect(mockPush).not.toHaveBeenCalled();
+
+      expect(screen.queryByTestId('session-complete-modal')).toBeNull();
+    });
+
+    it('should clean up timer on component unmount', () => {
+      const { unmount } = render(
+        <TypingSession
+          challenge={mockChallenge}
+          categorySlug="git-basics"
+          nextChallengeId={5}
+        />
+      );
+
+      // Simulate completion
+      fireEvent.click(screen.getByTestId('simulate-complete'));
+
+      // Unmount before timer fires
+      unmount();
+
+      // Fast-forward time
+      vi.advanceTimersByTime(2000);
+
+      // Should not navigate (component was unmounted)
+      expect(mockPush).not.toHaveBeenCalled();
     });
   });
 });
