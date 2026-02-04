@@ -4611,6 +4611,63 @@ export async function getAllChallengesWithCategories() {
     .innerJoin(categories, eq(challenges.categoryId, categories.id));
 }
 
+/**
+ * Get aggregate statistics for all completed sessions in a category.
+ * Used for category completion summary.
+ */
+export async function getCategoryAggregateStats(categoryId: number) {
+  const user = await getUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  // Get all sessions for this category
+  const sessions = await db
+    .select({
+      wpm: typingSessions.wpm,
+      accuracy: typingSessions.accuracy,
+      durationMs: typingSessions.durationMs,
+      errors: typingSessions.errors,
+      challengeId: typingSessions.challengeId,
+    })
+    .from(typingSessions)
+    .innerJoin(challenges, eq(typingSessions.challengeId, challenges.id))
+    .where(
+      and(
+        eq(typingSessions.userId, user.id),
+        eq(challenges.categoryId, categoryId)
+      )
+    )
+    .orderBy(desc(typingSessions.completedAt));
+
+  if (sessions.length === 0) {
+    return null;
+  }
+
+  // Calculate aggregate stats
+  const totalSessions = sessions.length;
+  const uniqueChallenges = new Set(sessions.map(s => s.challengeId)).size;
+  const avgWpm = Math.round(
+    sessions.reduce((sum, s) => sum + s.wpm, 0) / totalSessions
+  );
+  const avgAccuracy = Math.round(
+    sessions.reduce((sum, s) => sum + s.accuracy, 0) / totalSessions
+  );
+  const totalTimeMs = sessions.reduce((sum, s) => sum + s.durationMs, 0);
+  const totalErrors = sessions.reduce((sum, s) => sum + s.errors, 0);
+  const bestWpm = Math.max(...sessions.map(s => s.wpm));
+
+  return {
+    totalSessions,
+    uniqueChallenges,
+    avgWpm,
+    avgAccuracy,
+    totalTimeMs,
+    totalErrors,
+    bestWpm,
+  };
+}
+
 // ---- Spaced Repetition Queries ----
 
 /**

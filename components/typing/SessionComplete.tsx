@@ -22,6 +22,16 @@ export interface SessionResult {
   durationMs: number;
 }
 
+export interface CategoryAggregateStats {
+  totalSessions: number;
+  uniqueChallenges: number;
+  avgWpm: number;
+  avgAccuracy: number;
+  totalTimeMs: number;
+  totalErrors: number;
+  bestWpm: number;
+}
+
 export interface AdaptiveDifficultyInfo {
   recommendedDifficulty: string;
   currentDifficulty: string;
@@ -44,6 +54,7 @@ interface SessionCompleteProps {
   nextChallengeId?: number;
   adaptiveDifficulty?: AdaptiveDifficultyInfo | null;
   challengeInfo?: ChallengeInfo;
+  categoryStats?: CategoryAggregateStats | null;
   onRetry: () => void;
   onClose: () => void;
 }
@@ -94,10 +105,12 @@ export function SessionComplete({
   nextChallengeId,
   adaptiveDifficulty,
   challengeInfo,
+  categoryStats,
   onRetry,
   onClose,
 }: SessionCompleteProps) {
   const { title, message } = getPerformanceMessage(result.wpm, result.accuracy);
+  const isCategoryComplete = !nextChallengeId && categoryStats;
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -181,6 +194,42 @@ export function SessionComplete({
             <div className="text-3xl font-bold text-foreground">{result.errors}</div>
           </div>
         </div>
+
+        {/* Category completion summary */}
+        {isCategoryComplete && categoryStats && (
+          <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
+            <div className="mb-3 flex items-center gap-2 text-center justify-center">
+              <Trophy className="h-5 w-5 text-green-500" />
+              <h3 className="text-lg font-semibold text-foreground">Category Complete!</h3>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-center text-sm">
+              <div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Avg WPM</div>
+                <div className="text-xl font-bold text-foreground">{categoryStats.avgWpm}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Best WPM</div>
+                <div className="text-xl font-bold text-green-400">{categoryStats.bestWpm}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Avg Accuracy</div>
+                <div className="text-xl font-bold text-foreground">{categoryStats.avgAccuracy}%</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Challenges</div>
+                <div className="text-xl font-bold text-foreground">{categoryStats.uniqueChallenges}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Sessions</div>
+                <div className="text-xl font-bold text-foreground">{categoryStats.totalSessions}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground uppercase tracking-wide">Total Time</div>
+                <div className="text-xl font-bold text-foreground">{formatTime(categoryStats.totalTimeMs)}</div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Adaptive difficulty indicator */}
         {showDifficultyChange && adaptiveDifficulty && (

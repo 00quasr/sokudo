@@ -3,7 +3,7 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { TypingInput, TypingStats, KeystrokeEvent, SyntaxType } from '@/components/typing/TypingInput';
-import { SessionComplete, SessionResult, AdaptiveDifficultyInfo } from '@/components/typing/SessionComplete';
+import { SessionComplete, SessionResult, AdaptiveDifficultyInfo, CategoryAggregateStats } from '@/components/typing/SessionComplete';
 import { ChallengeProgress } from '@/components/typing/ChallengeProgress';
 import { Challenge, Category } from '@/lib/db/schema';
 
@@ -67,12 +67,25 @@ async function fetchAdaptiveDifficulty(
   }
 }
 
+async function fetchCategoryStats(
+  categoryId: number
+): Promise<CategoryAggregateStats | null> {
+  try {
+    const res = await fetch(`/api/category-stats?categoryId=${categoryId}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 export function TypingSession({ challenge, categorySlug, nextChallengeId, challengePosition }: TypingSessionProps) {
   const router = useRouter();
   const [sessionResult, setSessionResult] = useState<SessionResult | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [key, setKey] = useState(0);
   const [adaptiveDifficulty, setAdaptiveDifficulty] = useState<AdaptiveDifficultyInfo | null>(null);
+  const [categoryStats, setCategoryStats] = useState<CategoryAggregateStats | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -113,6 +126,15 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
       }
     });
 
+    // Fetch category aggregate stats if this is the last challenge
+    if (isLastChallenge) {
+      fetchCategoryStats(challenge.category.id).then((stats) => {
+        if (stats) {
+          setCategoryStats(stats);
+        }
+      });
+    }
+
     // Auto-advance to next challenge after 1.5 seconds (if not last challenge)
     if (!isLastChallenge) {
       autoAdvanceTimerRef.current = setTimeout(() => {
@@ -121,7 +143,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
     }
 
     // TODO: Save session to database via API
-  }, [categorySlug, nextChallengeId, navigateToNext]);
+  }, [categorySlug, nextChallengeId, navigateToNext, challenge.category.id]);
 
   const handleRetry = useCallback(() => {
     // Cancel auto-advance if user presses Escape to retry
@@ -132,6 +154,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
     setSessionResult(null);
     setShowModal(false);
     setAdaptiveDifficulty(null);
+    setCategoryStats(null);
     setKey(prev => prev + 1);
   }, []);
 
@@ -192,6 +215,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
             difficulty: challenge.difficulty,
             hint: challenge.hint,
           }}
+          categoryStats={categoryStats}
           onRetry={handleRetry}
           onClose={handleCloseModal}
         />
