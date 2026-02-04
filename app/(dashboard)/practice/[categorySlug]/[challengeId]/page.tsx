@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getChallengeById, getNextChallengeInCategory, getUser, getUserProfile } from '@/lib/db/queries';
+import { getChallengeById, getNextChallengeInCategory, getChallengePosition, getUser, getUserProfile } from '@/lib/db/queries';
 import { hasUnlimitedPractice } from '@/lib/limits/constants';
 import { RemainingTimeBar } from '@/components/limits/RemainingTimeBar';
 import { ArrowLeft } from 'lucide-react';
@@ -33,6 +33,12 @@ export default async function ChallengePage({
 
   // Get the next challenge in this category
   const nextChallengeId = await getNextChallengeInCategory(
+    challenge.category.id,
+    challenge.id
+  );
+
+  // Get challenge position for progress indicator
+  const challengePosition = await getChallengePosition(
     challenge.category.id,
     challenge.id
   );
@@ -97,6 +103,7 @@ export default async function ChallengePage({
           challenge={challenge}
           categorySlug={categorySlug}
           nextChallengeId={nextChallengeId ?? undefined}
+          challengePosition={challengePosition ?? undefined}
         />
 
         {/* Navigation hint */}

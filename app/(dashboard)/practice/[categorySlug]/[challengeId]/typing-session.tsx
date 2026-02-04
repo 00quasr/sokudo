@@ -4,12 +4,14 @@ import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TypingInput, TypingStats, KeystrokeEvent, SyntaxType } from '@/components/typing/TypingInput';
 import { SessionComplete, SessionResult, AdaptiveDifficultyInfo } from '@/components/typing/SessionComplete';
+import { ChallengeProgress } from '@/components/typing/ChallengeProgress';
 import { Challenge, Category } from '@/lib/db/schema';
 
 interface TypingSessionProps {
   challenge: Challenge & { category: Category };
   categorySlug: string;
   nextChallengeId?: number;
+  challengePosition?: { current: number; total: number };
 }
 
 function mapSyntaxType(syntaxType: string): SyntaxType {
@@ -65,19 +67,24 @@ async function fetchAdaptiveDifficulty(
   }
 }
 
-export function TypingSession({ challenge, categorySlug, nextChallengeId }: TypingSessionProps) {
+export function TypingSession({ challenge, categorySlug, nextChallengeId, challengePosition }: TypingSessionProps) {
   const router = useRouter();
   const [sessionResult, setSessionResult] = useState<SessionResult | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [key, setKey] = useState(0);
   const [adaptiveDifficulty, setAdaptiveDifficulty] = useState<AdaptiveDifficultyInfo | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Navigate to next challenge or back to category list
   const navigateToNext = useCallback(() => {
-    // Use adaptive suggestion if available
+    // Show progress indicator if there's a next challenge
     const targetId = adaptiveDifficulty?.suggestedChallengeId ?? nextChallengeId;
     if (targetId) {
-      router.push(`/practice/${categorySlug}/${targetId}`);
+      setIsTransitioning(true);
+      // Delay navigation to show progress indicator
+      setTimeout(() => {
+        router.push(`/practice/${categorySlug}/${targetId}`);
+      }, 1500);
     } else {
       router.push(`/practice/${categorySlug}`);
     }
@@ -160,6 +167,14 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId }: Typi
           }}
           onRetry={handleRetry}
           onClose={handleCloseModal}
+        />
+      )}
+
+      {challengePosition && (
+        <ChallengeProgress
+          current={challengePosition.current}
+          total={challengePosition.total}
+          isTransitioning={isTransitioning}
         />
       )}
     </>

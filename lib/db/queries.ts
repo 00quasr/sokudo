@@ -249,6 +249,30 @@ export async function getNextChallengeInCategory(
   return result[currentIndex + 1].id;
 }
 
+export async function getChallengePosition(
+  categoryId: number,
+  currentChallengeId: number
+): Promise<{ current: number; total: number } | null> {
+  // Get all challenges in the category ordered by ID
+  const result = await db
+    .select({ id: challenges.id })
+    .from(challenges)
+    .where(eq(challenges.categoryId, categoryId))
+    .orderBy(asc(challenges.id))
+    .limit(100);
+
+  // Find current position (1-indexed for display)
+  const currentIndex = result.findIndex((c) => c.id === currentChallengeId);
+  if (currentIndex === -1) {
+    return null;
+  }
+
+  return {
+    current: currentIndex + 1,
+    total: result.length,
+  };
+}
+
 export async function getUserStats() {
   const user = await getUser();
   if (!user) {
