@@ -62,6 +62,13 @@ vi.mock('@/lib/referrals/rewards', () => ({
   checkAndGrantReferralReward: vi.fn().mockResolvedValue({ rewarded: false, rewardedCount: 0 }),
 }));
 
+vi.mock('@/lib/auth/auth', () => ({
+  signIn: vi.fn(),
+  signOut: vi.fn(),
+  auth: vi.fn(),
+  handlers: { GET: vi.fn(), POST: vi.fn() },
+}));
+
 import { db } from '@/lib/db/drizzle';
 import { getUserByReferralCode } from '@/lib/referrals/queries';
 import { checkAndGrantReferralReward } from '@/lib/referrals/rewards';
