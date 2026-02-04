@@ -45,6 +45,7 @@ export interface CategoryPerformanceData {
   categoryId: number;
   categoryName: string;
   categorySlug: string;
+  isPremium: boolean;
   sessions: number;
   avgWpm: number;
   avgAccuracy: number;
@@ -67,6 +68,7 @@ export interface RecommendationInput {
   totalSessions: number;
   avgWpm: number;
   avgAccuracy: number;
+  canAccessPremium: boolean;
 }
 
 const MAX_RECOMMENDATIONS = 5;
@@ -163,9 +165,9 @@ function addCategoryRecommendations(
     input.categoryPerformance.map((c) => c.categorySlug)
   );
 
-  // Find unexplored categories (non-premium only)
+  // Find unexplored categories (accessible only)
   const unexplored = input.allCategories.filter(
-    (c) => !c.isPremium && !practicedSlugs.has(c.slug)
+    (c) => (!c.isPremium || input.canAccessPremium) && !practicedSlugs.has(c.slug)
   );
 
   if (unexplored.length > 0) {
@@ -180,9 +182,9 @@ function addCategoryRecommendations(
     });
   }
 
-  // Find weakest practiced category (by accuracy, min 3 sessions)
+  // Find weakest practiced category (by accuracy, min 3 sessions, accessible only)
   const weakCategories = input.categoryPerformance
-    .filter((c) => c.sessions >= 3)
+    .filter((c) => c.sessions >= 3 && (!c.isPremium || input.canAccessPremium))
     .sort((a, b) => a.avgAccuracy - b.avgAccuracy);
 
   if (weakCategories.length > 0) {
@@ -200,9 +202,9 @@ function addCategoryRecommendations(
     }
   }
 
-  // Find slowest category (by WPM, min 3 sessions)
+  // Find slowest category (by WPM, min 3 sessions, accessible only)
   const slowCategories = input.categoryPerformance
-    .filter((c) => c.sessions >= 3 && c.avgAccuracy >= 85)
+    .filter((c) => c.sessions >= 3 && c.avgAccuracy >= 85 && (!c.isPremium || input.canAccessPremium))
     .sort((a, b) => a.avgWpm - b.avgWpm);
 
   if (slowCategories.length > 0) {

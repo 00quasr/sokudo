@@ -383,6 +383,7 @@ export async function getCategoryPerformance() {
       categoryId: challenges.categoryId,
       categoryName: categories.name,
       categorySlug: categories.slug,
+      categoryIsPremium: categories.isPremium,
     })
     .from(typingSessions)
     .innerJoin(challenges, eq(typingSessions.challengeId, challenges.id))
@@ -396,6 +397,7 @@ export async function getCategoryPerformance() {
       categoryId: number;
       categoryName: string;
       categorySlug: string;
+      isPremium: boolean;
       sessions: number;
       totalWpm: number;
       totalAccuracy: number;
@@ -413,6 +415,7 @@ export async function getCategoryPerformance() {
         categoryId: session.categoryId,
         categoryName: session.categoryName,
         categorySlug: session.categorySlug,
+        isPremium: session.categoryIsPremium,
         sessions: 1,
         totalWpm: session.wpm,
         totalAccuracy: session.accuracy,
@@ -426,6 +429,7 @@ export async function getCategoryPerformance() {
       categoryId: cat.categoryId,
       categoryName: cat.categoryName,
       categorySlug: cat.categorySlug,
+      isPremium: cat.isPremium,
       sessions: cat.sessions,
       avgWpm: Math.round(cat.totalWpm / cat.sessions),
       avgAccuracy: Math.round(cat.totalAccuracy / cat.sessions),

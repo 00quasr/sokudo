@@ -13,6 +13,7 @@ import {
 } from '@/lib/db/queries';
 import { analyzeWeaknesses } from '@/lib/weakness/analyze';
 import { generateRecommendations } from '@/lib/practice/recommendations';
+import { canAccessPremiumCategories } from '@/lib/limits/constants';
 import type {
   DifficultyLevel,
   SessionPerformance,
@@ -64,6 +65,10 @@ export async function GET(request: NextRequest) {
       })
     );
 
+    const canAccessPremium = canAccessPremiumCategories(
+      profile?.subscriptionTier ?? 'free'
+    );
+
     const recommendations = generateRecommendations({
       sessions: sessionPerformance,
       weaknessReport,
@@ -79,6 +84,7 @@ export async function GET(request: NextRequest) {
       totalSessions: stats.totalSessions,
       avgWpm: stats.avgWpm,
       avgAccuracy: stats.avgAccuracy,
+      canAccessPremium,
     });
 
     return NextResponse.json({ recommendations });

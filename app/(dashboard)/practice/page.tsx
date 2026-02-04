@@ -213,6 +213,7 @@ export default async function PracticePage() {
       totalSessions: stats.totalSessions,
       avgWpm: stats.avgWpm,
       avgAccuracy: stats.avgAccuracy,
+      canAccessPremium,
     });
   }
 
