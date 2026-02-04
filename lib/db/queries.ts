@@ -242,8 +242,8 @@ export async function getNextChallengeInCategory(
   // Find current position and get next
   const currentIndex = result.findIndex((c) => c.id === currentChallengeId);
   if (currentIndex === -1 || currentIndex === result.length - 1) {
-    // Current not found or it's the last one - wrap to first
-    return result.length > 0 ? result[0].id : null;
+    // Current not found or it's the last one - return null (no wrap)
+    return null;
   }
 
   return result[currentIndex + 1].id;

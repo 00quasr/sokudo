@@ -93,7 +93,10 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId }: Typi
       durationMs: stats.durationMs,
     };
     setSessionResult(result);
-    setShowModal(true);
+
+    // Only show modal when completing the last challenge in the category
+    const isLastChallenge = !nextChallengeId;
+    setShowModal(isLastChallenge);
 
     // Fetch adaptive difficulty recommendation in the background
     fetchAdaptiveDifficulty(categorySlug).then((info) => {
@@ -103,7 +106,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId }: Typi
     });
 
     // TODO: Save session to database via API
-  }, [categorySlug]);
+  }, [categorySlug, nextChallengeId]);
 
   const handleRetry = useCallback(() => {
     setSessionResult(null);

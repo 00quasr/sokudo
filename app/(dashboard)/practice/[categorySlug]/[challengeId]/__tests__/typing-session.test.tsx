@@ -283,7 +283,7 @@ describe('TypingSession', () => {
   });
 
   describe('completion flow', () => {
-    it('should show modal after completion', async () => {
+    it('should show modal after completing last challenge (no nextChallengeId)', async () => {
       render(
         <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
       );
@@ -296,7 +296,24 @@ describe('TypingSession', () => {
       });
     });
 
-    it('should display WPM stat after completion', async () => {
+    it('should NOT show modal after completing non-last challenge (with nextChallengeId)', async () => {
+      render(
+        <TypingSession
+          challenge={mockChallenge}
+          categorySlug="git-basics"
+          nextChallengeId={5}
+        />
+      );
+
+      // Simulate completion
+      fireEvent.click(screen.getByTestId('simulate-complete'));
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('session-complete-modal')).toBeNull();
+      });
+    });
+
+    it('should display WPM stat after completing last challenge', async () => {
       render(
         <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
       );
@@ -309,7 +326,7 @@ describe('TypingSession', () => {
       });
     });
 
-    it('should display accuracy stat after completion', async () => {
+    it('should display accuracy stat after completing last challenge', async () => {
       render(
         <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
       );
@@ -322,7 +339,7 @@ describe('TypingSession', () => {
       });
     });
 
-    it('should display time stat after completion', async () => {
+    it('should display time stat after completing last challenge', async () => {
       render(
         <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
       );
@@ -335,7 +352,7 @@ describe('TypingSession', () => {
       });
     });
 
-    it('should display errors stat after completion', async () => {
+    it('should display errors stat after completing last challenge', async () => {
       render(
         <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
       );
@@ -348,7 +365,7 @@ describe('TypingSession', () => {
       });
     });
 
-    it('should show Try Again button after completion', async () => {
+    it('should show Try Again button after completing last challenge', async () => {
       render(
         <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
       );
@@ -372,32 +389,15 @@ describe('TypingSession', () => {
         expect(link?.getAttribute('href')).toBe('/practice/git-basics');
       });
     });
-
-    it('should show Next Challenge link when nextChallengeId provided', async () => {
-      render(
-        <TypingSession
-          challenge={mockChallenge}
-          categorySlug="git-basics"
-          nextChallengeId={5}
-        />
-      );
-
-      fireEvent.click(screen.getByTestId('simulate-complete'));
-
-      await waitFor(() => {
-        const link = screen.getByText('Next Challenge').closest('a');
-        expect(link?.getAttribute('href')).toBe('/practice/git-basics/5');
-      });
-    });
   });
 
   describe('retry functionality', () => {
-    it('should close modal and reset when Try Again is clicked', async () => {
+    it('should close modal and reset when Try Again is clicked on last challenge', async () => {
       render(
         <TypingSession challenge={mockChallenge} categorySlug="git-basics" />
       );
 
-      // Complete the challenge
+      // Complete the challenge (last one, no nextChallengeId)
       fireEvent.click(screen.getByTestId('simulate-complete'));
 
       await waitFor(() => {
