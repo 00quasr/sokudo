@@ -42,8 +42,15 @@ function getKeyPair(): { privateKey: KeyObject; publicKey: KeyObject; kid: strin
       rsaPublicKey = createPublicKey(pair.publicKey);
     }
     // Compute a stable key ID from the public key
+    if (!rsaPublicKey) {
+      throw new Error('Failed to initialize RSA key pair');
+    }
     const pubDer = rsaPublicKey.export({ type: 'spki', format: 'der' });
     rsaKeyId = createHash('sha256').update(pubDer).digest('hex').slice(0, 16);
+  }
+  // At this point, all keys must be initialized
+  if (!rsaPrivateKey || !rsaPublicKey || !rsaKeyId) {
+    throw new Error('RSA key pair not properly initialized');
   }
   return { privateKey: rsaPrivateKey, publicKey: rsaPublicKey, kid: rsaKeyId };
 }
