@@ -14,6 +14,7 @@ vi.mock('../actions', () => ({
   signIn: vi.fn(),
   signUp: vi.fn(),
   signInWithGoogle: vi.fn(),
+  signInWithGitHub: vi.fn(),
 }));
 
 vi.mock('@/lib/auth/middleware', () => ({

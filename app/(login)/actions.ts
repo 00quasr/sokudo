@@ -80,7 +80,7 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
   // Check if user has a password (not OAuth-only user)
   if (!foundUser.passwordHash) {
     return {
-      error: 'This account uses social sign-in. Please use the "Continue with Google" button.',
+      error: 'This account uses social sign-in. Please use the "Continue with Google" or "Continue with GitHub" button.',
       email,
       password
     };
@@ -263,6 +263,18 @@ export async function signInWithGoogle(formData: FormData) {
   }
 
   await nextAuthSignIn('google', { redirectTo: redirectUrl });
+}
+
+export async function signInWithGitHub(formData: FormData) {
+  const redirect = formData.get('redirect') as string | null;
+  const priceId = formData.get('priceId') as string | null;
+
+  let redirectUrl = '/dashboard';
+  if (redirect === 'checkout' && priceId) {
+    redirectUrl = `/dashboard?checkout=true&priceId=${priceId}`;
+  }
+
+  await nextAuthSignIn('github', { redirectTo: redirectUrl });
 }
 
 export async function signOut() {

@@ -71,7 +71,7 @@ lib/
 - **Stripe webhooks** - Run `stripe listen` in separate terminal during dev
 - **withTeam middleware** - Redirects to sign-in, preserves `priceId` for checkout flow
 - **JWT cookies** - Session stored in httpOnly cookie, check `lib/auth/session.ts`
-- **OAuth** - Google OAuth supported via NextAuth v5, requires GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
+- **OAuth** - Google and GitHub OAuth supported via NextAuth v5, requires respective CLIENT_ID and CLIENT_SECRET env vars
 - **Turbopack** - Dev server uses Turbopack, some edge cases may differ from webpack
 - **Typing engine** - Track keystroke latency in ms, calculate WPM as (chars/5)/minutes
 
@@ -122,6 +122,8 @@ BASE_URL=               # http://localhost:3000 or production URL
 AUTH_SECRET=            # openssl rand -base64 32
 GOOGLE_CLIENT_ID=       # (optional) Google OAuth client ID
 GOOGLE_CLIENT_SECRET=   # (optional) Google OAuth client secret
+GITHUB_CLIENT_ID=       # (optional) GitHub OAuth client ID
+GITHUB_CLIENT_SECRET=   # (optional) GitHub OAuth client secret
 ```
 
 ## Test Credentials
