@@ -1,0 +1,84 @@
+{
+  "name": "sokudo-typing-trainer",
+  "displayName": "Sokudo - Developer Typing Trainer",
+  "description": "Practice typing git commands, terminal workflows, React patterns, and AI prompts without leaving VS Code.",
+  "version": "0.1.0",
+  "publisher": "sokudo",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Education",
+    "Other"
+  ],
+  "keywords": [
+    "typing",
+    "practice",
+    "developer",
+    "wpm",
+    "git"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sokudo.startPractice",
+        "title": "Sokudo: Start Typing Practice"
+      },
+      {
+        "command": "sokudo.showStats",
+        "title": "Sokudo: Show Session Stats"
+      },
+      {
+        "command": "sokudo.toggleStatusBar",
+        "title": "Sokudo: Toggle WPM Status Bar"
+      }
+    ],
+    "configuration": {
+      "title": "Sokudo",
+      "properties": {
+        "sokudo.apiUrl": {
+          "type": "string",
+          "default": "http://localhost:3000",
+          "description": "URL of the Sokudo web application for syncing stats."
+        },
+        "sokudo.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show WPM indicator in the status bar."
+        },
+        "sokudo.defaultCategory": {
+          "type": "string",
+          "default": "git",
+          "enum": [
+            "git",
+            "terminal",
+            "react",
+            "ai-prompts"
+          ],
+          "description": "Default challenge category when starting practice."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "test:unit": "npx vitest run"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "custom_challenges" ADD COLUMN "forked_from_id" integer;
