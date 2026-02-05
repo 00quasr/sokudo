@@ -36,6 +36,7 @@ export function TypingInput({
   autoFocus = true,
 }: TypingInputProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
 
   const {
     cursorPosition,
@@ -108,10 +109,18 @@ export function TypingInput({
   // Attach keyboard listener
   useEffect(() => {
     const container = containerRef.current;
+    const hiddenInput = hiddenInputRef.current;
     if (!container) return;
 
-    container.addEventListener('keydown', handleKeyDown);
-    return () => container.removeEventListener('keydown', handleKeyDown);
+    // Only attach to container, hidden input handles its own events
+    const handleContainerKeyDown = (e: KeyboardEvent) => {
+      // Ignore events from the hidden input
+      if (e.target === hiddenInput) return;
+      handleKeyDown(e);
+    };
+
+    container.addEventListener('keydown', handleContainerKeyDown);
+    return () => container.removeEventListener('keydown', handleContainerKeyDown);
   }, [handleKeyDown]);
 
   // Auto-focus on mount
@@ -120,6 +129,73 @@ export function TypingInput({
       containerRef.current.focus();
     }
   }, [autoFocus]);
+
+  // Handle touch events to show mobile keyboard
+  const handleTouchStart = useCallback(() => {
+    if (hiddenInputRef.current) {
+      hiddenInputRef.current.focus();
+    }
+  }, []);
+
+  // Handle input from mobile keyboard
+  const handleMobileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      if (!value) {
+        // If the input is cleared, treat as backspace
+        handleBackspace();
+        return;
+      }
+
+      // Get the last character typed
+      const lastChar = value[value.length - 1];
+
+      if (lastChar) {
+        handleKeyPress(lastChar);
+      }
+
+      // Clear the input to allow continuous typing
+      e.target.value = '';
+    },
+    [handleKeyPress, handleBackspace]
+  );
+
+  // Handle mobile keyboard special keys
+  const handleMobileKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        handleBackspace();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isComplete && onNext) {
+          onNext();
+        }
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        handleEscape();
+      }
+    },
+    [handleBackspace, handleEscape, isComplete, onNext]
+  );
+
+  // Keep hidden input focused when typing area is clicked
+  const handleContainerClick = useCallback(() => {
+    if (hiddenInputRef.current) {
+      hiddenInputRef.current.focus();
+    } else if (containerRef.current) {
+      containerRef.current.focus();
+    }
+  }, []);
+
+  // Re-focus hidden input when session resets
+  useEffect(() => {
+    if (!isStarted && !isComplete && hiddenInputRef.current && autoFocus) {
+      hiddenInputRef.current.focus();
+    }
+  }, [isStarted, isComplete, autoFocus]);
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
@@ -140,7 +216,24 @@ export function TypingInput({
         role="textbox"
         aria-label="Typing input area"
         aria-readonly="true"
+        onTouchStart={handleTouchStart}
+        onClick={handleContainerClick}
       >
+        {/* Hidden input for mobile keyboard */}
+        <input
+          ref={hiddenInputRef}
+          type="text"
+          inputMode="text"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
+          className="absolute opacity-0 pointer-events-none"
+          onChange={handleMobileInput}
+          onKeyDown={handleMobileKeyDown}
+          aria-hidden="true"
+          tabIndex={-1}
+        />
         {/* Character display */}
         <div className="flex flex-wrap">
           {charStyles.map(({ char, style }, index) => {

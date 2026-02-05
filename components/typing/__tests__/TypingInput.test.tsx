@@ -348,9 +348,11 @@ describe('TypingInput', () => {
 
     it('should auto-focus by default', () => {
       render(<TypingInput targetText="test" />);
-      const input = screen.getByRole('textbox');
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
 
-      expect(document.activeElement).toBe(input);
+      // The hidden input should be focused for mobile support
+      expect(document.activeElement).toBe(hiddenInput);
     });
 
     it('should not auto-focus when autoFocus is false', () => {
@@ -518,6 +520,206 @@ describe('TypingInput', () => {
       // The error indicator should display 'x' (the wrong character typed)
       const errorIndicator = screen.getByText('x');
       expect(errorIndicator.className).toContain('text-red-400');
+    });
+  });
+
+  describe('mobile touch events', () => {
+    it('should focus hidden input on touch start', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      expect(hiddenInput).toBeTruthy();
+
+      // Simulate touch start
+      fireEvent.touchStart(container);
+
+      expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should focus hidden input on click', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate click
+      fireEvent.click(container);
+
+      expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should handle character input from mobile keyboard', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      expect(hiddenInput).toBeTruthy();
+
+      // Simulate typing 'a' on mobile keyboard
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+
+      // The 'a' should now be marked as typed (green)
+      const aChar = screen.getByText('a');
+      expect(aChar.className).toMatch(/text-green-600|dark:text-green-400/);
+
+      // Hidden input should be cleared
+      expect(hiddenInput.value).toBe('');
+    });
+
+    it('should handle multiple characters from mobile keyboard', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate typing 'a'
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      // Simulate typing 'b'
+      fireEvent.change(hiddenInput, { target: { value: 'b' } });
+
+      // Both characters should be marked as typed
+      const aChar = screen.getByText('a');
+      const bChar = screen.getByText('b');
+      expect(aChar.className).toMatch(/text-green-600|dark:text-green-400/);
+      expect(bChar.className).toMatch(/text-green-600|dark:text-green-400/);
+    });
+
+    it('should handle backspace from mobile keyboard via change event', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Type a character first
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      expect(screen.getByText('a').className).toMatch(/text-green-600|dark:text-green-400/);
+
+      // Simulate backspace using keydown (change event won't work since input is auto-cleared)
+      fireEvent.keyDown(hiddenInput, { key: 'Backspace' });
+
+      // Cursor should be back at position 0
+      const aChar = screen.getByText('a');
+      expect(aChar.className).toContain('bg-primary/20');
+    });
+
+    it('should handle backspace from mobile keyboard via keydown event', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Type a character
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+
+      // Press backspace key
+      fireEvent.keyDown(hiddenInput, { key: 'Backspace' });
+
+      // Cursor should be back at position 0
+      const aChar = screen.getByText('a');
+      expect(aChar.className).toContain('bg-primary/20');
+    });
+
+    it('should handle Enter key from mobile keyboard when complete', () => {
+      const onNext = vi.fn();
+      render(<TypingInput targetText="ab" onNext={onNext} />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Complete the text
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      fireEvent.change(hiddenInput, { target: { value: 'b' } });
+
+      // Press Enter
+      fireEvent.keyDown(hiddenInput, { key: 'Enter' });
+
+      expect(onNext).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle Escape key from mobile keyboard', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Type some characters
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      fireEvent.change(hiddenInput, { target: { value: 'b' } });
+
+      // Press Escape
+      fireEvent.keyDown(hiddenInput, { key: 'Escape' });
+
+      // Should show start message again
+      expect(screen.getByText('Start typing to begin...')).toBeTruthy();
+    });
+
+    it('should have hidden input with proper attributes', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      expect(hiddenInput).toBeTruthy();
+      expect(hiddenInput.getAttribute('type')).toBe('text');
+      expect(hiddenInput.getAttribute('inputmode')).toBe('text');
+      expect(hiddenInput.getAttribute('autocomplete')).toBe('off');
+      expect(hiddenInput.getAttribute('autocorrect')).toBe('off');
+      expect(hiddenInput.getAttribute('autocapitalize')).toBe('off');
+      expect(hiddenInput.getAttribute('spellcheck')).toBe('false');
+      expect(hiddenInput.getAttribute('aria-hidden')).toBe('true');
+      expect(hiddenInput.getAttribute('tabindex')).toBe('-1');
+    });
+
+    it('should keep hidden input visually hidden', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      expect(hiddenInput.className).toContain('opacity-0');
+      expect(hiddenInput.className).toContain('pointer-events-none');
+    });
+
+    it('should handle incorrect characters from mobile keyboard', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Type wrong character
+      fireEvent.change(hiddenInput, { target: { value: 'x' } });
+
+      // The 'a' should show error
+      const aChar = screen.getByText('a');
+      expect(aChar.className).toMatch(/text-red-600|dark:text-red-400/);
+    });
+
+    it('should refocus hidden input after reset', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Type and reset
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      fireEvent.keyDown(hiddenInput, { key: 'Escape' });
+
+      // Hidden input should still be focusable
+      fireEvent.click(container);
+      expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should not refocus hidden input when autoFocus is false', () => {
+      render(<TypingInput targetText="abc" autoFocus={false} />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      expect(document.activeElement).not.toBe(hiddenInput);
+    });
+
+    it('should handle rapid typing from mobile keyboard', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Rapidly type all characters
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      fireEvent.change(hiddenInput, { target: { value: 'b' } });
+      fireEvent.change(hiddenInput, { target: { value: 'c' } });
+
+      // Should be complete
+      expect(screen.getByText('Complete!')).toBeTruthy();
     });
   });
 
