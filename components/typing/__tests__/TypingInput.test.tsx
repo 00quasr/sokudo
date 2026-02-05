@@ -1075,7 +1075,7 @@ describe('TypingInput', () => {
       expect(document.activeElement).toBe(hiddenInput);
     });
 
-    it('should handle multi-character input on tablets from autocorrect', () => {
+    it('should handle multi-character input on tablets from autocorrect', async () => {
       // Mock tablet detection
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
@@ -1101,10 +1101,13 @@ describe('TypingInput', () => {
       // Tablet keyboard might send multiple characters at once (e.g., autocorrect)
       fireEvent.change(hiddenInput, { target: { value: 'abc' } });
 
-      // All three characters should be processed
-      expect(screen.getByText('a').className).toMatch(/text-green-600|dark:text-green-400/);
-      expect(screen.getByText('b').className).toMatch(/text-green-600|dark:text-green-400/);
-      expect(screen.getByText('c').className).toMatch(/text-green-600|dark:text-green-400/);
+      // Wait for RAF to process all characters
+      await vi.waitFor(() => {
+        // All three characters should be processed
+        expect(screen.getByText('a').className).toMatch(/text-green-600|dark:text-green-400/);
+        expect(screen.getByText('b').className).toMatch(/text-green-600|dark:text-green-400/);
+        expect(screen.getByText('c').className).toMatch(/text-green-600|dark:text-green-400/);
+      });
     });
 
     it('should add visual feedback on touch start for tablets', () => {
