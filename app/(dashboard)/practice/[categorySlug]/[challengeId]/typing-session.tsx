@@ -99,7 +99,6 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
 
   // Navigate to next challenge or back to category list
   const navigateToNext = useCallback(() => {
-    // Show progress indicator if there's a next challenge
     const targetId = adaptiveDifficulty?.suggestedChallengeId ?? nextChallengeId;
     if (targetId) {
       setIsTransitioning(true);
