@@ -1,0 +1,1270 @@
+openapi: 3.1.0
+info:
+  title: Sokudo API
+  description: |
+    Sokudo (速度) is a developer typing trainer API for building muscle memory on git commands, terminal workflows, React patterns, and AI prompts.
+
+    ## Authentication
+
+    All API endpoints require authentication using an API key. Include your API key in the `X-API-Key` header:
+
+    ```
+    X-API-Key: your_api_key_here
+    ```
+
+    ## Rate Limiting
+
+    API endpoints are rate-limited per endpoint. Rate limit information is included in response headers:
+    - `X-RateLimit-Limit`: Maximum requests allowed in the time window
+    - `X-RateLimit-Remaining`: Remaining requests in the current window
+    - `X-RateLimit-Reset`: Timestamp when the rate limit resets
+
+    ## Pagination
+
+    List endpoints support pagination using `page` and `limit` query parameters. Responses include a `pagination` object with:
+    - `page`: Current page number
+    - `limit`: Items per page
+    - `total`: Total number of items
+    - `totalPages`: Total number of pages
+    - `hasNextPage`: Whether there's a next page
+    - `hasPrevPage`: Whether there's a previous page
+
+  version: 1.0.0
+  contact:
+    name: Sokudo API Support
+    url: https://github.com/yourusername/sokudo
+  license:
+    name: MIT
+
+servers:
+  - url: https://api.sokudo.dev/api/v1
+    description: Production server
+  - url: http://localhost:3000/api/v1
+    description: Development server
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Authentication
+    description: API key management
+  - name: User
+    description: User profile and settings
+  - name: Challenges
+    description: Typing challenges and categories
+  - name: Sessions
+    description: Typing practice sessions
+  - name: Stats
+    description: User statistics and performance metrics
+  - name: Leaderboard
+    description: Global and category leaderboards
+  - name: Webhooks
+    description: Webhook management for event notifications
+
+paths:
+  /keys:
+    get:
+      tags:
+        - Authentication
+      summary: List API keys
+      description: Retrieve all API keys for the authenticated user
+      operationId: listApiKeys
+      responses:
+        '200':
+          description: Successfully retrieved API keys
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  keys:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApiKey'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Authentication
+      summary: Create API key
+      description: Create a new API key with specified scopes
+      operationId: createApiKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  description: Human-readable name for the API key
+                  example: "Production API Key"
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                    enum: [read, write, '*']
+                  minItems: 1
+                  default: ["read"]
+                  description: Permissions for this API key
+                  example: ["read", "write"]
+                expiresInDays:
+                  type: integer
+                  minimum: 1
+                  maximum: 365
+                  description: Number of days until the key expires (optional)
+                  example: 90
+      responses:
+        '201':
+          description: API key created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiKey'
+                  - type: object
+                    properties:
+                      key:
+                        type: string
+                        description: The actual API key (only returned once at creation)
+                        example: "sk_test_abcdef123456"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      tags:
+        - Authentication
+      summary: Revoke API key
+      description: Revoke an existing API key
+      operationId: revokeApiKey
+      parameters:
+        - name: keyId
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: ID of the API key to revoke
+      responses:
+        '200':
+          description: API key revoked successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "API key revoked successfully"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /user:
+    get:
+      tags:
+        - User
+      summary: Get user profile
+      description: Retrieve the authenticated user's profile information
+      operationId: getUserProfile
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /categories:
+    get:
+      tags:
+        - Challenges
+      summary: List categories
+      description: Retrieve all available challenge categories
+      operationId: listCategories
+      responses:
+        '200':
+          description: Categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /challenges:
+    get:
+      tags:
+        - Challenges
+      summary: List challenges
+      description: Retrieve challenges with optional filtering and pagination
+      operationId: listChallenges
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of items per page
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: Filter by category ID
+        - name: categorySlug
+          in: query
+          schema:
+            type: string
+          description: Filter by category slug
+          example: "git-basics"
+        - name: difficulty
+          in: query
+          schema:
+            type: string
+            enum: [beginner, intermediate, advanced]
+          description: Filter by difficulty level
+        - name: syntaxType
+          in: query
+          schema:
+            type: string
+          description: Filter by syntax type
+          example: "bash"
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [id, difficulty, avgWpm, timesCompleted, createdAt]
+            default: id
+          description: Field to sort by
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+          description: Sort order
+      responses:
+        '200':
+          description: Challenges retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  challenges:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Challenge'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /challenges/{challengeId}:
+    get:
+      tags:
+        - Challenges
+      summary: Get challenge by ID
+      description: Retrieve a specific challenge by its ID
+      operationId: getChallengeById
+      parameters:
+        - name: challengeId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Challenge ID
+      responses:
+        '200':
+          description: Challenge retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  challenge:
+                    $ref: '#/components/schemas/Challenge'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /sessions:
+    get:
+      tags:
+        - Sessions
+      summary: List sessions
+      description: Retrieve typing practice sessions for the authenticated user
+      operationId: listSessions
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number for pagination
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of items per page
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: Filter by category ID
+      responses:
+        '200':
+          description: Sessions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Session'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Sessions
+      summary: Create session
+      description: Create a new typing practice session
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - challengeId
+                - wpm
+                - rawWpm
+                - accuracy
+                - keystrokes
+                - errors
+                - durationMs
+              properties:
+                challengeId:
+                  type: integer
+                  minimum: 1
+                  description: ID of the challenge
+                  example: 42
+                wpm:
+                  type: integer
+                  minimum: 0
+                  description: Words per minute (correct characters / 5 / minutes)
+                  example: 65
+                rawWpm:
+                  type: integer
+                  minimum: 0
+                  description: Raw WPM (all characters / 5 / minutes)
+                  example: 70
+                accuracy:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  description: Accuracy percentage
+                  example: 95
+                keystrokes:
+                  type: integer
+                  minimum: 0
+                  description: Total number of keystrokes
+                  example: 250
+                errors:
+                  type: integer
+                  minimum: 0
+                  description: Number of errors
+                  example: 12
+                durationMs:
+                  type: integer
+                  minimum: 1
+                  description: Session duration in milliseconds
+                  example: 45000
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionCreated'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /sessions/{sessionId}:
+    get:
+      tags:
+        - Sessions
+      summary: Get session details
+      description: Retrieve detailed information about a specific session including keystroke logs
+      operationId: getSessionById
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Session ID
+      responses:
+        '200':
+          description: Session details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session:
+                    $ref: '#/components/schemas/SessionDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /stats:
+    get:
+      tags:
+        - Stats
+      summary: Get user statistics
+      description: Retrieve comprehensive statistics for the authenticated user
+      operationId: getUserStats
+      parameters:
+        - name: trendDays
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 365
+            default: 30
+          description: Number of days for WPM trend data
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  overview:
+                    $ref: '#/components/schemas/StatsOverview'
+                  categoryPerformance:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CategoryPerformance'
+                  wpmTrend:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WpmTrendData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /leaderboard:
+    get:
+      tags:
+        - Leaderboard
+      summary: Get leaderboard
+      description: Retrieve global or category-specific leaderboard
+      operationId: getLeaderboard
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of entries to return
+        - name: categorySlug
+          in: query
+          schema:
+            type: string
+          description: Filter by category slug
+          example: "git-basics"
+        - name: timeframe
+          in: query
+          schema:
+            type: string
+            enum: [all, week, month]
+            default: all
+          description: Time period for leaderboard
+      responses:
+        '200':
+          description: Leaderboard retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  leaderboard:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LeaderboardEntry'
+                  timeframe:
+                    type: string
+                    enum: [all, week, month]
+                  categorySlug:
+                    type: string
+                    nullable: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /webhooks:
+    get:
+      tags:
+        - Webhooks
+      summary: List webhooks
+      description: Retrieve all webhooks for the authenticated user
+      operationId: listWebhooks
+      responses:
+        '200':
+          description: Webhooks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhooks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      tags:
+        - Webhooks
+      summary: Create webhook
+      description: Create a new webhook endpoint
+      operationId: createWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+                - events
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  maxLength: 2048
+                  description: Webhook endpoint URL
+                  example: "https://example.com/webhook"
+                events:
+                  type: array
+                  items:
+                    type: string
+                    enum: [session.completed, achievement.earned]
+                  minItems: 1
+                  description: Events to subscribe to
+                  example: ["session.completed"]
+                description:
+                  type: string
+                  maxLength: 255
+                  description: Optional description for the webhook
+                  example: "Production webhook for session tracking"
+      responses:
+        '201':
+          description: Webhook created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Webhook'
+                  - type: object
+                    properties:
+                      secret:
+                        type: string
+                        description: Webhook secret for signature verification (only returned once)
+                        example: "whsec_abc123def456"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /webhooks/{webhookId}:
+    delete:
+      tags:
+        - Webhooks
+      summary: Delete webhook
+      description: Delete a webhook endpoint
+      operationId: deleteWebhook
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Webhook ID
+      responses:
+        '200':
+          description: Webhook deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Webhook deleted successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication
+
+  schemas:
+    ApiKey:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+          example: 1
+        name:
+          type: string
+          description: Human-readable name
+          example: "Production API Key"
+        keyPrefix:
+          type: string
+          description: First few characters of the key for identification
+          example: "sk_test_abc"
+        scopes:
+          type: array
+          items:
+            type: string
+            enum: [read, write, '*']
+          description: Permissions granted to this key
+        lastUsedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Last time this key was used
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Expiration timestamp
+        revokedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Revocation timestamp
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+          example: 1
+        name:
+          type: string
+          nullable: true
+          description: User's display name
+          example: "John Doe"
+        username:
+          type: string
+          nullable: true
+          description: Username
+          example: "johndoe"
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "john@example.com"
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp
+        profile:
+          type: object
+          nullable: true
+          properties:
+            avatarUrl:
+              type: string
+              nullable: true
+              description: Avatar URL
+            bio:
+              type: string
+              nullable: true
+              description: User bio
+            subscriptionTier:
+              type: string
+              enum: [free, pro, team]
+              description: Subscription tier
+            currentStreak:
+              type: integer
+              description: Current practice streak in days
+            longestStreak:
+              type: integer
+              description: Longest practice streak in days
+            totalPracticeTimeMs:
+              type: integer
+              description: Total practice time in milliseconds
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+          example: 1
+        name:
+          type: string
+          description: Category name
+          example: "Git Basics"
+        slug:
+          type: string
+          description: URL-friendly slug
+          example: "git-basics"
+        description:
+          type: string
+          nullable: true
+          description: Category description
+        icon:
+          type: string
+          nullable: true
+          description: Icon identifier
+          example: "git"
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          nullable: true
+          description: Overall difficulty level
+        isPremium:
+          type: boolean
+          description: Whether this is a premium category
+        displayOrder:
+          type: integer
+          description: Order for display purposes
+
+    Challenge:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+          example: 42
+        content:
+          type: string
+          description: Challenge content to type
+          example: "git commit -m \"Initial commit\""
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          description: Difficulty level
+        syntaxType:
+          type: string
+          nullable: true
+          description: Syntax highlighting type
+          example: "bash"
+        hint:
+          type: string
+          nullable: true
+          description: Optional hint for the challenge
+        avgWpm:
+          type: integer
+          nullable: true
+          description: Average WPM for this challenge
+        timesCompleted:
+          type: integer
+          description: Number of times completed
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            slug:
+              type: string
+            icon:
+              type: string
+              nullable: true
+
+    Session:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+        wpm:
+          type: integer
+          description: Words per minute
+        rawWpm:
+          type: integer
+          description: Raw WPM (including errors)
+        accuracy:
+          type: integer
+          description: Accuracy percentage
+        keystrokes:
+          type: integer
+          description: Total keystrokes
+        errors:
+          type: integer
+          description: Number of errors
+        durationMs:
+          type: integer
+          description: Duration in milliseconds
+        completedAt:
+          type: string
+          format: date-time
+          description: Completion timestamp
+        challenge:
+          type: object
+          properties:
+            id:
+              type: integer
+            content:
+              type: string
+            difficulty:
+              type: string
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            slug:
+              type: string
+
+    SessionCreated:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Session ID
+        userId:
+          type: integer
+          description: User ID
+        challengeId:
+          type: integer
+          description: Challenge ID
+        wpm:
+          type: integer
+          description: Words per minute
+        rawWpm:
+          type: integer
+          description: Raw WPM
+        accuracy:
+          type: integer
+          description: Accuracy percentage
+        keystrokes:
+          type: integer
+          description: Total keystrokes
+        errors:
+          type: integer
+          description: Number of errors
+        durationMs:
+          type: integer
+          description: Duration in milliseconds
+        completedAt:
+          type: string
+          format: date-time
+          description: Completion timestamp
+
+    SessionDetail:
+      allOf:
+        - $ref: '#/components/schemas/Session'
+        - type: object
+          properties:
+            keystrokeLogs:
+              type: array
+              description: Detailed keystroke data
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  timestamp:
+                    type: integer
+                    description: Milliseconds since session start
+                  expected:
+                    type: string
+                    description: Expected character
+                  actual:
+                    type: string
+                    description: Actual character typed
+                  isCorrect:
+                    type: boolean
+                    description: Whether the keystroke was correct
+                  latencyMs:
+                    type: integer
+                    description: Milliseconds since previous keystroke
+
+    StatsOverview:
+      type: object
+      properties:
+        totalSessions:
+          type: integer
+          description: Total number of sessions
+        avgWpm:
+          type: integer
+          description: Average WPM across all sessions
+        avgAccuracy:
+          type: integer
+          description: Average accuracy percentage
+        totalKeystrokes:
+          type: integer
+          description: Total keystrokes across all sessions
+        totalErrors:
+          type: integer
+          description: Total errors across all sessions
+        bestWpm:
+          type: integer
+          description: Best WPM achieved
+        bestAccuracy:
+          type: integer
+          description: Best accuracy achieved
+        totalPracticeTimeMs:
+          type: integer
+          description: Total practice time in milliseconds
+        currentStreak:
+          type: integer
+          description: Current practice streak in days
+        longestStreak:
+          type: integer
+          description: Longest practice streak in days
+
+    CategoryPerformance:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+        categoryName:
+          type: string
+        categorySlug:
+          type: string
+        sessions:
+          type: integer
+          description: Number of sessions in this category
+        avgWpm:
+          type: integer
+          description: Average WPM in this category
+        avgAccuracy:
+          type: integer
+          description: Average accuracy in this category
+
+    WpmTrendData:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: Date for this data point
+        avgWpm:
+          type: integer
+          description: Average WPM for this date
+        sessions:
+          type: integer
+          description: Number of sessions on this date
+
+    LeaderboardEntry:
+      type: object
+      properties:
+        rank:
+          type: integer
+          description: Rank position
+        userId:
+          type: integer
+          description: User ID
+        username:
+          type: string
+          nullable: true
+          description: Username
+        name:
+          type: string
+          nullable: true
+          description: Display name
+        bestWpm:
+          type: integer
+          description: Best WPM achieved
+        avgWpm:
+          type: integer
+          description: Average WPM
+        avgAccuracy:
+          type: integer
+          description: Average accuracy
+        totalSessions:
+          type: integer
+          description: Total sessions completed
+
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+        url:
+          type: string
+          format: uri
+          description: Webhook endpoint URL
+        events:
+          type: array
+          items:
+            type: string
+            enum: [session.completed, achievement.earned]
+          description: Subscribed events
+        active:
+          type: boolean
+          description: Whether the webhook is active
+        description:
+          type: string
+          nullable: true
+          description: Optional description
+        lastDeliveredAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Last successful delivery timestamp
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Current page number
+        limit:
+          type: integer
+          description: Items per page
+        total:
+          type: integer
+          description: Total number of items
+        totalPages:
+          type: integer
+          description: Total number of pages
+        hasNextPage:
+          type: boolean
+          description: Whether there's a next page
+        hasPrevPage:
+          type: boolean
+          description: Whether there's a previous page
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: array
+          description: Detailed validation errors (when applicable)
+          items:
+            type: object
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Invalid query parameters"
+            details:
+              - field: "page"
+                message: "Must be a positive integer"
+
+    Unauthorized:
+      description: Unauthorized - invalid or missing API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Invalid or missing API key"
+
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Insufficient permissions. Requires 'write' scope."
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Resource not found"
+
+    RateLimited:
+      description: Too many requests - rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Rate limit exceeded. Please try again later."
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Internal server error"
