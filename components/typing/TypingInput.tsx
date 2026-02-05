@@ -9,6 +9,7 @@ import {
 import { cn } from '@/lib/utils';
 import { SyntaxType, tokenize, flattenTokensToChars } from './TypingArea';
 import { StatsBar } from './StatsBar';
+import { useScreenReaderAnnouncement } from '@/components/a11y/ScreenReaderAnnouncer';
 
 export type { SyntaxType };
 
@@ -38,6 +39,7 @@ export function TypingInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const touchFeedbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const { announce } = useScreenReaderAnnouncement();
 
   const {
     cursorPosition,
@@ -62,6 +64,35 @@ export function TypingInput({
     const tokens = tokenize(targetText, syntaxType);
     return flattenTokensToChars(tokens);
   }, [targetText, syntaxType]);
+
+  // Announce typing session start
+  useEffect(() => {
+    if (isStarted && !isComplete) {
+      announce('Typing session started', 'polite');
+    }
+  }, [isStarted, isComplete, announce]);
+
+  // Announce completion with stats
+  useEffect(() => {
+    if (isComplete) {
+      const wpm = Math.round(stats.wpm);
+      const accuracy = Math.round(stats.accuracy);
+      announce(
+        `Challenge complete! ${wpm} words per minute with ${accuracy}% accuracy. Press Enter for next challenge or Escape to retry.`,
+        'assertive'
+      );
+    }
+  }, [isComplete, stats, announce]);
+
+  // Announce progress milestones
+  useEffect(() => {
+    const progressPercent = Math.round(progress * 100);
+    if (progressPercent === 50) {
+      announce('Halfway there!', 'polite');
+    } else if (progressPercent === 75) {
+      announce('Almost done, keep going!', 'polite');
+    }
+  }, [progress, announce]);
 
   // Handle keyboard events
   const handleKeyDown = useCallback(

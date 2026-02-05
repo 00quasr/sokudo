@@ -76,15 +76,18 @@ function CategoryCard({ category, locked }: { category: Category; locked: boolea
 
   if (locked) {
     return (
-      <div className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+      <article
+        className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6"
+        aria-label={`${category.name} - ${category.difficulty} difficulty - Locked, upgrade to pro to unlock`}
+      >
         <div className="absolute right-3 top-3 sm:right-4 sm:top-4 z-10">
           <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700">
-            <Lock className="h-3 w-3" />
+            <Lock className="h-3 w-3" aria-hidden="true" />
             Pro
           </span>
         </div>
 
-        <div className="pointer-events-none blur-[2px] select-none">
+        <div className="pointer-events-none blur-[2px] select-none" aria-hidden="true">
           <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
             <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
@@ -107,32 +110,35 @@ function CategoryCard({ category, locked }: { category: Category; locked: boolea
         <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white/60">
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white transition-colors hover:bg-orange-600"
+            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            aria-label={`Upgrade to pro to unlock ${category.name}`}
           >
-            <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
             Upgrade to Unlock
           </Link>
         </div>
-      </div>
+      </article>
     );
   }
 
   return (
     <Link
       href={`/practice/${category.slug}`}
-      className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6 transition-all hover:border-orange-300 hover:shadow-lg"
+      className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6 transition-all hover:border-orange-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+      aria-label={`Practice ${category.name} - ${category.difficulty} difficulty${category.isPremium ? ' - Pro category' : ''}`}
     >
       {category.isPremium && (
         <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
           <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700">
-            <Lock className="h-3 w-3" />
+            <Lock className="h-3 w-3" aria-hidden="true" />
+            <span className="sr-only">Pro category</span>
             Pro
           </span>
         </div>
       )}
 
       <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
-        <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
+        <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
       </div>
 
       <h3 className="mb-2 text-base sm:text-lg font-semibold text-gray-900 group-hover:text-orange-600">
@@ -226,7 +232,7 @@ export default async function PracticePage() {
   const displayPremiumCategories = canAccessPremium ? premiumCategories : [];
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
+    <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
       {user && isFreeTier && (
         <div className="mb-6 sm:mb-8">
           <RemainingTimeBar />
@@ -244,21 +250,24 @@ export default async function PracticePage() {
 
       {/* Practice Recommendations */}
       {user && recommendations.length > 0 && (
-        <section className="mb-8 sm:mb-12">
+        <section className="mb-8 sm:mb-12" aria-labelledby="recommendations-heading">
+          <h2 id="recommendations-heading" className="sr-only">Practice Recommendations</h2>
           <PracticeRecommendations recommendations={recommendations} />
         </section>
       )}
 
       {/* Smart & Personalized Practice Cards */}
       {user && (
-        <section className="mb-8 sm:mb-12 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
+        <section className="mb-8 sm:mb-12 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2" aria-labelledby="ai-practice-heading">
+          <h2 id="ai-practice-heading" className="sr-only">AI-Powered Practice Options</h2>
           <Link
             href="/practice/smart"
-            className="group block rounded-xl border-2 border-dashed border-violet-300 bg-violet-50 p-4 sm:p-6 transition-all hover:border-violet-400 hover:bg-violet-100 hover:shadow-lg"
+            className="group block rounded-xl border-2 border-dashed border-violet-300 bg-violet-50 p-4 sm:p-6 transition-all hover:border-violet-400 hover:bg-violet-100 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
+            aria-label="Smart Practice - AI picks optimal challenges based on your difficulty level and weaknesses"
           >
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-violet-500 text-white flex-shrink-0">
-                <Brain className="h-5 w-5 sm:h-6 sm:w-6" />
+                <Brain className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
               <div className="min-w-0">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-violet-600">
@@ -273,11 +282,12 @@ export default async function PracticePage() {
 
           <Link
             href="/practice/personalized"
-            className="group block rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-4 sm:p-6 transition-all hover:border-orange-400 hover:bg-orange-100 hover:shadow-lg"
+            className="group block rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-4 sm:p-6 transition-all hover:border-orange-400 hover:bg-orange-100 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            aria-label="Personalized Practice - Targeted exercises based on your error patterns, weak keys, and slow sequences"
           >
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white flex-shrink-0">
-                <Crosshair className="h-5 w-5 sm:h-6 sm:w-6" />
+                <Crosshair className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
               <div className="min-w-0">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-orange-600">
@@ -293,11 +303,11 @@ export default async function PracticePage() {
       )}
 
       {displayFreeCategories.length > 0 && (
-        <section className="mb-8 sm:mb-12">
-          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">
+        <section className="mb-8 sm:mb-12" aria-labelledby="free-categories-heading">
+          <h2 id="free-categories-heading" className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">
             {canAccessPremium ? 'Free' : 'Categories'}
           </h2>
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
             {displayFreeCategories.map((category) => (
               <CategoryCard key={category.id} category={category} locked={false} />
             ))}
@@ -306,9 +316,9 @@ export default async function PracticePage() {
       )}
 
       {displayPremiumCategories.length > 0 && (
-        <section>
-          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">Pro</h2>
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <section aria-labelledby="pro-categories-heading">
+          <h2 id="pro-categories-heading" className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">Pro</h2>
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
             {displayPremiumCategories.map((category) => (
               <CategoryCard key={category.id} category={category} locked={false} />
             ))}

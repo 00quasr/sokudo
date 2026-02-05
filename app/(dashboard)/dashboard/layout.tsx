@@ -42,22 +42,31 @@ export default function DashboardLayout({
           className="-mr-3"
           variant="ghost"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-expanded={isSidebarOpen}
+          aria-controls="dashboard-navigation"
+          aria-label={isSidebarOpen ? 'Close navigation menu' : 'Open navigation menu'}
         >
-          <Menu className="h-6 w-6" />
-          <span className="sr-only">Toggle sidebar</span>
+          <Menu className="h-6 w-6" aria-hidden="true" />
+          <span className="sr-only">{isSidebarOpen ? 'Close' : 'Open'} sidebar</span>
         </Button>
       </div>
 
       <div className="flex flex-1 overflow-hidden h-full">
         {/* Sidebar */}
         <aside
+          id="navigation"
           className={`w-64 bg-white lg:bg-gray-50 border-r border-gray-200 lg:block ${
             isSidebarOpen ? 'block' : 'hidden'
           } lg:relative absolute inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
+          aria-label="Dashboard navigation"
         >
-          <nav className="h-full overflow-y-auto p-4">
+          <nav
+            id="dashboard-navigation"
+            className="h-full overflow-y-auto p-4"
+            aria-label="Dashboard settings navigation"
+          >
             {navItems.map((item) => (
               <Link key={item.href} href={item.href} passHref>
                 <Button
@@ -66,8 +75,9 @@ export default function DashboardLayout({
                     pathname === item.href ? 'bg-gray-100' : ''
                   }`}
                   onClick={() => setIsSidebarOpen(false)}
+                  aria-current={pathname === item.href ? 'page' : undefined}
                 >
-                  <item.icon className="h-4 w-4" />
+                  <item.icon className="h-4 w-4" aria-hidden="true" />
                   {item.label}
                 </Button>
               </Link>
@@ -76,7 +86,7 @@ export default function DashboardLayout({
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto p-0 lg:p-4">{children}</main>
+        <main id="main-content" className="flex-1 overflow-y-auto p-0 lg:p-4">{children}</main>
       </div>
     </div>
   );

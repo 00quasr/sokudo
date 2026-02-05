@@ -6,6 +6,8 @@ import { SWRConfig } from 'swr';
 import { ThemeProvider } from '@/components/theme-provider';
 import { PWAInit } from '@/components/pwa-init';
 import { GlobalOfflineIndicator } from '@/components/GlobalOfflineIndicator';
+import { SkipLinks } from '@/components/a11y/SkipLinks';
+import { KeyboardShortcutsDialog } from '@/components/a11y/KeyboardShortcutsDialog';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.BASE_URL || 'http://localhost:3000'),
@@ -90,12 +92,14 @@ export default function RootLayout({
       <body className="min-h-[100dvh] bg-gray-50">
         <PWAInit />
         <GlobalOfflineIndicator />
+        <SkipLinks />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
+          <KeyboardShortcutsDialog />
           <SWRConfig
             value={{
               fallback: {

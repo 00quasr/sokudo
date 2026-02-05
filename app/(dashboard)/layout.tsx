@@ -48,9 +48,9 @@ function UserMenu() {
 
   return (
     <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger aria-label="User menu" aria-haspopup="true" aria-expanded={isMenuOpen}>
         <Avatar className="cursor-pointer size-9">
-          <AvatarImage alt={user.name || ''} />
+          <AvatarImage alt={user.name || user.email} />
           <AvatarFallback>
             {user.email
               .split(' ')
@@ -62,14 +62,14 @@ function UserMenu() {
       <DropdownMenuContent align="end" className="flex flex-col gap-1">
         <DropdownMenuItem className="cursor-pointer">
           <Link href="/dashboard" className="flex w-full items-center">
-            <Home className="mr-2 h-4 w-4" />
+            <Home className="mr-2 h-4 w-4" aria-hidden="true" />
             <span>Dashboard</span>
           </Link>
         </DropdownMenuItem>
         <form action={handleSignOut} className="w-full">
-          <button type="submit" className="flex w-full">
+          <button type="submit" className="flex w-full" aria-label="Sign out of your account">
             <DropdownMenuItem className="w-full flex-1 cursor-pointer">
-              <LogOut className="mr-2 h-4 w-4" />
+              <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
               <span>Sign out</span>
             </DropdownMenuItem>
           </button>
@@ -81,10 +81,10 @@ function UserMenu() {
 
 function Header() {
   return (
-    <header className="border-b border-border">
+    <header className="border-b border-border" role="banner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <Link href="/" className="flex items-center">
-          <CircleIcon className="h-6 w-6 text-orange-500" />
+        <Link href="/" className="flex items-center focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded" aria-label="Sokudo home page">
+          <CircleIcon className="h-6 w-6 text-orange-500" aria-hidden="true" />
           <span className="ml-2 text-xl font-semibold text-foreground">Sokudo (速度)</span>
         </Link>
         <div className="flex items-center space-x-4">
