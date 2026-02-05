@@ -14,7 +14,7 @@ describe('PWA Manifest', () => {
     expect(manifest.name).toBe('Sokudo (速度) - Developer Typing Trainer');
     expect(manifest.short_name).toBe('Sokudo');
     expect(manifest.description).toBeTruthy();
-    expect(manifest.start_url).toBe('/');
+    expect(manifest.start_url).toBe('/?source=pwa');
     expect(manifest.display).toBe('standalone');
     expect(manifest.background_color).toBe('#0a0a0b');
     expect(manifest.theme_color).toBe('#0a0a0b');
