@@ -17,6 +17,7 @@ function createParticipant(
     userName: 'Alice',
     progress: 0,
     currentWpm: 0,
+    currentChallengeIndex: 0,
     wpm: null,
     accuracy: null,
     finishedAt: null,

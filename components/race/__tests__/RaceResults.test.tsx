@@ -12,6 +12,7 @@ function makeParticipant(overrides: Partial<ParticipantState> = {}): Participant
     userName: 'Alice',
     progress: 100,
     currentWpm: 0,
+    currentChallengeIndex: 0,
     wpm: 80,
     accuracy: 95,
     finishedAt: '2026-01-15T12:01:00Z',

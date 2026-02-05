@@ -249,10 +249,10 @@
 - [x] Add lightweight progress indicator between challenges (e.g., "Challenge 5/30 complete - Next challenge loading...")
 - [x] Auto-advance to next challenge after brief delay (1-2 seconds) instead of showing modal each time
 - [x] Show category completion summary with aggregate stats when finishing all challenges
-- [ ] Change multiplayer races to use full categories/packs instead of single commands
+- [x] Change multiplayer races to use full categories/packs instead of single commands
 - [ ] Hide/disable premium categories and challenges for free users (currently visible but should not be accessible)
 - [x] Redirect unauthorized users to login page instead of showing "Unauthorized" error
-- [ ] Implement dark/light mode toggle with system preference detection
+- [x] Implement dark/light mode toggle with system preference detection
 - [ ] Ensure typing area, syntax highlighting, and all UI components work in both themes
 - [ ] Persist theme preference in user settings/localStorage
 
