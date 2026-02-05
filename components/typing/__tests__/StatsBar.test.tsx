@@ -39,7 +39,7 @@ describe('StatsBar', () => {
     it('should render Accuracy label and value', () => {
       render(<StatsBar stats={createStats({ accuracy: 95 })} />);
 
-      expect(screen.getByText('Accuracy')).toBeTruthy();
+      expect(screen.getByText('ACC')).toBeTruthy();
       expect(screen.getByTestId('stats-accuracy').textContent).toBe('95%');
     });
 
@@ -366,8 +366,10 @@ describe('StatsBar', () => {
       const { container } = render(<StatsBar stats={createStats()} />);
       const statsContainer = container.firstChild as HTMLElement;
 
-      // Check for md:gap-8 for tablet spacing
-      expect(statsContainer.className).toMatch(/md:gap-8/);
+      // Check for md:gap-6 for tablet spacing (updated from md:gap-8)
+      expect(statsContainer.className).toMatch(/md:gap-6/);
+      // Check for lg:gap-8 for larger screens
+      expect(statsContainer.className).toMatch(/lg:gap-8/);
     });
 
     it('should have responsive text size for tablets', () => {
@@ -408,16 +410,18 @@ describe('StatsBar', () => {
       render(<StatsBar stats={createStats()} progress={50} />);
       const progressbar = screen.getByRole('progressbar');
 
-      // Check for md:h-1.5 for thicker progress bar on tablets
-      expect(progressbar.className).toMatch(/md:h-1.5/);
+      // Check for md:h-2 for thicker progress bar on tablets (updated from md:h-1.5)
+      expect(progressbar.className).toMatch(/md:h-2/);
     });
 
     it('should have wider progress bar on tablets', () => {
       render(<StatsBar stats={createStats()} progress={50} />);
       const progressbar = screen.getByRole('progressbar');
 
-      // Check for md:w-32 for wider progress bar on tablets
-      expect(progressbar.className).toMatch(/md:w-32/);
+      // Check for md:w-28 for wider progress bar on tablets (updated from md:w-32)
+      expect(progressbar.className).toMatch(/md:w-28/);
+      // Check for lg:w-32 for larger screens
+      expect(progressbar.className).toMatch(/lg:w-32/);
     });
 
     it('should have responsive gap in stat items for tablets', () => {
@@ -425,8 +429,8 @@ describe('StatsBar', () => {
       const wpmValue = screen.getByTestId('stats-wpm');
       const statItem = wpmValue.parentElement;
 
-      // Check for md:gap-3 for larger spacing on tablets
-      expect(statItem?.className).toMatch(/md:gap-3/);
+      // Check for md:gap-2 for larger spacing on tablets (updated from md:gap-3)
+      expect(statItem?.className).toMatch(/md:gap-2/);
     });
 
     it('should have larger progress text on tablets', () => {

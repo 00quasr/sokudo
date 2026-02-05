@@ -44,7 +44,7 @@ describe('TypingInput', () => {
       render(<TypingInput targetText="test" />);
 
       expect(screen.getByText('WPM')).toBeTruthy();
-      expect(screen.getByText('Accuracy')).toBeTruthy();
+      expect(screen.getByText('ACC')).toBeTruthy(); // Changed from "Accuracy" to "ACC"
       expect(screen.getByText('Time')).toBeTruthy();
     });
 
@@ -310,7 +310,7 @@ describe('TypingInput', () => {
     it('should show initial accuracy as 100%', () => {
       render(<TypingInput targetText="test" />);
 
-      const accuracyLabel = screen.getByText('Accuracy');
+      const accuracyLabel = screen.getByText('ACC'); // Changed from "Accuracy" to "ACC"
       const accuracyValue = accuracyLabel.nextElementSibling;
       expect(accuracyValue?.textContent).toBe('100%');
     });
@@ -943,8 +943,8 @@ describe('TypingInput', () => {
       render(<TypingInput targetText="abc" />);
       const container = screen.getByRole('textbox');
 
-      // Check for lg:p-10 class for larger tablets
-      expect(container.className).toMatch(/lg:p-10/);
+      // Check for lg:p-8 class for larger tablets (updated from lg:p-10)
+      expect(container.className).toMatch(/lg:p-8/);
     });
 
     it('should have larger gap between characters for tablets', () => {

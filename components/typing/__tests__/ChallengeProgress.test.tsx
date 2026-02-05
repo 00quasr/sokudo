@@ -149,12 +149,16 @@ describe('ChallengeProgress', () => {
     });
 
     it('should have padding', () => {
-      render(<ChallengeProgress current={5} total={30} isTransitioning={true} />);
+      const { container } = render(<ChallengeProgress current={5} total={30} isTransitioning={true} />);
 
-      const card = screen.getByText('Challenge 5/30 complete')
-        .closest('.p-6');
+      // Find the card container by selecting the inner card div with border and shadow
+      const card = container.querySelector('.border.bg-card.shadow-lg');
 
       expect(card).toBeTruthy();
+      // Should have responsive padding classes
+      expect(card?.className).toMatch(/p-3/);
+      expect(card?.className).toMatch(/sm:p-4/);
+      expect(card?.className).toMatch(/md:p-6/);
     });
   });
 

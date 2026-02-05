@@ -40,7 +40,7 @@ export function StatsBar({
   return (
     <div
       className={cn(
-        'flex flex-wrap items-center gap-3 sm:gap-6 md:gap-8 text-sm md:text-base text-muted-foreground',
+        'flex flex-wrap items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 text-xs sm:text-sm md:text-base text-muted-foreground',
         className
       )}
       role="status"
@@ -48,10 +48,10 @@ export function StatsBar({
       aria-label="Typing statistics"
     >
       {/* WPM */}
-      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 touch-target">
-        <span className="text-xs md:text-sm uppercase tracking-wide">WPM</span>
+      <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 touch-target">
+        <span className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wide">WPM</span>
         <span
-          className="font-mono text-base md:text-lg text-foreground"
+          className="font-mono text-sm sm:text-base md:text-lg text-foreground font-medium"
           data-testid="stats-wpm"
         >
           {stats.wpm}
@@ -59,10 +59,10 @@ export function StatsBar({
       </div>
 
       {/* Accuracy */}
-      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 touch-target">
-        <span className="text-xs md:text-sm uppercase tracking-wide">Accuracy</span>
+      <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 touch-target">
+        <span className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wide">ACC</span>
         <span
-          className="font-mono text-base md:text-lg text-foreground"
+          className="font-mono text-sm sm:text-base md:text-lg text-foreground font-medium"
           data-testid="stats-accuracy"
         >
           {stats.accuracy}%
@@ -70,10 +70,10 @@ export function StatsBar({
       </div>
 
       {/* Time elapsed */}
-      <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3 touch-target">
-        <span className="text-xs md:text-sm uppercase tracking-wide">Time</span>
+      <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 touch-target">
+        <span className="text-[10px] sm:text-xs md:text-sm uppercase tracking-wide">Time</span>
         <span
-          className="font-mono text-base md:text-lg text-foreground"
+          className="font-mono text-sm sm:text-base md:text-lg text-foreground font-medium"
           data-testid="stats-time"
         >
           {formatTime(stats.durationMs)}
@@ -82,9 +82,9 @@ export function StatsBar({
 
       {/* Progress indicator - subtle */}
       {showProgress && (
-        <div className="flex items-center gap-2 sm:ml-auto w-full sm:w-auto mt-2 sm:mt-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 sm:ml-auto w-full sm:w-auto mt-2 sm:mt-0">
           <div
-            className="h-1 md:h-1.5 flex-1 sm:flex-none sm:w-24 md:w-32 rounded-full bg-muted overflow-hidden"
+            className="h-1 sm:h-1.5 md:h-2 flex-1 sm:flex-none sm:w-20 md:w-28 lg:w-32 rounded-full bg-muted overflow-hidden"
             role="progressbar"
             aria-valuenow={Math.round(progress)}
             aria-valuemin={0}
@@ -98,7 +98,7 @@ export function StatsBar({
             />
           </div>
           <span
-            className="font-mono text-xs md:text-sm whitespace-nowrap"
+            className="font-mono text-[10px] sm:text-xs md:text-sm whitespace-nowrap"
             data-testid="stats-progress-text"
           >
             {Math.round(progress)}%
