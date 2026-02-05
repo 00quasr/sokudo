@@ -264,15 +264,15 @@
 
 ### Mobile & Touch Support
 
-- [ ] Add touch event handlers to `TypingInput` component for mobile keyboards
+- [x] Add touch event handlers to `TypingInput` component for mobile keyboards
 - [x] Test typing interface on tablets and optimize for touch input
-- [ ] Ensure responsive layout works on mobile devices (practice UI)
-- [ ] Add viewport meta tags for proper mobile scaling
+- [x] Ensure responsive layout works on mobile devices (practice UI)
+- [x] Add viewport meta tags for proper mobile scaling
 
 ### PWA & Offline
 
-- [ ] Add proper `manifest.json` for installable PWA
-- [ ] Extend `public/sw.js` to cache challenges for offline practice
+- [x] Add proper `manifest.json` for installable PWA
+- [x] Extend `public/sw.js` to cache challenges for offline practice
 - [ ] Implement IndexedDB for offline session storage
 - [ ] Add offline indicator and sync when back online
 
