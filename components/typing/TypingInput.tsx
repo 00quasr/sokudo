@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import {
   useTypingEngine,
   TypingStats,
@@ -134,6 +134,8 @@ export function TypingInput({
   // Track if user is on touch device and device type
   const isTouchDeviceRef = useRef(false);
   const isTabletRef = useRef(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const initialViewportHeight = useRef<number>(0);
 
   // Detect tablet vs phone based on screen size
   useEffect(() => {
@@ -150,6 +152,50 @@ export function TypingInput({
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', checkDeviceType);
       return () => window.removeEventListener('resize', checkDeviceType);
+    }
+  }, []);
+
+  // Detect virtual keyboard visibility (for tablets)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Store initial viewport height
+    if (initialViewportHeight.current === 0) {
+      initialViewportHeight.current = window.visualViewport?.height || window.innerHeight;
+    }
+
+    const handleViewportChange = () => {
+      if (!window.visualViewport) return;
+
+      const currentHeight = window.visualViewport.height;
+      const heightDifference = initialViewportHeight.current - currentHeight;
+
+      // If viewport height decreased by more than 150px, keyboard is likely visible
+      // This threshold works well for tablets (keyboards are typically 250-350px)
+      const keyboardThreshold = isTabletRef.current ? 150 : 100;
+      const keyboardVisible = heightDifference > keyboardThreshold;
+
+      setIsKeyboardVisible(keyboardVisible);
+
+      // Scroll typing area into view when keyboard appears
+      if (keyboardVisible && containerRef.current && isTabletRef.current) {
+        setTimeout(() => {
+          containerRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, 100);
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+      window.visualViewport.addEventListener('scroll', handleViewportChange);
+
+      return () => {
+        window.visualViewport?.removeEventListener('resize', handleViewportChange);
+        window.visualViewport?.removeEventListener('scroll', handleViewportChange);
+      };
     }
   }, []);
 
@@ -215,19 +261,41 @@ export function TypingInput({
       // Handle autocorrect/suggestions that might send multiple characters
       // On tablets, some keyboards send the entire word at once
       if (value.length > 1 && isTabletRef.current) {
-        // Process each character sequentially
-        for (let i = 0; i < value.length; i++) {
-          const char = value[i];
-          if (char) {
-            handleKeyPress(char);
+        // Process each character sequentially with slight delay for better visual feedback
+        // This helps users see what they're typing in real-time
+        let charIndex = 0;
+        const processNextChar = () => {
+          if (charIndex < value.length) {
+            const char = value[charIndex];
+            if (char) {
+              handleKeyPress(char);
+              // Add visual feedback for each character on tablet
+              if (containerRef.current) {
+                containerRef.current.classList.add('ring-1', 'ring-primary/20');
+                setTimeout(() => {
+                  containerRef.current?.classList.remove('ring-1', 'ring-primary/20');
+                }, 50);
+              }
+            }
+            charIndex++;
+            // Use RAF for smoother updates
+            requestAnimationFrame(processNextChar);
           }
-        }
+        };
+        requestAnimationFrame(processNextChar);
       } else {
         // Get the last character typed
         const lastChar = value[value.length - 1];
 
         if (lastChar) {
           handleKeyPress(lastChar);
+          // Add visual feedback for single character
+          if (containerRef.current && isTabletRef.current) {
+            containerRef.current.classList.add('ring-1', 'ring-primary/20');
+            setTimeout(() => {
+              containerRef.current?.classList.remove('ring-1', 'ring-primary/20');
+            }, 50);
+          }
         }
       }
 
@@ -300,7 +368,10 @@ export function TypingInput({
           'min-h-[160px] sm:min-h-[200px] md:min-h-[280px] lg:min-h-[320px]', // Responsive min-height
           'max-h-[70vh] sm:max-h-[75vh] overflow-y-auto', // Prevent overflow on small screens
           'typing-container-tablet typing-container-ipad-pro',
-          isComplete && 'border-green-600/50 dark:border-green-400/50'
+          'transition-all duration-200', // Smooth transitions for keyboard appearance
+          isComplete && 'border-green-600/50 dark:border-green-400/50',
+          // Add extra bottom margin when keyboard is visible on tablets
+          isKeyboardVisible && isTabletRef.current && 'mb-8'
         )}
         role="textbox"
         aria-label="Typing input area"
@@ -309,7 +380,7 @@ export function TypingInput({
         onTouchEnd={handleTouchEnd}
         onClick={handleContainerClick}
       >
-        {/* Hidden input for mobile keyboard */}
+        {/* Hidden input for mobile keyboard - optimized for tablets */}
         <input
           ref={hiddenInputRef}
           type="text"
@@ -320,8 +391,25 @@ export function TypingInput({
           spellCheck="false"
           data-form-type="other"
           data-lpignore="true"
+          data-1p-ignore="true"
           enterKeyHint="next"
+          // Additional attributes to prevent autocomplete on tablets
+          name="typing-input-hidden"
+          id="typing-input-hidden"
+          aria-autocomplete="none"
           className="absolute opacity-0 pointer-events-none touch-manipulation"
+          // Inline styles for better tablet compatibility
+          style={{
+            position: 'absolute',
+            top: '-9999px',
+            left: '-9999px',
+            width: '1px',
+            height: '1px',
+            opacity: 0,
+            pointerEvents: 'none',
+            // Prevent input zoom on iOS
+            fontSize: '16px',
+          }}
           onChange={handleMobileInput}
           onKeyDown={handleMobileKeyDown}
           onBlur={(e) => {

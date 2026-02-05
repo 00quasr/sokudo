@@ -293,12 +293,41 @@
   }
 }
 
+@keyframes key-press-feedback {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+}
+
 .animate-cursor-blink {
   animation: cursor-blink 1s ease-in-out infinite;
 }
 
 .animate-cursor-glow {
   animation: cursor-glow 1.5s ease-in-out infinite;
+}
+
+.animate-key-press {
+  animation: key-press-feedback 0.15s ease-out;
+}
+
+/* Enhanced cursor visibility for tablets */
+@media (pointer: coarse) and (min-width: 768px) {
+  .animate-cursor-blink {
+    /* Slower, more visible blink on tablets */
+    animation: cursor-blink 1.2s ease-in-out infinite;
+    /* Thicker cursor for better visibility */
+    width: 3px !important;
+  }
 }
 
 /* Touch device optimizations */
@@ -334,11 +363,14 @@
       margin-bottom: env(safe-area-inset-bottom, 20px);
       /* Smoother transitions for touch interactions */
       transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-out;
+      /* Increase touch target size for better tablet UX */
+      min-height: 240px;
     }
 
     /* Add subtle lift effect on active touch to provide feedback */
     .typing-container-tablet:active {
       transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     /* Tablet portrait mode optimizations */
@@ -347,6 +379,14 @@
         /* Reserve space for keyboard - typical iPad keyboard is ~300-350px */
         padding-bottom: max(env(keyboard-inset-height, 350px), 20px);
       }
+
+      .typing-container-tablet {
+        /* Optimize vertical space usage in portrait */
+        max-height: 50vh;
+        /* Larger font for better readability on tablets in portrait */
+        font-size: 1.125rem;
+        line-height: 1.75;
+      }
     }
 
     /* Tablet landscape mode optimizations */
@@ -354,6 +394,14 @@
       .typing-area-tablet-landscape {
         /* In landscape, keyboard takes less vertical space */
         padding-bottom: max(env(keyboard-inset-height, 250px), 20px);
+      }
+
+      .typing-container-tablet {
+        /* More compact in landscape to preserve screen real estate */
+        max-height: 60vh;
+        /* Slightly larger text in landscape for comfortable reading */
+        font-size: 1.25rem;
+        line-height: 1.6;
       }
     }
   }
@@ -414,6 +462,74 @@
     html {
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+    }
+  }
+
+  /* Tablet-specific touch improvements */
+  @media (pointer: coarse) and (min-width: 768px) {
+    /* Prevent accidental zooms on double-tap for tablets */
+    .typing-container-tablet {
+      touch-action: manipulation;
+    }
+
+    /* Optimize button and interactive element sizes for tablets */
+    button,
+    a[role="button"],
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+      /* Add touch feedback */
+      transition: transform 0.1s ease-out, background-color 0.15s ease;
+    }
+
+    button:active,
+    a[role="button"]:active,
+    [role="button"]:active {
+      transform: scale(0.98);
+    }
+
+    /* Better spacing for touch targets on tablets */
+    .typing-scroll-fix {
+      gap: 1rem;
+    }
+
+    /* Optimize stats bar for tablet touch */
+    .stats-bar {
+      padding: 0.75rem 1rem;
+      min-height: 48px;
+    }
+  }
+
+  /* iPad-specific optimizations using hover query */
+  @media (hover: none) and (min-width: 768px) {
+    /* This targets touch-only devices with tablet+ screens (iPads) */
+    .typing-container-tablet {
+      /* Prevent iOS Safari bounce scrolling from interfering */
+      overscroll-behavior: contain;
+    }
+
+    /* Optimize for iPad split-screen and slide-over */
+    @supports (-webkit-touch-callout: none) {
+      .typing-container-tablet {
+        /* Account for multitasking on iPad */
+        max-width: min(100%, 900px);
+      }
+    }
+  }
+
+  /* High DPI tablet displays (Retina iPads, high-end Android tablets) */
+  @media (pointer: coarse) and (min-width: 768px) and (min-resolution: 2dppx) {
+    .typing-container-tablet {
+      /* Sharper text rendering on high DPI tablets */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Ensure cursor is crisp on retina displays */
+    .animate-cursor-blink {
+      transform: translateZ(0);
+      will-change: opacity;
     }
   }
 }
