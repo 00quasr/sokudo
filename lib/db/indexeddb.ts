@@ -118,13 +118,14 @@ export async function getUnsyncedSessions(): Promise<OfflineTypingSession[]> {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([SESSIONS_STORE], 'readonly');
     const store = transaction.objectStore(SESSIONS_STORE);
-    const index = store.index('synced');
 
-    // Use IDBKeyRange for boolean value
-    const request = index.getAll(IDBKeyRange.only(false));
+    // Get all sessions and filter for unsynced
+    const request = store.getAll();
 
     request.onsuccess = () => {
-      resolve(request.result);
+      const allSessions = request.result as OfflineTypingSession[];
+      const unsyncedSessions = allSessions.filter(session => !session.synced);
+      resolve(unsyncedSessions);
     };
 
     request.onerror = () => {
