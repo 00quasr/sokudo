@@ -102,7 +102,6 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
     const targetId = adaptiveDifficulty?.suggestedChallengeId ?? nextChallengeId;
     if (targetId) {
       setIsTransitioning(true);
-      // Delay navigation to show progress indicator
       setTimeout(() => {
         router.push(`/practice/${categorySlug}/${targetId}`);
       }, 1500);
