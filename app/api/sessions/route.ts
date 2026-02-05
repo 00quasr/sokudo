@@ -289,9 +289,11 @@ export async function POST(request: NextRequest) {
       challengeId: sessionData.challengeId,
     });
 
+    // Get user stats for spaced repetition and milestone checking
+    const userStats = await getUserStatsOverview();
+
     // Update spaced repetition schedule for this challenge
     try {
-      const userStats = await getUserStatsOverview();
       const quality = deriveQuality({
         wpm: sessionData.wpm,
         accuracy: sessionData.accuracy,
@@ -317,6 +319,12 @@ export async function POST(request: NextRequest) {
       console.error('Error updating spaced repetition:', srError);
     }
 
+    // Check for WPM milestones (50, 75, 100, 125, 150+ WPM)
+    const milestones = [50, 75, 100, 125, 150];
+    const reachedMilestone = milestones.find((milestone) => {
+      return sessionData.wpm >= milestone && userStats.avgWpm < milestone;
+    });
+
     // Dispatch webhook events (fire-and-forget)
     dispatchWebhookEvent(user.id, 'session.completed', {
       sessionId: session.id,
@@ -340,6 +348,16 @@ export async function POST(request: NextRequest) {
           icon: achievement.icon,
         }).catch((err) => console.error('Error dispatching achievement.earned webhook:', err));
       }
+    }
+
+    if (reachedMilestone) {
+      dispatchWebhookEvent(user.id, 'user.milestone_reached', {
+        milestoneType: 'wpm',
+        milestoneValue: reachedMilestone,
+        currentWpm: sessionData.wpm,
+        sessionId: session.id,
+        reachedAt: session.completedAt,
+      }).catch((err) => console.error('Error dispatching user.milestone_reached webhook:', err));
     }
 
     // Include limit information in response

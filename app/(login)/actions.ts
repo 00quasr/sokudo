@@ -29,6 +29,7 @@ import {
   validatedActionWithUser
 } from '@/lib/auth/middleware';
 import { signIn as nextAuthSignIn } from '@/lib/auth/auth';
+import { dispatchWebhookEvent } from '@/lib/webhooks/deliver';
 
 async function logActivity(
   teamId: number | null | undefined,
@@ -243,6 +244,15 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
       // Don't block sign-up if referral tracking fails
     }
   }
+
+  // Dispatch user.signed_up webhook event (fire-and-forget)
+  dispatchWebhookEvent(createdUser.id, 'user.signed_up', {
+    userId: createdUser.id,
+    email: createdUser.email,
+    teamId,
+    signedUpAt: createdUser.createdAt.toISOString(),
+    referralCode: ref ?? null,
+  }).catch((err) => console.error('Error dispatching user.signed_up webhook:', err));
 
   const redirectTo = formData.get('redirect') as string | null;
   if (redirectTo === 'checkout') {

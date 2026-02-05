@@ -3,7 +3,12 @@ import { eq, and } from 'drizzle-orm';
 import { db } from '@/lib/db/drizzle';
 import { webhooks, webhookDeliveries } from '@/lib/db/schema';
 
-export type WebhookEventType = 'session.completed' | 'achievement.earned';
+export type WebhookEventType =
+  | 'session.completed'
+  | 'achievement.earned'
+  | 'user.signed_up'
+  | 'user.subscription_updated'
+  | 'user.milestone_reached';
 
 export interface WebhookPayload {
   event: WebhookEventType;

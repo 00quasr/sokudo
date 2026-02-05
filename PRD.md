@@ -281,7 +281,7 @@
 - [x] Create API documentation (OpenAPI/Swagger spec)
 - [x] Add developer onboarding guide
 - [x] Document webhook payload formats
-- [ ] Create troubleshooting guide for common issues
+- [x] Create troubleshooting guide for common issues
 
 ---
 
@@ -289,7 +289,7 @@
 
 ### Additional Integrations (Low Priority)
 
-- [ ] CLI tool for terminal-based practice
+- [x] CLI tool for terminal-based practice
 - [ ] Zapier integration for workflow automation
 - [ ] n8n integration for self-hosted workflows
 

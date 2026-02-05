@@ -6,6 +6,7 @@ import {
   getUser,
   updateTeamSubscription
 } from '@/lib/db/queries';
+import { dispatchWebhookEvent } from '@/lib/webhooks/deliver';
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-04-30.basil'
@@ -132,12 +133,17 @@ export async function handleSubscriptionChange(
     return;
   }
 
+  let planName: string | null = null;
+  let productId: string | null = null;
+
   if (status === 'active' || status === 'trialing') {
     const plan = subscription.items.data[0]?.plan;
+    productId = plan?.product as string;
+    planName = (plan?.product as Stripe.Product).name;
     await updateTeamSubscription(team.id, {
       stripeSubscriptionId: subscriptionId,
-      stripeProductId: plan?.product as string,
-      planName: (plan?.product as Stripe.Product).name,
+      stripeProductId: productId,
+      planName,
       subscriptionStatus: status
     });
   } else if (status === 'canceled' || status === 'unpaid') {
@@ -147,6 +153,30 @@ export async function handleSubscriptionChange(
       planName: null,
       subscriptionStatus: status
     });
+  }
+
+  // Get team owner to dispatch webhook
+  // Note: We need to find the owner user ID from the team
+  // For now, we'll dispatch to all team members
+  const { db } = await import('@/lib/db/drizzle');
+  const { teamMembers } = await import('@/lib/db/schema');
+  const { eq } = await import('drizzle-orm');
+
+  const members = await db
+    .select({ userId: teamMembers.userId })
+    .from(teamMembers)
+    .where(eq(teamMembers.teamId, team.id));
+
+  // Dispatch webhook event to all team members (fire-and-forget)
+  for (const member of members) {
+    dispatchWebhookEvent(member.userId, 'user.subscription_updated', {
+      teamId: team.id,
+      subscriptionId,
+      status,
+      planName,
+      productId,
+      updatedAt: new Date().toISOString(),
+    }).catch((err) => console.error('Error dispatching user.subscription_updated webhook:', err));
   }
 }
 

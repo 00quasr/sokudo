@@ -7,7 +7,13 @@ import { webhooks } from '@/lib/db/schema';
 import { getUser } from '@/lib/db/queries';
 import { apiRateLimit } from '@/lib/rate-limit';
 
-const WEBHOOK_EVENT_TYPES = ['session.completed', 'achievement.earned'] as const;
+const WEBHOOK_EVENT_TYPES = [
+  'session.completed',
+  'achievement.earned',
+  'user.signed_up',
+  'user.subscription_updated',
+  'user.milestone_reached',
+] as const;
 
 const createWebhookSchema = z.object({
   url: z.string().url().max(2048),
