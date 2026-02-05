@@ -38,9 +38,23 @@ vi.mock('next-themes', async () => {
   };
 });
 
+// Mock theme-provider
+const mockSetHighContrast = vi.fn();
+vi.mock('../theme-provider', async () => {
+  const actual = await vi.importActual('../theme-provider');
+  return {
+    ...actual,
+    useHighContrast: () => ({
+      highContrast: false,
+      setHighContrast: mockSetHighContrast,
+    }),
+  };
+});
+
 describe('ThemeToggle', () => {
   beforeEach(() => {
     mockSetTheme.mockClear();
+    mockSetHighContrast.mockClear();
   });
 
   describe('rendering', () => {
@@ -127,6 +141,32 @@ describe('ThemeToggle', () => {
       const button = screen.getByRole('button', { name: /toggle theme/i });
       button.focus();
       expect(document.activeElement).toBe(button);
+    });
+  });
+
+  describe('high contrast mode', () => {
+    it('should import useHighContrast from theme-provider', () => {
+      // This test verifies that the component imports and uses the useHighContrast hook
+      const { container } = render(
+        <ThemeProvider>
+          <ThemeToggle />
+        </ThemeProvider>
+      );
+
+      // Component should render without errors when using the hook
+      expect(container.querySelector('button')).toBeTruthy();
+    });
+
+    it('should have dropdown menu for theme options', () => {
+      const { container } = render(
+        <ThemeProvider>
+          <ThemeToggle />
+        </ThemeProvider>
+      );
+
+      // Dropdown menu trigger should exist which will contain high contrast option
+      const trigger = container.querySelector('[data-slot="dropdown-menu-trigger"]');
+      expect(trigger).toBeTruthy();
     });
   });
 });

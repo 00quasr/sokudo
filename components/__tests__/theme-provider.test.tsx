@@ -134,4 +134,59 @@ describe('ThemeProvider', () => {
       expect(screen.getByText('Content')).toBeTruthy();
     });
   });
+
+  describe('high contrast mode', () => {
+    it('should fetch high contrast preference on mount', async () => {
+      vi.mocked(global.fetch).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ theme: 'dark', highContrast: true }),
+      } as Response);
+
+      render(
+        <ThemeProvider>
+          <div>Content</div>
+        </ThemeProvider>
+      );
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledWith('/api/user/preferences');
+      });
+    });
+
+    it('should apply high contrast class to document when enabled', async () => {
+      vi.mocked(global.fetch).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ theme: 'dark', highContrast: true }),
+      } as Response);
+
+      render(
+        <ThemeProvider>
+          <div>Content</div>
+        </ThemeProvider>
+      );
+
+      await waitFor(() => {
+        expect(document.documentElement.classList.contains('high-contrast')).toBe(true);
+      });
+    });
+
+    it('should remove high contrast class when disabled', async () => {
+      document.documentElement.classList.add('high-contrast');
+
+      vi.mocked(global.fetch).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ theme: 'dark', highContrast: false }),
+      } as Response);
+
+      render(
+        <ThemeProvider>
+          <div>Content</div>
+        </ThemeProvider>
+      );
+
+      await waitFor(() => {
+        expect(document.documentElement.classList.contains('high-contrast')).toBe(false);
+      });
+    });
+  });
 });
