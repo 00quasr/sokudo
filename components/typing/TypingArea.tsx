@@ -42,6 +42,8 @@ interface Token {
   style: TokenStyle;
 }
 
+// Theme-aware syntax colors using semantic color names
+// These will adapt based on whether dark or light mode is active
 const SYNTAX_PATTERNS: Record<SyntaxType, { patterns: [RegExp, TokenStyle][]; defaultStyle: TokenStyle }> = {
   plain: {
     patterns: [],
@@ -49,134 +51,134 @@ const SYNTAX_PATTERNS: Record<SyntaxType, { patterns: [RegExp, TokenStyle][]; de
   },
   git: {
     patterns: [
-      // Commands
-      [/^(git)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
-      // Subcommands
-      [/\b(commit|push|pull|merge|rebase|checkout|branch|clone|init|add|status|log|diff|reset|stash|fetch|remote|tag|cherry-pick|bisect|blame|show|describe|archive)\b/, { color: 'text-blue-400' }],
-      // Flags
-      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-400' }],
-      // Strings (quoted)
-      [/"[^"]*"/, { color: 'text-green-400' }],
-      [/'[^']*'/, { color: 'text-green-400' }],
-      // Branch names / refs
-      [/\b(main|master|HEAD|origin|upstream)\b/, { color: 'text-yellow-400' }],
+      // Commands - using violet which works in both themes
+      [/^(git)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
+      // Subcommands - using blue
+      [/\b(commit|push|pull|merge|rebase|checkout|branch|clone|init|add|status|log|diff|reset|stash|fetch|remote|tag|cherry-pick|bisect|blame|show|describe|archive)\b/, { color: 'text-blue-600 dark:text-blue-400' }],
+      // Flags - using cyan
+      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-600 dark:text-cyan-400' }],
+      // Strings (quoted) - using green
+      [/"[^"]*"/, { color: 'text-green-600 dark:text-green-400' }],
+      [/'[^']*'/, { color: 'text-green-600 dark:text-green-400' }],
+      // Branch names / refs - using amber
+      [/\b(main|master|HEAD|origin|upstream)\b/, { color: 'text-amber-600 dark:text-amber-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   shell: {
     patterns: [
       // Common commands
-      [/^(cd|ls|pwd|mkdir|rm|cp|mv|cat|echo|grep|find|chmod|chown|sudo|curl|wget|tar|zip|unzip|ssh|scp)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
+      [/^(cd|ls|pwd|mkdir|rm|cp|mv|cat|echo|grep|find|chmod|chown|sudo|curl|wget|tar|zip|unzip|ssh|scp)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
       // Flags
-      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-400' }],
+      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-600 dark:text-cyan-400' }],
       // Environment variables
-      [/\$[\w_]+/, { color: 'text-yellow-400' }],
+      [/\$[\w_]+/, { color: 'text-amber-600 dark:text-amber-400' }],
       // Strings
-      [/"[^"]*"/, { color: 'text-green-400' }],
-      [/'[^']*'/, { color: 'text-green-400' }],
+      [/"[^"]*"/, { color: 'text-green-600 dark:text-green-400' }],
+      [/'[^']*'/, { color: 'text-green-600 dark:text-green-400' }],
       // Paths
-      [/(?:^|\s)(\/[\w./-]+|\.\/[\w./-]+|~\/[\w./-]+)/, { color: 'text-orange-400' }],
+      [/(?:^|\s)(\/[\w./-]+|\.\/[\w./-]+|~\/[\w./-]+)/, { color: 'text-orange-600 dark:text-orange-400' }],
       // Pipes and redirects
-      [/[|><&]+/, { color: 'text-pink-400' }],
+      [/[|><&]+/, { color: 'text-pink-600 dark:text-pink-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   react: {
     patterns: [
       // Keywords
-      [/\b(import|export|from|const|let|var|function|return|if|else|for|while|class|extends|default|async|await)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
+      [/\b(import|export|from|const|let|var|function|return|if|else|for|while|class|extends|default|async|await)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
       // React specific
-      [/\b(useState|useEffect|useCallback|useMemo|useRef|useContext|useReducer|memo|forwardRef|createContext|Fragment)\b/, { color: 'text-cyan-400' }],
+      [/\b(useState|useEffect|useCallback|useMemo|useRef|useContext|useReducer|memo|forwardRef|createContext|Fragment)\b/, { color: 'text-cyan-600 dark:text-cyan-400' }],
       // JSX tags
-      [/<\/?[\w.]+/, { color: 'text-blue-400' }],
+      [/<\/?[\w.]+/, { color: 'text-blue-600 dark:text-blue-400' }],
       // Strings
-      [/"[^"]*"/, { color: 'text-green-400' }],
-      [/'[^']*'/, { color: 'text-green-400' }],
-      [/`[^`]*`/, { color: 'text-green-400' }],
+      [/"[^"]*"/, { color: 'text-green-600 dark:text-green-400' }],
+      [/'[^']*'/, { color: 'text-green-600 dark:text-green-400' }],
+      [/`[^`]*`/, { color: 'text-green-600 dark:text-green-400' }],
       // Types
-      [/\b(string|number|boolean|any|void|null|undefined|never|object|Array|Promise|React)\b/, { color: 'text-yellow-400' }],
+      [/\b(string|number|boolean|any|void|null|undefined|never|object|Array|Promise|React)\b/, { color: 'text-amber-600 dark:text-amber-400' }],
       // Arrow functions
-      [/=>/, { color: 'text-pink-400' }],
+      [/=>/, { color: 'text-pink-600 dark:text-pink-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   typescript: {
     patterns: [
       // Keywords
-      [/\b(import|export|from|const|let|var|function|return|if|else|for|while|class|extends|implements|interface|type|enum|namespace|module|declare|abstract|readonly|public|private|protected|static|async|await|default)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
+      [/\b(import|export|from|const|let|var|function|return|if|else|for|while|class|extends|implements|interface|type|enum|namespace|module|declare|abstract|readonly|public|private|protected|static|async|await|default)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
       // Types
-      [/\b(string|number|boolean|any|void|null|undefined|never|object|unknown|Array|Promise|Record|Partial|Required|Pick|Omit)\b/, { color: 'text-yellow-400' }],
+      [/\b(string|number|boolean|any|void|null|undefined|never|object|unknown|Array|Promise|Record|Partial|Required|Pick|Omit)\b/, { color: 'text-amber-600 dark:text-amber-400' }],
       // Generics
-      [/<[\w, ]+>/, { color: 'text-cyan-400' }],
+      [/<[\w, ]+>/, { color: 'text-cyan-600 dark:text-cyan-400' }],
       // Strings
-      [/"[^"]*"/, { color: 'text-green-400' }],
-      [/'[^']*'/, { color: 'text-green-400' }],
+      [/"[^"]*"/, { color: 'text-green-600 dark:text-green-400' }],
+      [/'[^']*'/, { color: 'text-green-600 dark:text-green-400' }],
       // Arrow functions
-      [/=>/, { color: 'text-pink-400' }],
+      [/=>/, { color: 'text-pink-600 dark:text-pink-400' }],
       // Decorators
-      [/@\w+/, { color: 'text-orange-400' }],
+      [/@\w+/, { color: 'text-orange-600 dark:text-orange-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   docker: {
     patterns: [
       // Dockerfile instructions
-      [/^(FROM|RUN|CMD|LABEL|MAINTAINER|EXPOSE|ENV|ADD|COPY|ENTRYPOINT|VOLUME|USER|WORKDIR|ARG|ONBUILD|STOPSIGNAL|HEALTHCHECK|SHELL)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
+      [/^(FROM|RUN|CMD|LABEL|MAINTAINER|EXPOSE|ENV|ADD|COPY|ENTRYPOINT|VOLUME|USER|WORKDIR|ARG|ONBUILD|STOPSIGNAL|HEALTHCHECK|SHELL)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
       // Docker CLI
-      [/^(docker)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
-      [/\b(build|run|push|pull|exec|logs|ps|stop|start|rm|rmi|images|network|volume|compose|container|image)\b/, { color: 'text-blue-400' }],
+      [/^(docker)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
+      [/\b(build|run|push|pull|exec|logs|ps|stop|start|rm|rmi|images|network|volume|compose|container|image)\b/, { color: 'text-blue-600 dark:text-blue-400' }],
       // Flags
-      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-400' }],
+      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-600 dark:text-cyan-400' }],
       // Strings
-      [/"[^"]*"/, { color: 'text-green-400' }],
+      [/"[^"]*"/, { color: 'text-green-600 dark:text-green-400' }],
       // Environment variables
-      [/\$[\w_{}]+/, { color: 'text-yellow-400' }],
+      [/\$[\w_{}]+/, { color: 'text-amber-600 dark:text-amber-400' }],
       // Ports
-      [/\b\d+:\d+\b/, { color: 'text-orange-400' }],
+      [/\b\d+:\d+\b/, { color: 'text-orange-600 dark:text-orange-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   sql: {
     patterns: [
       // Keywords
-      [/\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|IN|IS|NULL|AS|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|DROP|ALTER|TABLE|INDEX|VIEW|TRIGGER|PROCEDURE|FUNCTION|DATABASE|SCHEMA|PRIMARY|FOREIGN|KEY|REFERENCES|UNIQUE|CHECK|DEFAULT|CONSTRAINT|CASCADE|TRUNCATE|DISTINCT|UNION|ALL|EXISTS|BETWEEN|LIKE|CASE|WHEN|THEN|ELSE|END|COUNT|SUM|AVG|MIN|MAX|COALESCE|NULLIF|CAST)\b/i, { color: 'text-purple-400', fontWeight: 'font-bold' }],
+      [/\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|IN|IS|NULL|AS|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|DROP|ALTER|TABLE|INDEX|VIEW|TRIGGER|PROCEDURE|FUNCTION|DATABASE|SCHEMA|PRIMARY|FOREIGN|KEY|REFERENCES|UNIQUE|CHECK|DEFAULT|CONSTRAINT|CASCADE|TRUNCATE|DISTINCT|UNION|ALL|EXISTS|BETWEEN|LIKE|CASE|WHEN|THEN|ELSE|END|COUNT|SUM|AVG|MIN|MAX|COALESCE|NULLIF|CAST)\b/i, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
       // Strings
-      [/'[^']*'/, { color: 'text-green-400' }],
+      [/'[^']*'/, { color: 'text-green-600 dark:text-green-400' }],
       // Numbers
-      [/\b\d+\b/, { color: 'text-orange-400' }],
+      [/\b\d+\b/, { color: 'text-orange-600 dark:text-orange-400' }],
       // Operators
-      [/[=<>!]+/, { color: 'text-pink-400' }],
+      [/[=<>!]+/, { color: 'text-pink-600 dark:text-pink-400' }],
       // Wildcards
-      [/\*/, { color: 'text-yellow-400' }],
+      [/\*/, { color: 'text-amber-600 dark:text-amber-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   npm: {
     patterns: [
-      [/^(npm)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
-      [/\b(install|uninstall|update|init|run|start|test|build|publish|link|pack|ci|audit|outdated|ls|list|search|view|info|exec|npx)\b/, { color: 'text-blue-400' }],
-      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-400' }],
-      [/@[\w/-]+/, { color: 'text-yellow-400' }],
+      [/^(npm)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
+      [/\b(install|uninstall|update|init|run|start|test|build|publish|link|pack|ci|audit|outdated|ls|list|search|view|info|exec|npx)\b/, { color: 'text-blue-600 dark:text-blue-400' }],
+      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-600 dark:text-cyan-400' }],
+      [/@[\w/-]+/, { color: 'text-amber-600 dark:text-amber-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   yarn: {
     patterns: [
-      [/^(yarn)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
-      [/\b(add|remove|install|upgrade|init|run|start|test|build|publish|link|pack|audit|outdated|list|info|why|workspaces|dlx)\b/, { color: 'text-blue-400' }],
-      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-400' }],
-      [/@[\w/-]+/, { color: 'text-yellow-400' }],
+      [/^(yarn)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
+      [/\b(add|remove|install|upgrade|init|run|start|test|build|publish|link|pack|audit|outdated|list|info|why|workspaces|dlx)\b/, { color: 'text-blue-600 dark:text-blue-400' }],
+      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-600 dark:text-cyan-400' }],
+      [/@[\w/-]+/, { color: 'text-amber-600 dark:text-amber-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
   pnpm: {
     patterns: [
-      [/^(pnpm)\b/, { color: 'text-purple-400', fontWeight: 'font-bold' }],
-      [/\b(add|remove|install|update|init|run|start|test|build|publish|link|pack|audit|outdated|list|why|store|dlx|exec)\b/, { color: 'text-blue-400' }],
-      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-400' }],
-      [/@[\w/-]+/, { color: 'text-yellow-400' }],
+      [/^(pnpm)\b/, { color: 'text-violet-600 dark:text-violet-400', fontWeight: 'font-bold' }],
+      [/\b(add|remove|install|update|init|run|start|test|build|publish|link|pack|audit|outdated|list|why|store|dlx|exec)\b/, { color: 'text-blue-600 dark:text-blue-400' }],
+      [/\s(-{1,2}[\w-]+)/, { color: 'text-cyan-600 dark:text-cyan-400' }],
+      [/@[\w/-]+/, { color: 'text-amber-600 dark:text-amber-400' }],
     ],
-    defaultStyle: { color: 'text-zinc-400' },
+    defaultStyle: { color: 'text-muted-foreground' },
   },
 };
 
@@ -279,7 +281,8 @@ export function TypingArea({
           // Determine character state and class
           let charClass = '';
           if (isTyped) {
-            charClass = hasError ? 'text-red-500' : 'text-green-500';
+            // Use theme-aware colors for errors and correct characters
+            charClass = hasError ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400';
           } else if (isCurrent) {
             charClass = style.color;
           } else {
@@ -311,7 +314,7 @@ export function TypingArea({
               {/* Error indicator - show what was typed */}
               {hasError && isTyped && errorChar && (
                 <span
-                  className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] text-red-400"
+                  className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] text-red-500 dark:text-red-400"
                   aria-hidden="true"
                   data-testid={`error-${index}`}
                 >

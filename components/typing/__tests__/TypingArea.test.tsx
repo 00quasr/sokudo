@@ -155,7 +155,8 @@ describe('TypingArea', () => {
       render(<TypingArea text="abc" cursorPosition={1} />);
 
       const aChar = screen.getByText('a');
-      expect(aChar.className).toContain('text-green-500');
+      // Check for theme-aware green colors
+      expect(aChar.className).toMatch(/text-green-600|dark:text-green-400/);
     });
 
     it('should show error characters in red', () => {
@@ -164,7 +165,8 @@ describe('TypingArea', () => {
       render(<TypingArea text="abc" cursorPosition={1} errors={errors} />);
 
       const aChar = screen.getByText('a');
-      expect(aChar.className).toContain('text-red-500');
+      // Check for theme-aware red colors
+      expect(aChar.className).toMatch(/text-red-600|dark:text-red-400/);
     });
 
     it('should dim upcoming characters', () => {
@@ -211,7 +213,8 @@ describe('TypingArea', () => {
       render(<TypingArea text="abc" cursorPosition={1} errors={errors} />);
 
       const errorIndicator = screen.getByTestId('error-0');
-      expect(errorIndicator.className).toContain('text-red-400');
+      // Check for theme-aware red colors
+      expect(errorIndicator.className).toMatch(/text-red-500|dark:text-red-400/);
       expect(errorIndicator.className).toContain('text-[10px]');
     });
 
@@ -251,7 +254,8 @@ describe('TypingArea', () => {
       render(<TypingArea text="git commit" syntaxType="git" />);
 
       const gChar = screen.getByText('g');
-      expect(gChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(gChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
       expect(gChar.className).toContain('font-bold');
     });
 
@@ -259,28 +263,32 @@ describe('TypingArea', () => {
       render(<TypingArea text="git commit" syntaxType="git" />);
 
       const cChar = screen.getByText('c');
-      expect(cChar.className).toContain('text-blue-400');
+      // Check for theme-aware blue colors
+      expect(cChar.className).toMatch(/text-blue-600|dark:text-blue-400/);
     });
 
     it('should highlight git flags', () => {
       render(<TypingArea text="git commit -m" syntaxType="git" />);
 
       const dashChar = screen.getAllByText('-')[0];
-      expect(dashChar.className).toContain('text-cyan-400');
+      // Check for theme-aware cyan colors
+      expect(dashChar.className).toMatch(/text-cyan-600|dark:text-cyan-400/);
     });
 
     it('should highlight quoted strings in git', () => {
       render(<TypingArea text='git commit -m "test"' syntaxType="git" />);
 
       const quotes = screen.getAllByText('"');
-      expect(quotes[0].className).toContain('text-green-400');
+      // Check for theme-aware green colors
+      expect(quotes[0].className).toMatch(/text-green-600|dark:text-green-400/);
     });
 
     it('should highlight branch names', () => {
       render(<TypingArea text="git checkout main" syntaxType="git" />);
 
       const mChar = screen.getAllByText('m')[0];
-      expect(mChar.className).toContain('text-yellow-400');
+      // Check for theme-aware amber colors
+      expect(mChar.className).toMatch(/text-amber-600|dark:text-amber-400/);
     });
   });
 
@@ -289,21 +297,24 @@ describe('TypingArea', () => {
       render(<TypingArea text="cd /home" syntaxType="shell" />);
 
       const cChar = screen.getByText('c');
-      expect(cChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(cChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight environment variables', () => {
       render(<TypingArea text="echo $HOME" syntaxType="shell" />);
 
       const dollarChar = screen.getByText('$');
-      expect(dollarChar.className).toContain('text-yellow-400');
+      // Check for theme-aware amber colors
+      expect(dollarChar.className).toMatch(/text-amber-600|dark:text-amber-400/);
     });
 
     it('should highlight pipes', () => {
       render(<TypingArea text="ls | grep" syntaxType="shell" />);
 
       const pipeChar = screen.getByText('|');
-      expect(pipeChar.className).toContain('text-pink-400');
+      // Check for theme-aware pink colors
+      expect(pipeChar.className).toMatch(/text-pink-600|dark:text-pink-400/);
     });
   });
 
@@ -312,28 +323,32 @@ describe('TypingArea', () => {
       render(<TypingArea text="import React from" syntaxType="react" />);
 
       const iChar = screen.getByText('i');
-      expect(iChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(iChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight React hooks', () => {
       render(<TypingArea text="useState" syntaxType="react" />);
 
       const uChar = screen.getByText('u');
-      expect(uChar.className).toContain('text-cyan-400');
+      // Check for theme-aware cyan colors
+      expect(uChar.className).toMatch(/text-cyan-600|dark:text-cyan-400/);
     });
 
     it('should highlight JSX tags', () => {
       render(<TypingArea text="<div>" syntaxType="react" />);
 
       const ltChar = screen.getByText('<');
-      expect(ltChar.className).toContain('text-blue-400');
+      // Check for theme-aware blue colors
+      expect(ltChar.className).toMatch(/text-blue-600|dark:text-blue-400/);
     });
 
     it('should highlight arrow functions', () => {
       render(<TypingArea text="() => {}" syntaxType="react" />);
 
       const arrowChars = screen.getAllByText('=');
-      expect(arrowChars[0].className).toContain('text-pink-400');
+      // Check for theme-aware pink colors
+      expect(arrowChars[0].className).toMatch(/text-pink-600|dark:text-pink-400/);
     });
   });
 
@@ -342,21 +357,24 @@ describe('TypingArea', () => {
       render(<TypingArea text="interface Foo" syntaxType="typescript" />);
 
       const iChar = screen.getByText('i');
-      expect(iChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(iChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight TypeScript types', () => {
       render(<TypingArea text="string" syntaxType="typescript" />);
 
       const sChar = screen.getByText('s');
-      expect(sChar.className).toContain('text-yellow-400');
+      // Check for theme-aware amber colors
+      expect(sChar.className).toMatch(/text-amber-600|dark:text-amber-400/);
     });
 
     it('should highlight decorators', () => {
       render(<TypingArea text="@Injectable" syntaxType="typescript" />);
 
       const atChar = screen.getByText('@');
-      expect(atChar.className).toContain('text-orange-400');
+      // Check for theme-aware orange colors
+      expect(atChar.className).toMatch(/text-orange-600|dark:text-orange-400/);
     });
   });
 
@@ -365,14 +383,16 @@ describe('TypingArea', () => {
       render(<TypingArea text="docker build" syntaxType="docker" />);
 
       const dChar = screen.getAllByText('d')[0];
-      expect(dChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(dChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight Dockerfile instructions', () => {
       render(<TypingArea text="FROM node" syntaxType="docker" />);
 
       const fChar = screen.getByText('F');
-      expect(fChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(fChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight ports', () => {
@@ -389,14 +409,16 @@ describe('TypingArea', () => {
       render(<TypingArea text="SELECT * FROM" syntaxType="sql" />);
 
       const sChar = screen.getByText('S');
-      expect(sChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(sChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight wildcards', () => {
       render(<TypingArea text="SELECT *" syntaxType="sql" />);
 
       const starChar = screen.getByText('*');
-      expect(starChar.className).toContain('text-yellow-400');
+      // Check for theme-aware amber colors
+      expect(starChar.className).toMatch(/text-amber-600|dark:text-amber-400/);
     });
 
     it('should highlight comparison operators', () => {
@@ -408,8 +430,10 @@ describe('TypingArea', () => {
       const chars = screen.getAllByText((content, element) => {
         return content === '>' || content === '=';
       });
-      // At least one character should have pink styling for operators
-      const pinkChars = chars.filter(c => c.className.includes('text-pink-400'));
+      // At least one character should have pink styling for operators (check for both light and dark)
+      const pinkChars = chars.filter(c =>
+        c.className.includes('text-pink-600') || c.className.includes('dark:text-pink-400')
+      );
       expect(pinkChars.length).toBeGreaterThan(0);
     });
   });
@@ -418,30 +442,33 @@ describe('TypingArea', () => {
     it('should highlight npm command', () => {
       render(<TypingArea text="npm add" syntaxType="npm" />);
 
-      // First character 'n' from 'npm' should be purple
+      // First character 'n' from 'npm' should be violet
       const chars = screen.getAllByText('n');
-      expect(chars[0].className).toContain('text-purple-400');
+      expect(chars[0].className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight yarn command', () => {
       render(<TypingArea text="yarn add" syntaxType="yarn" />);
 
       const yChar = screen.getByText('y');
-      expect(yChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(yChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight pnpm command', () => {
       render(<TypingArea text="pnpm install" syntaxType="pnpm" />);
 
       const pChar = screen.getAllByText('p')[0];
-      expect(pChar.className).toContain('text-purple-400');
+      // Check for theme-aware violet colors
+      expect(pChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should highlight package scopes', () => {
       render(<TypingArea text="npm install @types/react" syntaxType="npm" />);
 
       const atChar = screen.getByText('@');
-      expect(atChar.className).toContain('text-yellow-400');
+      // Check for theme-aware amber colors
+      expect(atChar.className).toMatch(/text-amber-600|dark:text-amber-400/);
     });
   });
 
@@ -512,17 +539,24 @@ describe('tokenize function', () => {
 
     expect(tokens.length).toBeGreaterThan(1);
     expect(tokens[0].text).toBe('git');
-    expect(tokens[0].style.color).toBe('text-purple-400');
+    // Check for theme-aware violet colors
+    expect(tokens[0].style.color).toMatch(/text-violet-600|dark:text-violet-400/);
   });
 
   it('should tokenize multiple patterns in sequence', () => {
     const tokens = tokenize('git commit -m "test"', 'git');
 
     const colors = tokens.map((t) => t.style.color);
-    expect(colors).toContain('text-purple-400'); // git
-    expect(colors).toContain('text-blue-400'); // commit
-    expect(colors).toContain('text-cyan-400'); // -m
-    expect(colors).toContain('text-green-400'); // "test"
+    // Check that tokens contain theme-aware colors
+    const hasViolet = colors.some(c => c.includes('text-violet-600') || c.includes('dark:text-violet-400'));
+    const hasBlue = colors.some(c => c.includes('text-blue-600') || c.includes('dark:text-blue-400'));
+    const hasCyan = colors.some(c => c.includes('text-cyan-600') || c.includes('dark:text-cyan-400'));
+    const hasGreen = colors.some(c => c.includes('text-green-600') || c.includes('dark:text-green-400'));
+
+    expect(hasViolet).toBe(true); // git
+    expect(hasBlue).toBe(true); // commit
+    expect(hasCyan).toBe(true); // -m
+    expect(hasGreen).toBe(true); // "test"
   });
 
   it('should return empty tokens array for empty text', () => {

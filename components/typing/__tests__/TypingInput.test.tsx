@@ -83,7 +83,7 @@ describe('TypingInput', () => {
 
       // The 'a' should now be marked as typed (green)
       const aChar = screen.getByText('a');
-      expect(aChar.className).toContain('text-green-500');
+      expect(aChar.className).toMatch(/text-green-600|dark:text-green-400/);
     });
 
     it('should handle incorrect keystrokes', () => {
@@ -95,7 +95,7 @@ describe('TypingInput', () => {
 
       // The 'a' position should show error
       const aChar = screen.getByText('a');
-      expect(aChar.className).toContain('text-red-500');
+      expect(aChar.className).toMatch(/text-red-600|dark:text-red-400/);
     });
 
     it('should handle backspace', () => {
@@ -104,7 +104,7 @@ describe('TypingInput', () => {
 
       // Type correct character
       fireEvent.keyDown(input, { key: 'a' });
-      expect(screen.getByText('a').className).toContain('text-green-500');
+      expect(screen.getByText('a').className).toMatch(/text-green-600|dark:text-green-400/);
 
       // Backspace
       fireEvent.keyDown(input, { key: 'Backspace' });
@@ -239,7 +239,7 @@ describe('TypingInput', () => {
 
       // 'git' should have purple styling
       const gitChar = screen.getByText('g');
-      expect(gitChar.className).toContain('text-purple-400');
+      expect(gitChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should apply shell syntax highlighting', () => {
@@ -247,7 +247,7 @@ describe('TypingInput', () => {
 
       // 'c' from 'cd' should have purple styling
       const cdChar = screen.getByText('c');
-      expect(cdChar.className).toContain('text-purple-400');
+      expect(cdChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should apply sql syntax highlighting', () => {
@@ -255,7 +255,7 @@ describe('TypingInput', () => {
 
       // 'S' from 'SELECT' should have purple styling
       const selectChar = screen.getByText('S');
-      expect(selectChar.className).toContain('text-purple-400');
+      expect(selectChar.className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should handle plain syntax type', () => {
@@ -270,7 +270,7 @@ describe('TypingInput', () => {
 
       // First char 'n' from 'npm' should have purple styling
       const chars = screen.getAllByText('n');
-      expect(chars[0].className).toContain('text-purple-400');
+      expect(chars[0].className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
 
     it('should apply docker syntax highlighting', () => {
@@ -278,7 +278,7 @@ describe('TypingInput', () => {
 
       // First char 'd' from 'docker' should have purple styling
       const chars = screen.getAllByText('d');
-      expect(chars[0].className).toContain('text-purple-400');
+      expect(chars[0].className).toMatch(/text-violet-600|dark:text-violet-400/);
     });
   });
 
@@ -390,7 +390,7 @@ describe('TypingInput', () => {
       fireEvent.keyDown(input, { key: 'a' });
 
       const aChar = screen.getByText('a');
-      expect(aChar.className).toContain('text-green-500');
+      expect(aChar.className).toMatch(/text-green-600|dark:text-green-400/);
     });
 
     it('should show red for incorrect characters', () => {
@@ -400,7 +400,7 @@ describe('TypingInput', () => {
       fireEvent.keyDown(input, { key: 'x' });
 
       const aChar = screen.getByText('a');
-      expect(aChar.className).toContain('text-red-500');
+      expect(aChar.className).toMatch(/text-red-600|dark:text-red-400/);
     });
 
     it('should show error indicator with wrong character typed', () => {
@@ -428,9 +428,9 @@ describe('TypingInput', () => {
       const bChar = screen.getByText('b');
       const cChar = screen.getByText('c');
 
-      expect(aChar.className).toContain('text-red-500');
-      expect(bChar.className).toContain('text-red-500');
-      expect(cChar.className).toContain('text-green-500');
+      expect(aChar.className).toMatch(/text-red-600|dark:text-red-400/);
+      expect(bChar.className).toMatch(/text-red-600|dark:text-red-400/);
+      expect(cChar.className).toMatch(/text-green-600|dark:text-green-400/);
     });
 
     it('should show mix of correct and incorrect highlighting', () => {
@@ -447,10 +447,10 @@ describe('TypingInput', () => {
       const cChar = screen.getByText('c');
       const dChar = screen.getByText('d');
 
-      expect(aChar.className).toContain('text-green-500');
-      expect(bChar.className).toContain('text-red-500');
-      expect(cChar.className).toContain('text-green-500');
-      expect(dChar.className).toContain('text-red-500');
+      expect(aChar.className).toMatch(/text-green-600|dark:text-green-400/);
+      expect(bChar.className).toMatch(/text-red-600|dark:text-red-400/);
+      expect(cChar.className).toMatch(/text-green-600|dark:text-green-400/);
+      expect(dChar.className).toMatch(/text-red-600|dark:text-red-400/);
     });
 
     it('should dim upcoming characters', () => {
@@ -481,14 +481,14 @@ describe('TypingInput', () => {
 
       // Type wrong character
       fireEvent.keyDown(input, { key: 'x' });
-      expect(screen.getByText('a').className).toContain('text-red-500');
+      expect(screen.getByText('a').className).toMatch(/text-red-600|dark:text-red-400/);
 
       // Backspace
       fireEvent.keyDown(input, { key: 'Backspace' });
 
       // Character should no longer be red, and cursor should be on it
       const aChar = screen.getByText('a');
-      expect(aChar.className).not.toContain('text-red-500');
+      expect(aChar.className).not.toMatch(/text-red-600|dark:text-red-400/);
       expect(aChar.className).toContain('bg-primary/20');
     });
 
@@ -500,11 +500,11 @@ describe('TypingInput', () => {
       fireEvent.keyDown(input, { key: 'x' }); // wrong (expected 'i')
 
       const gChar = screen.getByText('g');
-      expect(gChar.className).toContain('text-green-500');
+      expect(gChar.className).toMatch(/text-green-600|dark:text-green-400/);
 
       // Find 'i' - it should be red
       const chars = screen.getAllByText('i');
-      const iChar = chars.find((el) => el.className.includes('text-red-500'));
+      const iChar = chars.find((el) => el.className.includes('text-red-600') || el.className.includes('dark:text-red-400'));
       expect(iChar).toBeTruthy();
     });
 

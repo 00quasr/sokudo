@@ -135,7 +135,7 @@ export function TypingInput({
           'font-mono text-xl leading-relaxed',
           'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
           'cursor-text select-none',
-          isComplete && 'border-green-500/50'
+          isComplete && 'border-green-600/50 dark:border-green-400/50'
         )}
         role="textbox"
         aria-label="Typing input area"
@@ -151,7 +151,8 @@ export function TypingInput({
             // Determine character state
             let charClass = '';
             if (isTyped) {
-              charClass = hasError ? 'text-red-500' : 'text-green-500';
+              // Use theme-aware colors for errors and correct characters
+              charClass = hasError ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400';
             } else if (isCurrent) {
               charClass = style.color;
             } else {
@@ -182,7 +183,7 @@ export function TypingInput({
                 {/* Error indicator - show what was typed */}
                 {hasError && isTyped && (
                   <span
-                    className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] text-red-400"
+                    className="absolute -top-1 left-1/2 -translate-x-1/2 text-[10px] text-red-500 dark:text-red-400"
                     aria-hidden="true"
                   >
                     {errors.get(index)}
@@ -196,7 +197,7 @@ export function TypingInput({
         {/* Completion message */}
         {isComplete && (
           <div className="mt-4 pt-4 border-t border-border text-center">
-            <p className="text-green-500 font-medium">Complete!</p>
+            <p className="text-green-600 dark:text-green-400 font-medium">Complete!</p>
             <p className="text-sm text-muted-foreground mt-1">
               Press <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Enter</kbd> for next challenge or <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Esc</kbd> to try again
             </p>
