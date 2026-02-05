@@ -62,7 +62,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  maximumScale: 1
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0b' }
+  ]
 };
 
 const manrope = Manrope({ subsets: ['latin'] });
