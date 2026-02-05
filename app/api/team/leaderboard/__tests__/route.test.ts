@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { NextRequest } from 'next/server';
 import { GET } from '../route';
 
 vi.mock('@/lib/db/queries', () => ({
@@ -19,6 +20,10 @@ import { getUser, getTeamLeaderboard } from '@/lib/db/queries';
 const mockGetUser = getUser as ReturnType<typeof vi.fn>;
 const mockGetTeamLeaderboard = getTeamLeaderboard as ReturnType<typeof vi.fn>;
 
+function createRequest(url: string): NextRequest {
+  return new NextRequest(new Request(url));
+}
+
 describe('GET /api/team/leaderboard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -28,7 +33,8 @@ describe('GET /api/team/leaderboard', () => {
     it('should return 401 if user is not authenticated', async () => {
       mockGetUser.mockResolvedValue(null);
 
-      const response = await GET();
+      const request = createRequest('http://localhost:3000/api/team/leaderboard');
+      const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(401);
@@ -71,7 +77,8 @@ describe('GET /api/team/leaderboard', () => {
     });
 
     it('should return leaderboard data', async () => {
-      const response = await GET();
+      const request = createRequest('http://localhost:3000/api/team/leaderboard');
+      const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -80,7 +87,8 @@ describe('GET /api/team/leaderboard', () => {
     });
 
     it('should include all required fields for each entry', async () => {
-      const response = await GET();
+      const request = createRequest('http://localhost:3000/api/team/leaderboard');
+      const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -100,7 +108,8 @@ describe('GET /api/team/leaderboard', () => {
     it('should return empty leaderboard when user has no team', async () => {
       mockGetTeamLeaderboard.mockResolvedValue([]);
 
-      const response = await GET();
+      const request = createRequest('http://localhost:3000/api/team/leaderboard');
+      const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
@@ -113,7 +122,8 @@ describe('GET /api/team/leaderboard', () => {
       mockGetUser.mockResolvedValue({ id: 1, email: 'test@test.com' });
       mockGetTeamLeaderboard.mockRejectedValue(new Error('Database error'));
 
-      const response = await GET();
+      const request = createRequest('http://localhost:3000/api/team/leaderboard');
+      const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(500);
@@ -123,7 +133,8 @@ describe('GET /api/team/leaderboard', () => {
     it('should return 500 on getUser error', async () => {
       mockGetUser.mockRejectedValue(new Error('Auth error'));
 
-      const response = await GET();
+      const request = createRequest('http://localhost:3000/api/team/leaderboard');
+      const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(500);
