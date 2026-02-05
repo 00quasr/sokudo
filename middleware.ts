@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { signToken, verifyToken } from '@/lib/auth/session';
+import { defaultLocale, locales, type Locale } from '@/i18n/config';
 
 const protectedRoutes = '/dashboard';
 
@@ -9,11 +10,27 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get('session');
   const isProtectedRoute = pathname.startsWith(protectedRoutes);
 
+  // Handle locale detection
+  const localeCookie = request.cookies.get('NEXT_LOCALE')?.value as Locale | undefined;
+  const locale = localeCookie && locales.includes(localeCookie)
+    ? localeCookie
+    : defaultLocale;
+
   if (isProtectedRoute && !sessionCookie) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
   let res = NextResponse.next();
+
+  // Set locale cookie if not present or invalid
+  if (!localeCookie || !locales.includes(localeCookie as Locale)) {
+    res.cookies.set('NEXT_LOCALE', locale, {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 31536000 // 1 year
+    });
+  }
 
   if (sessionCookie && request.method === 'GET') {
     try {

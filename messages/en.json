@@ -1,0 +1,79 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "practice": "Practice",
+    "statistics": "Statistics",
+    "settings": "Settings",
+    "pricing": "Pricing",
+    "signOut": "Sign Out"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signInWithGoogle": "Sign in with Google",
+    "signInWithGithub": "Sign in with GitHub"
+  },
+  "home": {
+    "title": "Sokudo (速度)",
+    "subtitle": "Developer Typing Trainer",
+    "description": "Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "practice": {
+    "title": "Practice",
+    "selectCategory": "Select Category",
+    "startPractice": "Start Practice",
+    "wpm": "WPM",
+    "accuracy": "Accuracy",
+    "time": "Time",
+    "errors": "Errors",
+    "restart": "Restart",
+    "complete": "Complete"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "recentActivity": "Recent Activity",
+    "statistics": "Statistics",
+    "achievements": "Achievements"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "free": "Free",
+    "pro": "Pro",
+    "team": "Team",
+    "selectPlan": "Select Plan",
+    "currentPlan": "Current Plan"
+  },
+  "metadata": {
+    "title": "Sokudo (速度) - Developer Typing Trainer",
+    "description": "Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts. Master developer commands at speed with real-time feedback and targeted practice."
+  }
+}
