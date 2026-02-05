@@ -220,6 +220,11 @@ export default async function PracticePage() {
   const freeCategories = categories.filter((c) => !c.isPremium);
   const premiumCategories = categories.filter((c) => c.isPremium);
 
+  // For free users, only show categories they can access
+  const accessibleCategories = canAccessPremium ? categories : freeCategories;
+  const displayFreeCategories = canAccessPremium ? freeCategories : accessibleCategories;
+  const displayPremiumCategories = canAccessPremium ? premiumCategories : [];
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {user && isFreeTier && (
@@ -287,29 +292,31 @@ export default async function PracticePage() {
         </section>
       )}
 
-      {freeCategories.length > 0 && (
+      {displayFreeCategories.length > 0 && (
         <section className="mb-12">
-          <h2 className="mb-6 text-xl font-semibold text-gray-900">Free</h2>
+          <h2 className="mb-6 text-xl font-semibold text-gray-900">
+            {canAccessPremium ? 'Free' : 'Categories'}
+          </h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {freeCategories.map((category) => (
+            {displayFreeCategories.map((category) => (
               <CategoryCard key={category.id} category={category} locked={false} />
             ))}
           </div>
         </section>
       )}
 
-      {premiumCategories.length > 0 && (
+      {displayPremiumCategories.length > 0 && (
         <section>
           <h2 className="mb-6 text-xl font-semibold text-gray-900">Pro</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {premiumCategories.map((category) => (
-              <CategoryCard key={category.id} category={category} locked={!canAccessPremium} />
+            {displayPremiumCategories.map((category) => (
+              <CategoryCard key={category.id} category={category} locked={false} />
             ))}
           </div>
         </section>
       )}
 
-      {categories.length === 0 && (
+      {accessibleCategories.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500">No categories available yet.</p>
         </div>

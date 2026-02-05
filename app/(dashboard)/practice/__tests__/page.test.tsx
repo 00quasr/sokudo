@@ -193,28 +193,34 @@ describe('PracticePage', () => {
       ).toBeTruthy();
     });
 
-    it('should render free categories section', async () => {
+    it('should render Categories section for free users', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
+
+      const page = await PracticePage();
+      render(page);
+
+      expect(screen.getByRole('heading', { name: 'Categories', level: 2 })).toBeTruthy();
+    });
+
+    it('should render Free and Pro sections for pro users', async () => {
+      vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
 
       const page = await PracticePage();
       render(page);
 
       expect(screen.getByRole('heading', { name: 'Free', level: 2 })).toBeTruthy();
-    });
-
-    it('should render pro categories section', async () => {
-      vi.mocked(getCategories).mockResolvedValue(mockCategories);
-
-      const page = await PracticePage();
-      render(page);
-
       expect(screen.getByRole('heading', { name: 'Pro', level: 2 })).toBeTruthy();
     });
   });
 
   describe('category cards', () => {
-    it('should render all category names', async () => {
+    it('should render all category names for pro users', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
 
       const page = await PracticePage();
       render(page);
@@ -225,7 +231,20 @@ describe('PracticePage', () => {
       expect(screen.getByText('Docker')).toBeTruthy();
     });
 
-    it('should render category descriptions', async () => {
+    it('should render only free category names for free users', async () => {
+      vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
+
+      const page = await PracticePage();
+      render(page);
+
+      expect(screen.getByText('Git Basics')).toBeTruthy();
+      expect(screen.getByText('Terminal Commands')).toBeTruthy();
+      expect(screen.queryByText('React Patterns')).toBeNull();
+      expect(screen.queryByText('Docker')).toBeNull();
+    });
+
+    it('should render category descriptions for accessible categories', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
 
       const page = await PracticePage();
@@ -239,21 +258,24 @@ describe('PracticePage', () => {
       ).toBeTruthy();
     });
 
-    it('should render difficulty badges', async () => {
+    it('should render difficulty badges for accessible categories', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
 
       const page = await PracticePage();
       render(page);
 
       const beginnerBadges = screen.getAllByText('beginner');
-      expect(beginnerBadges.length).toBe(2);
+      expect(beginnerBadges.length).toBe(2); // Only free categories
 
-      expect(screen.getByText('intermediate')).toBeTruthy();
-      expect(screen.getByText('advanced')).toBeTruthy();
+      expect(screen.queryByText('intermediate')).toBeNull();
+      expect(screen.queryByText('advanced')).toBeNull();
     });
 
-    it('should render Pro badges for premium categories', async () => {
+    it('should render Pro badges for premium categories when visible', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
 
       const page = await PracticePage();
       const { container } = render(page);
@@ -283,8 +305,10 @@ describe('PracticePage', () => {
   });
 
   describe('category separation', () => {
-    it('should separate free and premium categories correctly', async () => {
+    it('should separate free and premium categories correctly for pro users', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
 
       const page = await PracticePage();
       render(page);
@@ -299,9 +323,23 @@ describe('PracticePage', () => {
       expect(proHeader).toBeTruthy();
     });
 
-    it('should not render free section when no free categories', async () => {
+    it('should show only Categories section for free users', async () => {
+      vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
+
+      const page = await PracticePage();
+      render(page);
+
+      expect(screen.getByRole('heading', { name: 'Categories', level: 2 })).toBeTruthy();
+      expect(screen.queryByRole('heading', { name: 'Free', level: 2 })).toBeNull();
+      expect(screen.queryByRole('heading', { name: 'Pro', level: 2 })).toBeNull();
+    });
+
+    it('should not render free section when no free categories for pro users', async () => {
       const premiumOnly = mockCategories.filter((c) => c.isPremium);
       vi.mocked(getCategories).mockResolvedValue(premiumOnly);
+      vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
 
       const page = await PracticePage();
       render(page);
@@ -310,14 +348,29 @@ describe('PracticePage', () => {
       expect(screen.getByRole('heading', { name: 'Pro', level: 2 })).toBeTruthy();
     });
 
-    it('should not render pro section when no premium categories', async () => {
+    it('should not render pro section when no premium categories for pro users', async () => {
       const freeOnly = mockCategories.filter((c) => !c.isPremium);
       vi.mocked(getCategories).mockResolvedValue(freeOnly);
+      vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
 
       const page = await PracticePage();
       render(page);
 
       expect(screen.getByRole('heading', { name: 'Free', level: 2 })).toBeTruthy();
+      expect(screen.queryByRole('heading', { name: 'Pro', level: 2 })).toBeNull();
+    });
+
+    it('should show only Categories section for free users with only free categories', async () => {
+      const freeOnly = mockCategories.filter((c) => !c.isPremium);
+      vi.mocked(getCategories).mockResolvedValue(freeOnly);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
+
+      const page = await PracticePage();
+      render(page);
+
+      expect(screen.getByRole('heading', { name: 'Categories', level: 2 })).toBeTruthy();
+      expect(screen.queryByRole('heading', { name: 'Free', level: 2 })).toBeNull();
       expect(screen.queryByRole('heading', { name: 'Pro', level: 2 })).toBeNull();
     });
   });
@@ -483,58 +536,72 @@ describe('PracticePage', () => {
     });
   });
 
-  describe('premium category locking', () => {
-    it('should show locked premium categories with blurred preview for free users', async () => {
-      vi.mocked(getCategories).mockResolvedValue(mockCategories);
-      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
-
-      const page = await PracticePage();
-      const { container } = render(page);
-
-      // Check for blur class on premium category cards
-      const blurredElements = container.querySelectorAll('.blur-\\[2px\\]');
-      expect(blurredElements.length).toBe(2); // React Patterns and Docker
-    });
-
-    it('should show upgrade button on locked premium categories', async () => {
+  describe('premium category visibility', () => {
+    it('should hide premium categories completely for free users', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
       vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
 
       const page = await PracticePage();
       render(page);
 
-      const upgradeButtons = screen.getAllByText('Upgrade to Unlock');
-      expect(upgradeButtons.length).toBe(2);
+      // Premium categories should not be visible at all
+      expect(screen.queryByText('React Patterns')).toBeNull();
+      expect(screen.queryByText('Docker')).toBeNull();
+
+      // Free categories should be visible
+      expect(screen.getByText('Git Basics')).toBeTruthy();
+      expect(screen.getByText('Terminal Commands')).toBeTruthy();
     });
 
-    it('should link upgrade button to pricing page', async () => {
+    it('should not show Pro section for free users', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
       vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
 
       const page = await PracticePage();
       render(page);
 
-      const upgradeLinks = screen.getAllByText('Upgrade to Unlock');
-      upgradeLinks.forEach((link) => {
-        const anchor = link.closest('a');
-        expect(anchor?.getAttribute('href')).toBe('/pricing');
-      });
+      // Pro section should not be visible
+      expect(screen.queryByRole('heading', { name: 'Pro', level: 2 })).toBeNull();
     });
 
-    it('should not lock premium categories for pro users', async () => {
+    it('should show Categories heading instead of Free for free users', async () => {
+      vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
+
+      const page = await PracticePage();
+      render(page);
+
+      // Should show "Categories" instead of "Free"
+      expect(screen.getByRole('heading', { name: 'Categories', level: 2 })).toBeTruthy();
+      expect(screen.queryByRole('heading', { name: 'Free', level: 2 })).toBeNull();
+    });
+
+    it('should show all categories for pro users', async () => {
       vi.mocked(getCategories).mockResolvedValue(mockCategories);
       vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
       vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
 
       const page = await PracticePage();
-      const { container } = render(page);
+      render(page);
 
-      // No blurred elements
-      const blurredElements = container.querySelectorAll('.blur-\\[2px\\]');
-      expect(blurredElements.length).toBe(0);
+      // All categories should be visible
+      expect(screen.getByText('Git Basics')).toBeTruthy();
+      expect(screen.getByText('Terminal Commands')).toBeTruthy();
+      expect(screen.getByText('React Patterns')).toBeTruthy();
+      expect(screen.getByText('Docker')).toBeTruthy();
+    });
 
-      // No upgrade buttons
-      expect(screen.queryByText('Upgrade to Unlock')).toBeNull();
+    it('should show Free and Pro sections for pro users', async () => {
+      vi.mocked(getCategories).mockResolvedValue(mockCategories);
+      vi.mocked(getUserProfile).mockResolvedValue(mockProProfile);
+      vi.mocked(canAccessPremiumCategories).mockReturnValue(true);
+
+      const page = await PracticePage();
+      render(page);
+
+      // Both sections should be visible
+      expect(screen.getByRole('heading', { name: 'Free', level: 2 })).toBeTruthy();
+      expect(screen.getByRole('heading', { name: 'Pro', level: 2 })).toBeTruthy();
     });
 
     it('should allow clicking through to premium categories for pro users', async () => {
@@ -547,19 +614,6 @@ describe('PracticePage', () => {
 
       const reactLink = screen.getByText('React Patterns').closest('a');
       expect(reactLink?.getAttribute('href')).toBe('/practice/react-patterns');
-    });
-
-    it('should not link locked premium categories directly', async () => {
-      vi.mocked(getCategories).mockResolvedValue(mockCategories);
-      vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
-
-      const page = await PracticePage();
-      render(page);
-
-      // Premium category names should not be inside direct links to practice pages
-      const reactPatterns = screen.getByText('React Patterns');
-      const directLink = reactPatterns.closest('a[href="/practice/react-patterns"]');
-      expect(directLink).toBeNull();
     });
 
     it('should always allow clicking through to free categories', async () => {
@@ -579,11 +633,15 @@ describe('PracticePage', () => {
       vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
 
       const page = await PracticePage();
-      const { container } = render(page);
+      render(page);
 
-      // Should show locked premium categories
-      const blurredElements = container.querySelectorAll('.blur-\\[2px\\]');
-      expect(blurredElements.length).toBe(2);
+      // Should hide premium categories
+      expect(screen.queryByText('React Patterns')).toBeNull();
+      expect(screen.queryByText('Docker')).toBeNull();
+
+      // Free categories should be visible
+      expect(screen.getByText('Git Basics')).toBeTruthy();
+      expect(screen.getByText('Terminal Commands')).toBeTruthy();
     });
   });
 });
