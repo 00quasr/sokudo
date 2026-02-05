@@ -59,9 +59,9 @@ export default async function ChallengePage({
   );
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background pb-safe">
       {/* Header with navigation */}
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-border bg-card safe-top">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-2">
             <Link
@@ -83,7 +83,7 @@ export default async function ChallengePage({
       </header>
 
       {/* Main typing area */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Remaining time for free users */}
         {user && isFreeTier && (
           <div className="mb-6">
@@ -114,8 +114,8 @@ export default async function ChallengePage({
           challengePosition={challengePosition ?? undefined}
         />
 
-        {/* Navigation hint */}
-        <div className="mt-8 pt-6 border-t border-border">
+        {/* Navigation hint - hidden on mobile to reduce clutter */}
+        <div className="hidden md:block mt-8 pt-6 border-t border-border">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-muted-foreground">
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-1">
