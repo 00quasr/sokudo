@@ -558,3 +558,219 @@ describe("GET /api/user/preferences - High Contrast", () => {
 		expect(json.theme).toBe("dark");
 	});
 });
+
+describe("GET /api/user/preferences - Keyboard Layout", () => {
+	beforeEach(() => {
+		vi.resetModules();
+	});
+
+	it("should return qwerty as default keyboard layout", async () => {
+		const { getUser } = await import("@/lib/db/queries");
+		const { db } = await import("@/lib/db/drizzle");
+
+		vi.mocked(getUser).mockResolvedValue({
+			id: 1,
+			email: "test@example.com",
+			name: "Test User",
+			passwordHash: "hash",
+			role: "member",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			deletedAt: null,
+		});
+		vi.mocked(db.query.userProfiles.findFirst).mockResolvedValue(undefined);
+
+		const { GET } = await import("../route");
+		const request = new NextRequest("http://localhost/api/user/preferences");
+		const response = await GET(request);
+
+		expect(response.status).toBe(200);
+		const json = await response.json();
+		expect(json.keyboardLayout).toBe("qwerty");
+	});
+
+	it("should return saved keyboard layout preference", async () => {
+		const { getUser } = await import("@/lib/db/queries");
+		const { db } = await import("@/lib/db/drizzle");
+
+		vi.mocked(getUser).mockResolvedValue({
+			id: 1,
+			email: "test@example.com",
+			name: "Test User",
+			passwordHash: "hash",
+			role: "member",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			deletedAt: null,
+		});
+		vi.mocked(db.query.userProfiles.findFirst).mockResolvedValue({
+			id: 1,
+			userId: 1,
+			subscriptionTier: "free",
+			currentStreak: 0,
+			longestStreak: 0,
+			totalPracticeTimeMs: 0,
+			preferences: { keyboardLayout: "dvorak" },
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		});
+
+		const { GET } = await import("../route");
+		const request = new NextRequest("http://localhost/api/user/preferences");
+		const response = await GET(request);
+
+		expect(response.status).toBe(200);
+		const json = await response.json();
+		expect(json.keyboardLayout).toBe("dvorak");
+	});
+});
+
+describe("PATCH /api/user/preferences - Keyboard Layout", () => {
+	beforeEach(() => {
+		vi.resetModules();
+	});
+
+	it("should accept valid keyboard layout - dvorak", async () => {
+		const { getUser } = await import("@/lib/db/queries");
+		const { db } = await import("@/lib/db/drizzle");
+
+		vi.mocked(getUser).mockResolvedValue({
+			id: 1,
+			email: "test@example.com",
+			name: "Test User",
+			passwordHash: "hash",
+			role: "member",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			deletedAt: null,
+		});
+		vi.mocked(db.query.userProfiles.findFirst).mockResolvedValue({
+			id: 1,
+			userId: 1,
+			subscriptionTier: "free",
+			currentStreak: 0,
+			longestStreak: 0,
+			totalPracticeTimeMs: 0,
+			preferences: {},
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		});
+
+		const { PATCH } = await import("../route");
+		const request = new NextRequest("http://localhost/api/user/preferences", {
+			method: "PATCH",
+			body: JSON.stringify({ keyboardLayout: "dvorak" }),
+		});
+
+		const response = await PATCH(request);
+		expect(response.status).toBe(200);
+		const json = await response.json();
+		expect(json.success).toBe(true);
+		expect(json.preferences.keyboardLayout).toBe("dvorak");
+	});
+
+	it("should accept valid keyboard layout - colemak", async () => {
+		const { getUser } = await import("@/lib/db/queries");
+		const { db } = await import("@/lib/db/drizzle");
+
+		vi.mocked(getUser).mockResolvedValue({
+			id: 1,
+			email: "test@example.com",
+			name: "Test User",
+			passwordHash: "hash",
+			role: "member",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			deletedAt: null,
+		});
+		vi.mocked(db.query.userProfiles.findFirst).mockResolvedValue({
+			id: 1,
+			userId: 1,
+			subscriptionTier: "free",
+			currentStreak: 0,
+			longestStreak: 0,
+			totalPracticeTimeMs: 0,
+			preferences: {},
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		});
+
+		const { PATCH } = await import("../route");
+		const request = new NextRequest("http://localhost/api/user/preferences", {
+			method: "PATCH",
+			body: JSON.stringify({ keyboardLayout: "colemak" }),
+		});
+
+		const response = await PATCH(request);
+		expect(response.status).toBe(200);
+		const json = await response.json();
+		expect(json.success).toBe(true);
+		expect(json.preferences.keyboardLayout).toBe("colemak");
+	});
+
+	it("should reject invalid keyboard layout", async () => {
+		const { getUser } = await import("@/lib/db/queries");
+		vi.mocked(getUser).mockResolvedValue({
+			id: 1,
+			email: "test@example.com",
+			name: "Test User",
+			passwordHash: "hash",
+			role: "member",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			deletedAt: null,
+		});
+
+		const { PATCH } = await import("../route");
+		const request = new NextRequest("http://localhost/api/user/preferences", {
+			method: "PATCH",
+			body: JSON.stringify({ keyboardLayout: "azerty" }),
+		});
+
+		const response = await PATCH(request);
+		expect(response.status).toBe(400);
+		const json = await response.json();
+		expect(json.error).toBe("Invalid preferences");
+	});
+
+	it("should accept all valid keyboard layouts", async () => {
+		const { getUser } = await import("@/lib/db/queries");
+		const { db } = await import("@/lib/db/drizzle");
+
+		vi.mocked(getUser).mockResolvedValue({
+			id: 1,
+			email: "test@example.com",
+			name: "Test User",
+			passwordHash: "hash",
+			role: "member",
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			deletedAt: null,
+		});
+		vi.mocked(db.query.userProfiles.findFirst).mockResolvedValue({
+			id: 1,
+			userId: 1,
+			subscriptionTier: "free",
+			currentStreak: 0,
+			longestStreak: 0,
+			totalPracticeTimeMs: 0,
+			preferences: {},
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		});
+
+		const { PATCH } = await import("../route");
+
+		for (const layout of ["qwerty", "dvorak", "colemak"]) {
+			const request = new NextRequest("http://localhost/api/user/preferences", {
+				method: "PATCH",
+				body: JSON.stringify({ keyboardLayout: layout }),
+			});
+
+			const response = await PATCH(request);
+			expect(response.status).toBe(200);
+			const json = await response.json();
+			expect(json.preferences.keyboardLayout).toBe(layout);
+		}
+	});
+});

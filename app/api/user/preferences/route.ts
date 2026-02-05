@@ -12,6 +12,7 @@ const preferencesSchema = z.object({
   pushNotificationsEnabled: z.boolean().optional(),
   theme: z.enum(['light', 'dark', 'system']).optional(),
   highContrast: z.boolean().optional(),
+  keyboardLayout: z.enum(['qwerty', 'dvorak', 'colemak']).optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
       pushNotificationsEnabled: preferences.pushNotificationsEnabled === true,
       theme: preferences.theme || 'system',
       highContrast: preferences.highContrast === true,
+      keyboardLayout: preferences.keyboardLayout || 'qwerty',
     });
   } catch (error) {
     console.error('Get preferences error:', error);

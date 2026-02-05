@@ -14,6 +14,7 @@ import useSWR, { mutate } from 'swr';
 import { Suspense } from 'react';
 import { ProfileBadges, type ProfileBadge } from '@/components/achievements/ProfileBadges';
 import { PushNotificationToggle } from '@/components/notifications/PushNotificationToggle';
+import { KeyboardLayoutSelector } from '@/components/settings/KeyboardLayoutSelector';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -359,6 +360,17 @@ export default function GeneralPage() {
         <CardContent>
           <Suspense fallback={null}>
             <ProfileCustomization />
+          </Suspense>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>Keyboard Layout</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Suspense fallback={null}>
+            <KeyboardLayoutSelector />
           </Suspense>
         </CardContent>
       </Card>

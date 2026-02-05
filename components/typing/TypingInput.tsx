@@ -10,6 +10,8 @@ import { cn } from '@/lib/utils';
 import { SyntaxType, tokenize, flattenTokensToChars } from './TypingArea';
 import { StatsBar } from './StatsBar';
 import { useScreenReaderAnnouncement } from '@/components/a11y/ScreenReaderAnnouncer';
+import { useKeyboardLayout } from '@/lib/hooks/useKeyboardLayout';
+import { translateKey } from '@/lib/typing/keyboard-layouts';
 
 export type { SyntaxType };
 
@@ -40,6 +42,7 @@ export function TypingInput({
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const touchFeedbackTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { announce } = useScreenReaderAnnouncement();
+  const { layout } = useKeyboardLayout();
 
   const {
     cursorPosition,
@@ -133,9 +136,11 @@ export function TypingInput({
       if (e.key.length !== 1) return;
 
       e.preventDefault();
-      handleKeyPress(e.key);
+      // Translate key based on keyboard layout
+      const translatedKey = translateKey(e.key, layout);
+      handleKeyPress(translatedKey);
     },
-    [handleKeyPress, handleBackspace, handleEscape, isComplete, onSkip, onNext]
+    [handleKeyPress, handleBackspace, handleEscape, isComplete, onSkip, onNext, layout]
   );
 
   // Attach keyboard listener
@@ -299,7 +304,9 @@ export function TypingInput({
           if (charIndex < value.length) {
             const char = value[charIndex];
             if (char) {
-              handleKeyPress(char);
+              // Translate key based on keyboard layout
+              const translatedChar = translateKey(char, layout);
+              handleKeyPress(translatedChar);
               // Add visual feedback for each character on tablet
               if (containerRef.current) {
                 containerRef.current.classList.add('ring-1', 'ring-primary/20');
@@ -319,7 +326,9 @@ export function TypingInput({
         const lastChar = value[value.length - 1];
 
         if (lastChar) {
-          handleKeyPress(lastChar);
+          // Translate key based on keyboard layout
+          const translatedChar = translateKey(lastChar, layout);
+          handleKeyPress(translatedChar);
           // Add visual feedback for single character
           if (containerRef.current && isTabletRef.current) {
             containerRef.current.classList.add('ring-1', 'ring-primary/20');
@@ -333,7 +342,7 @@ export function TypingInput({
       // Clear the input to allow continuous typing
       e.target.value = '';
     },
-    [handleKeyPress, handleBackspace]
+    [handleKeyPress, handleBackspace, layout]
   );
 
   // Handle mobile keyboard special keys
