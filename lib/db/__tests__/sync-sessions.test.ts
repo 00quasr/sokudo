@@ -80,7 +80,7 @@ describe('Session sync utilities', () => {
       expect(syncedCount).toBe(0);
     });
 
-    it.skip('should sync unsynced sessions when online', async () => {
+    it('should sync unsynced sessions when online', async () => {
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
@@ -128,7 +128,7 @@ describe('Session sync utilities', () => {
       expect(allAfter[0].synced).toBe(true);
     });
 
-    it.skip('should handle multiple sessions', async () => {
+    it('should handle multiple sessions', async () => {
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
@@ -168,7 +168,7 @@ describe('Session sync utilities', () => {
       expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
-    it.skip('should continue syncing if one session fails', async () => {
+    it('should continue syncing if one session fails', async () => {
       vi.mocked(global.fetch)
         .mockResolvedValueOnce({
           ok: false,
@@ -216,7 +216,7 @@ describe('Session sync utilities', () => {
       expect(unsyncedCount).toBe(1);
     });
 
-    it.skip('should send correct payload to API', async () => {
+    it('should send correct payload to API', async () => {
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
@@ -304,7 +304,9 @@ describe('Session sync utilities', () => {
       cleanup();
     });
 
-    it.skip('should sync immediately when online', async () => {
+    it('should sync immediately when online', async () => {
+      vi.useRealTimers(); // Use real timers for this test
+
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
@@ -333,28 +335,63 @@ describe('Session sync utilities', () => {
       expect(global.fetch).toHaveBeenCalled();
 
       cleanup();
+      vi.useFakeTimers(); // Restore fake timers for other tests
     });
 
-    it.skip('should sync periodically', async () => {
+    it('should sync periodically', async () => {
+      vi.useRealTimers(); // Use real timers for this test
+
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
         json: async () => ({ success: true }),
       } as Response);
 
-      const cleanup = setupAutoSync(5000);
+      // Add an unsynced session so there's something to sync
+      const session: Omit<OfflineTypingSession, 'id' | 'synced'> = {
+        localId: generateLocalId(),
+        challengeId: 1,
+        wpm: 50,
+        rawWpm: 55,
+        accuracy: 95,
+        keystrokes: 100,
+        errors: 5,
+        durationMs: 60000,
+        completedAt: Date.now(),
+        keystrokeLogs: [],
+      };
+
+      await saveSessionOffline(session);
+
+      const cleanup = setupAutoSync(200); // Use shorter interval for testing
 
       // Wait for immediate sync
       await new Promise((resolve) => setTimeout(resolve, 100));
       const callCountAfterImmediate = vi.mocked(global.fetch).mock.calls.length;
+      expect(callCountAfterImmediate).toBeGreaterThan(0);
 
-      // Advance timer to trigger periodic sync
-      vi.advanceTimersByTime(5000);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // Add another session to sync
+      const session2: Omit<OfflineTypingSession, 'id' | 'synced'> = {
+        localId: generateLocalId(),
+        challengeId: 2,
+        wpm: 60,
+        rawWpm: 65,
+        accuracy: 92,
+        keystrokes: 120,
+        errors: 10,
+        durationMs: 70000,
+        completedAt: Date.now(),
+        keystrokeLogs: [],
+      };
+      await saveSessionOffline(session2);
+
+      // Wait for periodic sync
+      await new Promise((resolve) => setTimeout(resolve, 250));
 
       const callCountAfterPeriodic = vi.mocked(global.fetch).mock.calls.length;
       expect(callCountAfterPeriodic).toBeGreaterThan(callCountAfterImmediate);
 
       cleanup();
+      vi.useFakeTimers(); // Restore fake timers for other tests
     });
   });
 });
