@@ -575,6 +575,9 @@ describe('TypingInput', () => {
       // Simulate touch end
       fireEvent.touchEnd(container);
 
+      // Advance timer for the setTimeout in handleTouchEnd (50ms)
+      vi.advanceTimersByTime(50);
+
       expect(document.activeElement).toBe(hiddenInput);
     });
 
@@ -997,6 +1000,210 @@ describe('TypingInput', () => {
 
       // After the timeout, it should refocus
       expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should prevent blur during active touch interaction on tablets', () => {
+      // Mock tablet detection
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query: string) => ({
+          matches: query.includes('min-width: 768px'),
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate touch start (sets data-touch-active)
+      fireEvent.touchStart(container);
+
+      // Hidden input should have data-touch-active attribute
+      expect(hiddenInput.getAttribute('data-touch-active')).toBe('true');
+
+      // Try to blur - should be prevented
+      const blurEvent = new FocusEvent('blur', { bubbles: true, cancelable: true });
+      Object.defineProperty(blurEvent, 'target', { value: hiddenInput, writable: false });
+      const preventDefaultSpy = vi.spyOn(blurEvent, 'preventDefault');
+
+      hiddenInput.dispatchEvent(blurEvent);
+
+      // Should still be focused
+      expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should use shorter refocus delay for tablets', () => {
+      // Mock tablet detection
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query: string) => ({
+          matches: query.includes('min-width: 768px'),
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate touch start to mark as touch device
+      fireEvent.touchStart(container);
+
+      // Remove data-touch-active to allow blur
+      hiddenInput.removeAttribute('data-touch-active');
+
+      // Blur the input
+      hiddenInput.blur();
+
+      // For tablets, delay should be 50ms, not 100ms
+      vi.advanceTimersByTime(50);
+
+      // Should refocus after 50ms on tablet
+      expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should handle multi-character input on tablets from autocorrect', () => {
+      // Mock tablet detection
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query: string) => ({
+          matches: query.includes('min-width: 768px'),
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      render(<TypingInput targetText="abcdef" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate touch start to mark as tablet
+      fireEvent.touchStart(container);
+
+      // Tablet keyboard might send multiple characters at once (e.g., autocorrect)
+      fireEvent.change(hiddenInput, { target: { value: 'abc' } });
+
+      // All three characters should be processed
+      expect(screen.getByText('a').className).toMatch(/text-green-600|dark:text-green-400/);
+      expect(screen.getByText('b').className).toMatch(/text-green-600|dark:text-green-400/);
+      expect(screen.getByText('c').className).toMatch(/text-green-600|dark:text-green-400/);
+    });
+
+    it('should add visual feedback on touch start for tablets', () => {
+      // Mock tablet detection
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query: string) => ({
+          matches: query.includes('min-width: 768px'),
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      // Get initial class list count
+      const initialClasses = container.className;
+
+      // Simulate touch start
+      fireEvent.touchStart(container);
+
+      // Container should have visual feedback classes added
+      // Use classList API which is more reliable
+      expect(container.classList.contains('ring-2')).toBe(true);
+      expect(container.classList.contains('ring-primary/30')).toBe(true);
+
+      // Visual feedback should be removed after 200ms
+      vi.advanceTimersByTime(200);
+
+      expect(container.classList.contains('ring-primary/30')).toBe(false);
+    });
+
+    it('should remove data-touch-active on touch end', () => {
+      // Mock tablet detection
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query: string) => ({
+          matches: query.includes('min-width: 768px'),
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate touch start (sets data-touch-active)
+      fireEvent.touchStart(container);
+      expect(hiddenInput.getAttribute('data-touch-active')).toBe('true');
+
+      // Simulate touch end
+      fireEvent.touchEnd(container);
+
+      // Advance timer for the setTimeout in handleTouchEnd
+      vi.advanceTimersByTime(50);
+
+      // data-touch-active should be removed
+      expect(hiddenInput.getAttribute('data-touch-active')).toBeNull();
+    });
+
+    it('should cleanup touch feedback timer on unmount', () => {
+      // Mock tablet detection
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query: string) => ({
+          matches: query.includes('min-width: 768px'),
+          media: query,
+          onchange: null,
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn(),
+        })),
+      });
+
+      const { unmount } = render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      // Simulate touch start (starts timer)
+      fireEvent.touchStart(container);
+
+      // Unmount before timer fires
+      unmount();
+
+      // Should not throw error when advancing timers
+      expect(() => vi.advanceTimersByTime(200)).not.toThrow();
     });
   });
 

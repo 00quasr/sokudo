@@ -37,6 +37,7 @@ export function TypingInput({
 }: TypingInputProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
+  const touchFeedbackTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
     cursorPosition,
@@ -152,17 +153,47 @@ export function TypingInput({
     isTouchDeviceRef.current = true;
     // Prevent default to avoid text selection on long press
     e.preventDefault();
+
+    // Add visual feedback on touch for tablets
+    if (containerRef.current && isTabletRef.current) {
+      containerRef.current.classList.add('ring-2', 'ring-primary/30');
+
+      // Remove feedback after a short duration
+      if (touchFeedbackTimerRef.current) {
+        clearTimeout(touchFeedbackTimerRef.current);
+      }
+      touchFeedbackTimerRef.current = setTimeout(() => {
+        containerRef.current?.classList.remove('ring-2', 'ring-primary/30');
+      }, 200);
+    }
+
+    // Focus the hidden input to show keyboard
     if (hiddenInputRef.current) {
       hiddenInputRef.current.focus();
+
+      // On tablets, ensure keyboard stays open by preventing blur
+      // during the touch interaction
+      if (isTabletRef.current) {
+        hiddenInputRef.current.setAttribute('data-touch-active', 'true');
+      }
     }
   }, []);
 
   // Handle touch end to re-focus if needed
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     e.preventDefault();
-    if (hiddenInputRef.current && !isComplete) {
-      hiddenInputRef.current.focus();
-    }
+
+    // Small delay to prevent keyboard flicker on tablets
+    setTimeout(() => {
+      if (hiddenInputRef.current) {
+        hiddenInputRef.current.removeAttribute('data-touch-active');
+
+        // Ensure focus is maintained on active sessions
+        if (!isComplete && document.activeElement !== hiddenInputRef.current) {
+          hiddenInputRef.current.focus();
+        }
+      }
+    }, 50);
   }, [isComplete]);
 
   // Handle input from mobile keyboard
@@ -176,11 +207,23 @@ export function TypingInput({
         return;
       }
 
-      // Get the last character typed
-      const lastChar = value[value.length - 1];
+      // Handle autocorrect/suggestions that might send multiple characters
+      // On tablets, some keyboards send the entire word at once
+      if (value.length > 1 && isTabletRef.current) {
+        // Process each character sequentially
+        for (let i = 0; i < value.length; i++) {
+          const char = value[i];
+          if (char) {
+            handleKeyPress(char);
+          }
+        }
+      } else {
+        // Get the last character typed
+        const lastChar = value[value.length - 1];
 
-      if (lastChar) {
-        handleKeyPress(lastChar);
+        if (lastChar) {
+          handleKeyPress(lastChar);
+        }
       }
 
       // Clear the input to allow continuous typing
@@ -225,6 +268,15 @@ export function TypingInput({
     }
   }, [isStarted, isComplete, autoFocus]);
 
+  // Cleanup touch feedback timer
+  useEffect(() => {
+    return () => {
+      if (touchFeedbackTimerRef.current) {
+        clearTimeout(touchFeedbackTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className={cn('flex flex-col gap-4 typing-scroll-fix', className)}>
       {/* Stats bar - subtle, not prominent */}
@@ -267,14 +319,23 @@ export function TypingInput({
           onChange={handleMobileInput}
           onKeyDown={handleMobileKeyDown}
           onBlur={(e) => {
+            // Prevent blur during active touch interaction on tablets
+            const isTouchActive = e.target.getAttribute('data-touch-active') === 'true';
+            if (isTouchActive) {
+              e.preventDefault();
+              e.target.focus();
+              return;
+            }
+
             // Re-focus immediately if touch device and session is active
-            // Delay slightly to prevent focus fighting with keyboard dismissal
+            // Use shorter delay for tablets (better responsiveness)
             if (isTouchDeviceRef.current && !isComplete) {
+              const delay = isTabletRef.current ? 50 : 100;
               setTimeout(() => {
                 if (hiddenInputRef.current && !isComplete) {
                   e.target.focus();
                 }
-              }, 100);
+              }, delay);
             }
           }}
           aria-hidden="true"

@@ -332,6 +332,13 @@
     .typing-container-tablet {
       /* Ensure typing area doesn't get obscured by virtual keyboard */
       margin-bottom: env(safe-area-inset-bottom, 20px);
+      /* Smoother transitions for touch interactions */
+      transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-out;
+    }
+
+    /* Add subtle lift effect on active touch to provide feedback */
+    .typing-container-tablet:active {
+      transform: translateY(-1px);
     }
 
     /* Tablet portrait mode optimizations */
