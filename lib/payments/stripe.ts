@@ -24,6 +24,8 @@ export async function createCheckoutSession({
     redirect(`/sign-up?redirect=checkout&priceId=${priceId}`);
   }
 
+  const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: [
@@ -33,8 +35,8 @@ export async function createCheckoutSession({
       }
     ],
     mode: 'subscription',
-    success_url: `http://49.13.168.33:3000/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `http://49.13.168.33:3000/pricing`,
+    success_url: `${baseUrl}/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/pricing`,
     customer: team.stripeCustomerId || undefined,
     client_reference_id: user.id.toString(),
     allow_promotion_codes: true,
@@ -107,9 +109,11 @@ export async function createCustomerPortalSession(team: Team) {
     });
   }
 
+  const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
   return stripe.billingPortal.sessions.create({
     customer: team.stripeCustomerId,
-    return_url: `http://49.13.168.33:3000/dashboard`,
+    return_url: `${baseUrl}/dashboard`,
     configuration: configuration.id
   });
 }
