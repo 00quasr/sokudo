@@ -537,6 +537,51 @@ describe('TypingInput', () => {
       expect(document.activeElement).toBe(hiddenInput);
     });
 
+    it('should prevent default on touch start to avoid text selection', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      const event = new TouchEvent('touchstart', { bubbles: true, cancelable: true });
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+
+      container.dispatchEvent(event);
+
+      expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it('should refocus hidden input on touch end when not complete', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Blur the input first
+      hiddenInput.blur();
+
+      // Simulate touch end
+      fireEvent.touchEnd(container);
+
+      expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should not refocus on touch end when complete', () => {
+      render(<TypingInput targetText="ab" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Complete the typing
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      fireEvent.change(hiddenInput, { target: { value: 'b' } });
+
+      // Blur the input
+      hiddenInput.blur();
+
+      // Simulate touch end
+      fireEvent.touchEnd(container);
+
+      // Should not refocus when complete
+      expect(document.activeElement).not.toBe(hiddenInput);
+    });
+
     it('should focus hidden input on click', () => {
       render(<TypingInput targetText="abc" />);
       const container = screen.getByRole('textbox');
@@ -662,6 +707,8 @@ describe('TypingInput', () => {
       expect(hiddenInput.getAttribute('spellcheck')).toBe('false');
       expect(hiddenInput.getAttribute('aria-hidden')).toBe('true');
       expect(hiddenInput.getAttribute('tabindex')).toBe('-1');
+      expect(hiddenInput.getAttribute('data-form-type')).toBe('other');
+      expect(hiddenInput.getAttribute('data-lpignore')).toBe('true');
     });
 
     it('should keep hidden input visually hidden', () => {
@@ -671,6 +718,7 @@ describe('TypingInput', () => {
 
       expect(hiddenInput.className).toContain('opacity-0');
       expect(hiddenInput.className).toContain('pointer-events-none');
+      expect(hiddenInput.className).toContain('touch-manipulation');
     });
 
     it('should handle incorrect characters from mobile keyboard', () => {
@@ -773,6 +821,87 @@ describe('TypingInput', () => {
       render(<TypingInput targetText="test command" syntaxType={syntaxType} />);
 
       expect(screen.getByRole('textbox')).toBeTruthy();
+    });
+  });
+
+  describe('tablet optimizations', () => {
+    it('should have touch-manipulation class on typing area', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      expect(container.className).toContain('touch-manipulation');
+    });
+
+    it('should have minimum height for touch targets', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      expect(container.className).toMatch(/min-h-\[200px\]|md:min-h-\[240px\]/);
+    });
+
+    it('should refocus hidden input on blur when active session on touch device', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate touch start to mark as touch device
+      fireEvent.touchStart(container);
+
+      // Simulate blur event
+      fireEvent.blur(hiddenInput);
+
+      // Hidden input should refocus itself
+      expect(document.activeElement).toBe(hiddenInput);
+    });
+
+    it('should not refocus hidden input on blur when session is complete', () => {
+      render(<TypingInput targetText="ab" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate touch start to mark as touch device
+      fireEvent.touchStart(container);
+
+      // Complete the typing
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      fireEvent.change(hiddenInput, { target: { value: 'b' } });
+
+      // Blur the input
+      const blurSpy = vi.fn();
+      hiddenInput.addEventListener('blur', blurSpy);
+      hiddenInput.blur();
+
+      // Should not interfere with blur when complete
+      expect(screen.getByText('Complete!')).toBeTruthy();
+    });
+
+    it('should show touch-friendly completion message on mobile', () => {
+      render(<TypingInput targetText="ab" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Complete the text
+      fireEvent.change(hiddenInput, { target: { value: 'a' } });
+      fireEvent.change(hiddenInput, { target: { value: 'b' } });
+
+      // Should show completion message
+      expect(screen.getByText('Complete!')).toBeTruthy();
+    });
+
+    it('should show responsive padding on typing area', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      // Check for responsive padding classes
+      expect(container.className).toMatch(/p-6|md:p-8/);
+    });
+
+    it('should show responsive font size on typing area', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      // Check for responsive font size classes
+      expect(container.className).toMatch(/text-xl|md:text-2xl/);
     });
   });
 

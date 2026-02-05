@@ -300,3 +300,29 @@
 .animate-cursor-glow {
   animation: cursor-glow 1.5s ease-in-out infinite;
 }
+
+/* Touch device optimizations */
+@layer utilities {
+  /* Prevent double-tap zoom and improve touch responsiveness */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  /* Improve text selection for typing area on tablets */
+  @media (pointer: coarse) {
+    /* Coarse pointer indicates touch device */
+    .typing-area-text {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Larger touch targets for mobile/tablet */
+    .touch-target {
+      min-height: 44px; /* iOS recommended minimum */
+      min-width: 44px;
+    }
+  }
+}

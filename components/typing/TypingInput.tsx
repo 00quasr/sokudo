@@ -130,12 +130,26 @@ export function TypingInput({
     }
   }, [autoFocus]);
 
+  // Track if user is on touch device
+  const isTouchDeviceRef = useRef(false);
+
   // Handle touch events to show mobile keyboard
-  const handleTouchStart = useCallback(() => {
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    isTouchDeviceRef.current = true;
+    // Prevent default to avoid text selection on long press
+    e.preventDefault();
     if (hiddenInputRef.current) {
       hiddenInputRef.current.focus();
     }
   }, []);
+
+  // Handle touch end to re-focus if needed
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    if (hiddenInputRef.current && !isComplete) {
+      hiddenInputRef.current.focus();
+    }
+  }, [isComplete]);
 
   // Handle input from mobile keyboard
   const handleMobileInput = useCallback(
@@ -207,16 +221,19 @@ export function TypingInput({
         ref={containerRef}
         tabIndex={0}
         className={cn(
-          'relative rounded-lg border border-border bg-card p-6',
-          'font-mono text-xl leading-relaxed',
+          'relative rounded-lg border border-border bg-card p-6 md:p-8',
+          'font-mono text-xl md:text-2xl leading-relaxed',
           'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
           'cursor-text select-none',
+          'touch-manipulation', // Prevent double-tap zoom on mobile
+          'min-h-[200px] md:min-h-[240px]', // Ensure good touch target size
           isComplete && 'border-green-600/50 dark:border-green-400/50'
         )}
         role="textbox"
         aria-label="Typing input area"
         aria-readonly="true"
         onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         onClick={handleContainerClick}
       >
         {/* Hidden input for mobile keyboard */}
@@ -228,14 +245,22 @@ export function TypingInput({
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
-          className="absolute opacity-0 pointer-events-none"
+          data-form-type="other"
+          data-lpignore="true"
+          className="absolute opacity-0 pointer-events-none touch-manipulation"
           onChange={handleMobileInput}
           onKeyDown={handleMobileKeyDown}
+          onBlur={(e) => {
+            // Re-focus immediately if touch device and session is active
+            if (isTouchDeviceRef.current && !isComplete) {
+              e.target.focus();
+            }
+          }}
           aria-hidden="true"
           tabIndex={-1}
         />
         {/* Character display */}
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap gap-y-1 md:gap-y-2">
           {charStyles.map(({ char, style }, index) => {
             const isTyped = index < cursorPosition;
             const isCurrent = index === cursorPosition;
@@ -290,9 +315,12 @@ export function TypingInput({
         {/* Completion message */}
         {isComplete && (
           <div className="mt-4 pt-4 border-t border-border text-center">
-            <p className="text-green-600 dark:text-green-400 font-medium">Complete!</p>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-green-600 dark:text-green-400 font-medium text-lg md:text-xl">Complete!</p>
+            <p className="hidden md:block text-sm text-muted-foreground mt-1">
               Press <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Enter</kbd> for next challenge or <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Esc</kbd> to try again
+            </p>
+            <p className="md:hidden text-sm text-muted-foreground mt-2">
+              Tap typing area to continue or restart
             </p>
           </div>
         )}
@@ -300,13 +328,15 @@ export function TypingInput({
         {/* Instructions when not started */}
         {!isStarted && !isComplete && (
           <div className="mt-4 pt-4 border-t border-border text-center">
-            <p className="text-muted-foreground text-sm">Start typing to begin...</p>
+            <p className="text-muted-foreground text-sm md:text-base">
+              {isTouchDeviceRef.current ? 'Tap to start typing...' : 'Start typing to begin...'}
+            </p>
           </div>
         )}
       </div>
 
-      {/* Keyboard shortcuts hint */}
-      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+      {/* Keyboard shortcuts hint - hidden on touch devices for cleaner UI */}
+      <div className="hidden md:flex items-center gap-4 text-xs text-muted-foreground">
         <span>
           <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Esc</kbd> Restart
         </span>
