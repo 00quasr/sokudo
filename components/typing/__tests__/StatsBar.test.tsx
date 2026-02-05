@@ -360,4 +360,81 @@ describe('StatsBar', () => {
       expect(screen.getByTestId('stats-progress-text').textContent).toBe('75%');
     });
   });
+
+  describe('tablet optimizations', () => {
+    it('should have responsive gap spacing for tablets', () => {
+      const { container } = render(<StatsBar stats={createStats()} />);
+      const statsContainer = container.firstChild as HTMLElement;
+
+      // Check for md:gap-8 for tablet spacing
+      expect(statsContainer.className).toMatch(/md:gap-8/);
+    });
+
+    it('should have responsive text size for tablets', () => {
+      const { container } = render(<StatsBar stats={createStats()} />);
+      const statsContainer = container.firstChild as HTMLElement;
+
+      // Check for md:text-base for larger text on tablets
+      expect(statsContainer.className).toMatch(/md:text-base/);
+    });
+
+    it('should have touch-target class on stat items', () => {
+      render(<StatsBar stats={createStats({ wpm: 60 })} />);
+      const wpmValue = screen.getByTestId('stats-wpm');
+      const statItem = wpmValue.parentElement;
+
+      // Check for touch-target class
+      expect(statItem?.className).toContain('touch-target');
+    });
+
+    it('should have larger font size for stat values on tablets', () => {
+      render(<StatsBar stats={createStats({ wpm: 60 })} />);
+
+      // Check all stat values have md:text-lg for tablets
+      expect(screen.getByTestId('stats-wpm').className).toMatch(/md:text-lg/);
+      expect(screen.getByTestId('stats-accuracy').className).toMatch(/md:text-lg/);
+      expect(screen.getByTestId('stats-time').className).toMatch(/md:text-lg/);
+    });
+
+    it('should have larger label font size on tablets', () => {
+      render(<StatsBar stats={createStats()} />);
+      const wpmLabel = screen.getByText('WPM');
+
+      // Check for md:text-sm for labels on tablets
+      expect(wpmLabel.className).toMatch(/md:text-sm/);
+    });
+
+    it('should have larger progress bar height on tablets', () => {
+      render(<StatsBar stats={createStats()} progress={50} />);
+      const progressbar = screen.getByRole('progressbar');
+
+      // Check for md:h-1.5 for thicker progress bar on tablets
+      expect(progressbar.className).toMatch(/md:h-1.5/);
+    });
+
+    it('should have wider progress bar on tablets', () => {
+      render(<StatsBar stats={createStats()} progress={50} />);
+      const progressbar = screen.getByRole('progressbar');
+
+      // Check for md:w-32 for wider progress bar on tablets
+      expect(progressbar.className).toMatch(/md:w-32/);
+    });
+
+    it('should have responsive gap in stat items for tablets', () => {
+      render(<StatsBar stats={createStats({ wpm: 60 })} />);
+      const wpmValue = screen.getByTestId('stats-wpm');
+      const statItem = wpmValue.parentElement;
+
+      // Check for md:gap-3 for larger spacing on tablets
+      expect(statItem?.className).toMatch(/md:gap-3/);
+    });
+
+    it('should have larger progress text on tablets', () => {
+      render(<StatsBar stats={createStats()} progress={50} />);
+      const progressText = screen.getByTestId('stats-progress-text');
+
+      // Check for md:text-sm for larger progress text on tablets
+      expect(progressText.className).toMatch(/md:text-sm/);
+    });
+  });
 });

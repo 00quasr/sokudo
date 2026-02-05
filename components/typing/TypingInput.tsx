@@ -130,8 +130,22 @@ export function TypingInput({
     }
   }, [autoFocus]);
 
-  // Track if user is on touch device
+  // Track if user is on touch device and device type
   const isTouchDeviceRef = useRef(false);
+  const isTabletRef = useRef(false);
+
+  // Detect tablet vs phone based on screen size
+  useEffect(() => {
+    const checkDeviceType = () => {
+      // Detect tablet: touch device with screen width >= 768px (typical tablet breakpoint)
+      const isTablet = window.matchMedia('(pointer: coarse) and (min-width: 768px)').matches;
+      isTabletRef.current = isTablet;
+    };
+
+    checkDeviceType();
+    window.addEventListener('resize', checkDeviceType);
+    return () => window.removeEventListener('resize', checkDeviceType);
+  }, []);
 
   // Handle touch events to show mobile keyboard
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -212,7 +226,7 @@ export function TypingInput({
   }, [isStarted, isComplete, autoFocus]);
 
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
+    <div className={cn('flex flex-col gap-4 typing-scroll-fix', className)}>
       {/* Stats bar - subtle, not prominent */}
       {showStats && <StatsBar stats={stats} progress={progress} />}
 
@@ -221,12 +235,13 @@ export function TypingInput({
         ref={containerRef}
         tabIndex={0}
         className={cn(
-          'relative rounded-lg border border-border bg-card p-4 sm:p-6 md:p-8',
+          'relative rounded-lg border border-border bg-card p-4 sm:p-6 md:p-8 lg:p-10',
           'font-mono text-lg sm:text-xl md:text-2xl leading-relaxed',
           'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
           'cursor-text select-none',
           'touch-manipulation', // Prevent double-tap zoom on mobile
-          'min-h-[180px] sm:min-h-[200px] md:min-h-[240px]', // Ensure good touch target size
+          'min-h-[180px] sm:min-h-[200px] md:min-h-[280px] lg:min-h-[320px]', // Larger min-height for tablets
+          'typing-container-tablet typing-container-ipad-pro',
           isComplete && 'border-green-600/50 dark:border-green-400/50'
         )}
         role="textbox"
@@ -247,20 +262,26 @@ export function TypingInput({
           spellCheck="false"
           data-form-type="other"
           data-lpignore="true"
+          enterKeyHint="next"
           className="absolute opacity-0 pointer-events-none touch-manipulation"
           onChange={handleMobileInput}
           onKeyDown={handleMobileKeyDown}
           onBlur={(e) => {
             // Re-focus immediately if touch device and session is active
+            // Delay slightly to prevent focus fighting with keyboard dismissal
             if (isTouchDeviceRef.current && !isComplete) {
-              e.target.focus();
+              setTimeout(() => {
+                if (hiddenInputRef.current && !isComplete) {
+                  e.target.focus();
+                }
+              }, 100);
             }
           }}
           aria-hidden="true"
           tabIndex={-1}
         />
         {/* Character display */}
-        <div className="flex flex-wrap gap-y-0.5 sm:gap-y-1 md:gap-y-2">
+        <div className="flex flex-wrap gap-y-0.5 sm:gap-y-1 md:gap-y-2 lg:gap-y-3">
           {charStyles.map(({ char, style }, index) => {
             const isTyped = index < cursorPosition;
             const isCurrent = index === cursorPosition;
@@ -288,10 +309,10 @@ export function TypingInput({
                   isCurrent && 'bg-primary/20'
                 )}
               >
-                {/* Cursor indicator with blink animation */}
+                {/* Cursor indicator with blink animation - larger for tablets */}
                 {isCurrent && (
                   <span
-                    className="absolute left-0 top-0 bottom-0 w-[2px] bg-primary animate-cursor-blink rounded-full"
+                    className="absolute left-0 top-0 bottom-0 w-[2px] md:w-[3px] bg-primary animate-cursor-blink rounded-full"
                     aria-hidden="true"
                     data-testid="typing-cursor"
                   />

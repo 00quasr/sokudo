@@ -903,6 +903,90 @@ describe('TypingInput', () => {
       // Check for responsive font size classes
       expect(container.className).toMatch(/text-xl|md:text-2xl/);
     });
+
+    it('should have larger minimum height for tablets (lg breakpoint)', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      // Check for tablet-specific larger min-height
+      expect(container.className).toMatch(/lg:min-h-\[320px\]/);
+    });
+
+    it('should have tablet-specific container classes', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      // Check for tablet container classes
+      expect(container.className).toContain('typing-container-tablet');
+      expect(container.className).toContain('typing-container-ipad-pro');
+    });
+
+    it('should have larger padding for large viewports', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+
+      // Check for lg:p-10 class for larger tablets
+      expect(container.className).toMatch(/lg:p-10/);
+    });
+
+    it('should have larger gap between characters for tablets', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const charDisplay = container.querySelector('.flex.flex-wrap');
+
+      // Check for larger gap on lg breakpoint
+      expect(charDisplay?.className).toMatch(/lg:gap-y-3/);
+    });
+
+    it('should have wider cursor on tablet viewports', () => {
+      render(<TypingInput targetText="abc" />);
+      const cursor = screen.getByTestId('typing-cursor');
+
+      // Check for wider cursor on md+ viewports
+      expect(cursor.className).toMatch(/md:w-\[3px\]/);
+    });
+
+    it('should have enterKeyHint attribute on hidden input for tablets', () => {
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Should have enterKeyHint for better mobile keyboard UX
+      expect(hiddenInput.getAttribute('enterKeyHint')).toBe('next');
+    });
+
+    it('should have typing-scroll-fix class for iOS keyboard handling', () => {
+      const { container } = render(<TypingInput targetText="abc" />);
+
+      // The outer container should have scroll fix class
+      expect(container.firstChild).toBeTruthy();
+      const outerDiv = container.firstChild as HTMLElement;
+      expect(outerDiv.className).toContain('typing-scroll-fix');
+    });
+
+    it('should handle blur with delayed refocus for touch devices', () => {
+      vi.useFakeTimers();
+      render(<TypingInput targetText="abc" />);
+      const container = screen.getByRole('textbox');
+      const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+
+      // Simulate touch start to mark as touch device
+      fireEvent.touchStart(container);
+
+      // Blur the input
+      fireEvent.blur(hiddenInput);
+
+      // Should not immediately focus (delayed by 100ms)
+      expect(document.activeElement).not.toBe(hiddenInput);
+
+      // Fast forward timers
+      vi.advanceTimersByTime(100);
+
+      // Now it should refocus
+      expect(document.activeElement).toBe(hiddenInput);
+
+      vi.useRealTimers();
+    });
   });
 
   describe('cursor animation', () => {

@@ -325,4 +325,48 @@
       min-width: 44px;
     }
   }
+
+  /* Tablet-specific optimizations (768px - 1024px typical tablet range) */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    /* Optimize typing area for tablet viewports */
+    .typing-container-tablet {
+      /* Ensure typing area doesn't get obscured by virtual keyboard */
+      margin-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    /* Tablet portrait mode optimizations */
+    @media (orientation: portrait) {
+      .typing-area-tablet-portrait {
+        /* Reserve space for keyboard - typical iPad keyboard is ~300-350px */
+        padding-bottom: max(env(keyboard-inset-height, 350px), 20px);
+      }
+    }
+
+    /* Tablet landscape mode optimizations */
+    @media (orientation: landscape) {
+      .typing-area-tablet-landscape {
+        /* In landscape, keyboard takes less vertical space */
+        padding-bottom: max(env(keyboard-inset-height, 250px), 20px);
+      }
+    }
+  }
+
+  /* iPad Pro specific (1024px+) */
+  @media (min-width: 1024px) and (max-width: 1366px) and (pointer: coarse) {
+    .typing-container-ipad-pro {
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  /* Improve scrolling on touch devices when keyboard appears */
+  @supports (-webkit-touch-callout: none) {
+    /* iOS-specific: prevent scroll issues when keyboard appears */
+    .typing-scroll-fix {
+      position: relative;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
