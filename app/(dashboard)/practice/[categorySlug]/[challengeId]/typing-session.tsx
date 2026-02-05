@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { TypingInput, TypingStats, KeystrokeEvent, SyntaxType } from '@/components/typing/TypingInput';
 import { SessionComplete, SessionResult, AdaptiveDifficultyInfo, CategoryAggregateStats } from '@/components/typing/SessionComplete';
 import { ChallengeProgress } from '@/components/typing/ChallengeProgress';
+import { OfflineIndicator } from '@/components/typing/OfflineIndicator';
 import { Challenge, Category } from '@/lib/db/schema';
+import { useOfflineSession } from '@/lib/hooks/useOfflineSession';
 
 interface TypingSessionProps {
   challenge: Challenge & { category: Category };
@@ -89,6 +91,12 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
   const [isTransitioning, setIsTransitioning] = useState(false);
   const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Initialize offline session support
+  const { saveSession, isOnline, pendingSyncCount } = useOfflineSession({
+    challengeId: challenge.id,
+    enableAutoSync: true,
+  });
+
   // Navigate to next challenge or back to category list
   const navigateToNext = useCallback(() => {
     // Show progress indicator if there's a next challenge
@@ -104,7 +112,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
     }
   }, [router, categorySlug, nextChallengeId, adaptiveDifficulty]);
 
-  const handleComplete = useCallback((stats: TypingStats, _keystrokeLog: KeystrokeEvent[]) => {
+  const handleComplete = useCallback((stats: TypingStats, keystrokeLog: KeystrokeEvent[]) => {
     const result = {
       wpm: stats.wpm,
       rawWpm: stats.rawWpm,
@@ -114,6 +122,11 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
       durationMs: stats.durationMs,
     };
     setSessionResult(result);
+
+    // Save session to IndexedDB (will sync automatically when online)
+    saveSession(result, keystrokeLog).catch((error) => {
+      console.error('Failed to save session:', error);
+    });
 
     // Only show modal when completing the last challenge in the category
     const isLastChallenge = !nextChallengeId;
@@ -141,7 +154,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
         navigateToNext();
       }, 1500);
     }
-  }, [categorySlug, nextChallengeId, navigateToNext, challenge.category.id]);
+  }, [categorySlug, nextChallengeId, navigateToNext, challenge.category.id, saveSession]);
 
   const handleRetry = useCallback(() => {
     // Cancel auto-advance if user presses Escape to retry
@@ -188,6 +201,8 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
 
   return (
     <>
+      <OfflineIndicator isOnline={isOnline} pendingSyncCount={pendingSyncCount} />
+
       <TypingInput
         key={key}
         targetText={challenge.content}
