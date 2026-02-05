@@ -20,6 +20,14 @@ vi.mock('@/lib/auth/api-key', () => ({
   authenticateApiKey: vi.fn(),
 }));
 
+// Mock the cache module (caching disabled in tests)
+vi.mock('@/lib/cache/leaderboard-cache', () => ({
+  getOrSetLeaderboard: vi.fn(async (_options, fetchFn) => {
+    return await fetchFn();
+  }),
+  getV1LeaderboardCacheKey: vi.fn(() => 'test-key'),
+}));
+
 import { authenticateApiKey } from '@/lib/auth/api-key';
 import { db } from '@/lib/db/drizzle';
 

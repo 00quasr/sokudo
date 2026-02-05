@@ -6,6 +6,14 @@ vi.mock('@/lib/db/queries', () => ({
   getReferralLeaderboard: vi.fn(),
 }));
 
+// Mock the cache module (caching disabled in tests)
+vi.mock('@/lib/cache/leaderboard-cache', () => ({
+  getOrSetLeaderboard: vi.fn(async (_options, fetchFn) => {
+    return await fetchFn();
+  }),
+  getReferralLeaderboardCacheKey: vi.fn(() => 'test-key'),
+}));
+
 import { getUser, getReferralLeaderboard } from '@/lib/db/queries';
 
 const mockGetUser = getUser as ReturnType<typeof vi.fn>;

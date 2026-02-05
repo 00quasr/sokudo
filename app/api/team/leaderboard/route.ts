@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUser, getTeamLeaderboard } from '@/lib/db/queries';
 import { apiRateLimit } from '@/lib/rate-limit';
+import {
+  getOrSetLeaderboard,
+  getTeamLeaderboardCacheKey,
+} from '@/lib/cache/leaderboard-cache';
 
 export interface TeamLeaderboardResponse {
   leaderboard: Array<{
@@ -30,7 +34,17 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const leaderboard = await getTeamLeaderboard();
+    // We need to get the team ID first to generate the cache key
+    // We'll use a wrapper function that handles this
+    const leaderboard = await getOrSetLeaderboard(
+      {
+        key: `leaderboard:team:user:${user.id}`, // Cache by user since team membership can change
+        ttl: 300, // 5 minutes
+      },
+      async () => {
+        return await getTeamLeaderboard();
+      }
+    );
 
     const response: TeamLeaderboardResponse = { leaderboard };
     return NextResponse.json(response);

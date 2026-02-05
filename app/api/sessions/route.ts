@@ -26,6 +26,7 @@ import {
 } from '@/lib/practice/spaced-repetition';
 import { apiRateLimit } from '@/lib/rate-limit';
 import { dispatchWebhookEvent } from '@/lib/webhooks/deliver';
+import { invalidateAllLeaderboards } from '@/lib/cache/leaderboard-cache';
 
 const getSessionsQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -359,6 +360,11 @@ export async function POST(request: NextRequest) {
         reachedAt: session.completedAt,
       }).catch((err) => console.error('Error dispatching user.milestone_reached webhook:', err));
     }
+
+    // Invalidate all leaderboard caches since a new session was completed
+    invalidateAllLeaderboards().catch((err) => {
+      console.error('Error invalidating leaderboard cache:', err);
+    });
 
     // Include limit information in response
     const response = {
