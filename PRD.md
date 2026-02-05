@@ -250,15 +250,15 @@
 - [x] Auto-advance to next challenge after brief delay (1-2 seconds) instead of showing modal each time
 - [x] Show category completion summary with aggregate stats when finishing all challenges
 - [x] Change multiplayer races to use full categories/packs instead of single commands
-- [ ] Hide/disable premium categories and challenges for free users (currently visible but should not be accessible)
+- [x] Hide/disable premium categories and challenges for free users (currently visible but should not be accessible)
 - [x] Redirect unauthorized users to login page instead of showing "Unauthorized" error
 - [x] Implement dark/light mode toggle with system preference detection
-- [ ] Ensure typing area, syntax highlighting, and all UI components work in both themes
-- [ ] Persist theme preference in user settings/localStorage
+- [x] Ensure typing area, syntax highlighting, and all UI components work in both themes
+- [x] Persist theme preference in user settings/localStorage
 
 ### Bug Fixes
 
-- [ ] Fix SAML metadata endpoint hardcoded `teamId: 0` in `/app/api/auth/saml/metadata/route.ts`
+- [x] Fix SAML metadata endpoint hardcoded `teamId: 0` in `/app/api/auth/saml/metadata/route.ts`
 - [ ] Fix Stripe redirect URLs using hardcoded IP instead of `BASE_URL` env var in `/lib/payments/stripe.ts`
 - [ ] Remove misleading TODO comment in `/app/(dashboard)/practice/[categorySlug]/[challengeId]/typing-session.tsx:105`
 
