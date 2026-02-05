@@ -20,6 +20,12 @@ vi.mock('@/lib/db/queries', () => ({
   getCategories: vi.fn(),
   getUser: vi.fn(),
   getUserProfile: vi.fn(),
+  getUserStatsOverview: vi.fn(),
+  getCategoryPerformance: vi.fn(),
+  getRecentSessionsForAdaptive: vi.fn(),
+  getKeyAccuracyForUser: vi.fn(),
+  getCharErrorPatternsForUser: vi.fn(),
+  getProblemSequences: vi.fn(),
 }));
 
 // Mock the limits module
@@ -33,7 +39,31 @@ vi.mock('@/components/limits/RemainingTimeBar', () => ({
   RemainingTimeBar: () => null,
 }));
 
-import { getCategories, getUser, getUserProfile } from '@/lib/db/queries';
+// Mock PracticeRecommendations component
+vi.mock('@/components/practice/PracticeRecommendations', () => ({
+  PracticeRecommendations: () => null,
+}));
+
+// Mock recommendations and weakness analysis
+vi.mock('@/lib/practice/recommendations', () => ({
+  generateRecommendations: vi.fn(() => []),
+}));
+
+vi.mock('@/lib/weakness/analyze', () => ({
+  analyzeWeaknesses: vi.fn(() => null),
+}));
+
+import {
+  getCategories,
+  getUser,
+  getUserProfile,
+  getUserStatsOverview,
+  getCategoryPerformance,
+  getRecentSessionsForAdaptive,
+  getKeyAccuracyForUser,
+  getCharErrorPatternsForUser,
+  getProblemSequences,
+} from '@/lib/db/queries';
 import { canAccessPremiumCategories, hasUnlimitedPractice } from '@/lib/limits/constants';
 import PracticePage from '../page';
 import { Category } from '@/lib/db/schema';
@@ -125,6 +155,19 @@ describe('PracticePage', () => {
     vi.mocked(getUserProfile).mockResolvedValue(mockFreeProfile);
     vi.mocked(canAccessPremiumCategories).mockReturnValue(false);
     vi.mocked(hasUnlimitedPractice).mockReturnValue(false);
+
+    // Mock additional functions for recommendations
+    vi.mocked(getUserStatsOverview).mockResolvedValue({
+      totalSessions: 10,
+      avgWpm: 45,
+      avgAccuracy: 95,
+      bestWpm: 60,
+    });
+    vi.mocked(getCategoryPerformance).mockResolvedValue([]);
+    vi.mocked(getRecentSessionsForAdaptive).mockResolvedValue([]);
+    vi.mocked(getKeyAccuracyForUser).mockResolvedValue([]);
+    vi.mocked(getCharErrorPatternsForUser).mockResolvedValue([]);
+    vi.mocked(getProblemSequences).mockResolvedValue([]);
   });
 
   describe('rendering', () => {
