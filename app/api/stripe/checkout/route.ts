@@ -93,9 +93,11 @@ export async function GET(request: NextRequest) {
       .where(eq(teams.id, userTeam[0].teamId));
 
     await setSession(user[0]);
-    return NextResponse.redirect('http://49.13.168.33:3000/dashboard');
+    const baseUrl = process.env.BASE_URL || request.url;
+    return NextResponse.redirect(new URL('/dashboard', baseUrl));
   } catch (error) {
     console.error('Error handling successful checkout:', error);
-    return NextResponse.redirect('http://49.13.168.33:3000/error');
+    const baseUrl = process.env.BASE_URL || request.url;
+    return NextResponse.redirect(new URL('/error', baseUrl));
   }
 }
