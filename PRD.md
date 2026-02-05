@@ -290,8 +290,8 @@
 ### Additional Integrations (Low Priority)
 
 - [x] CLI tool for terminal-based practice
-- [ ] Zapier integration for workflow automation
-- [ ] n8n integration for self-hosted workflows
+- [x] Zapier integration for workflow automation
+- [x] n8n integration for self-hosted workflows
 
 ### Accessibility & Internationalization (Nice-to-Have)
 
