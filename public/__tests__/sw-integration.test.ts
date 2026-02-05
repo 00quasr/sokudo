@@ -63,6 +63,7 @@ describe('Service Worker Integration', () => {
     expect(swContent).toContain('/api/v1/challenges');
     expect(swContent).toContain('/api/community-challenges');
     expect(swContent).toContain('/api/categories');
+    expect(swContent).toContain('/api/team/custom-challenges');
   });
 
   it('should implement cache-first strategy', () => {

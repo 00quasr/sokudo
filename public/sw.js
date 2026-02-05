@@ -36,7 +36,8 @@ self.addEventListener('fetch', (event) => {
     (url.pathname.startsWith('/api/challenges') ||
      url.pathname.startsWith('/api/v1/challenges') ||
      url.pathname.startsWith('/api/community-challenges') ||
-     url.pathname.startsWith('/api/categories'))
+     url.pathname.startsWith('/api/categories') ||
+     url.pathname.startsWith('/api/team/custom-challenges'))
   ) {
     event.respondWith(
       caches.open(CHALLENGE_CACHE).then((cache) => {

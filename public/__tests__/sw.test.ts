@@ -220,6 +220,23 @@ describe('Service Worker Offline Caching', () => {
       expect(cachedResponse).toBeDefined();
     });
 
+    it('should cache team custom challenges API', async () => {
+      const request = new Request('http://localhost:3000/api/team/custom-challenges');
+      const mockResponse = new Response(
+        JSON.stringify({ challenges: [] }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      const cache = await mockCaches.open('challenges-v1');
+      await cache.put(request, mockResponse);
+
+      const cachedResponse = await cache.match(request);
+      expect(cachedResponse).toBeDefined();
+    });
+
     it('should only cache GET requests', () => {
       const getRequest = new Request('http://localhost:3000/api/challenges', { method: 'GET' });
       const postRequest = new Request('http://localhost:3000/api/challenges', { method: 'POST' });
@@ -258,11 +275,13 @@ describe('Service Worker Offline Caching', () => {
       const challengesUrl = new URL('http://localhost:3000/api/challenges?page=1');
       const v1Url = new URL('http://localhost:3000/api/v1/challenges/123');
       const communityUrl = new URL('http://localhost:3000/api/community-challenges');
+      const teamUrl = new URL('http://localhost:3000/api/team/custom-challenges');
       const otherUrl = new URL('http://localhost:3000/api/user/profile');
 
       expect(challengesUrl.pathname.startsWith('/api/challenges')).toBe(true);
       expect(v1Url.pathname.startsWith('/api/v1/challenges')).toBe(true);
       expect(communityUrl.pathname.startsWith('/api/community-challenges')).toBe(true);
+      expect(teamUrl.pathname.startsWith('/api/team/custom-challenges')).toBe(true);
       expect(otherUrl.pathname.startsWith('/api/challenges')).toBe(false);
     });
 
