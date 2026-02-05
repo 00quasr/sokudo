@@ -64,7 +64,7 @@ describe('createCheckoutSession', () => {
     process.env.BASE_URL = 'http://localhost:3000';
   });
 
-  it('should use BASE_URL env var for success_url', async () => {
+  it('should use hardcoded IP for success_url', async () => {
     const mockTeam = {
       id: 1,
       name: 'Test Team',
@@ -107,8 +107,8 @@ describe('createCheckoutSession', () => {
         },
       ],
       mode: 'subscription',
-      success_url: 'http://localhost:3000/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: 'http://localhost:3000/pricing',
+      success_url: 'http://49.13.168.33:3000/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'http://49.13.168.33:3000/pricing',
       customer: 'cus_test123',
       client_reference_id: '1',
       allow_promotion_codes: true,
@@ -118,7 +118,7 @@ describe('createCheckoutSession', () => {
     });
   });
 
-  it('should use custom BASE_URL when set', async () => {
+  it('should use hardcoded IP regardless of BASE_URL env var', async () => {
     process.env.BASE_URL = 'https://sokudo.app';
 
     const mockTeam = {
@@ -156,8 +156,8 @@ describe('createCheckoutSession', () => {
 
     expect(mockStripeCheckoutSessionCreate).toHaveBeenCalledWith(
       expect.objectContaining({
-        success_url: 'https://sokudo.app/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: 'https://sokudo.app/pricing',
+        success_url: 'http://49.13.168.33:3000/api/stripe/checkout?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'http://49.13.168.33:3000/pricing',
       })
     );
   });
@@ -213,7 +213,7 @@ describe('createCustomerPortalSession', () => {
     process.env.BASE_URL = 'http://localhost:3000';
   });
 
-  it('should use BASE_URL env var for return_url', async () => {
+  it('should use hardcoded IP for return_url', async () => {
     const mockTeam = {
       id: 1,
       name: 'Test Team',
@@ -242,7 +242,7 @@ describe('createCustomerPortalSession', () => {
 
     expect(mockStripeBillingPortalSessionCreate).toHaveBeenCalledWith({
       customer: 'cus_test123',
-      return_url: 'http://localhost:3000/dashboard',
+      return_url: 'http://49.13.168.33:3000/dashboard',
       configuration: 'bpc_test123',
     });
     expect(result).toEqual({
@@ -251,7 +251,7 @@ describe('createCustomerPortalSession', () => {
     });
   });
 
-  it('should use custom BASE_URL when set', async () => {
+  it('should use hardcoded IP regardless of BASE_URL env var', async () => {
     process.env.BASE_URL = 'https://sokudo.app';
 
     const mockTeam = {
@@ -282,7 +282,7 @@ describe('createCustomerPortalSession', () => {
 
     expect(mockStripeBillingPortalSessionCreate).toHaveBeenCalledWith(
       expect.objectContaining({
-        return_url: 'https://sokudo.app/dashboard',
+        return_url: 'http://49.13.168.33:3000/dashboard',
       })
     );
   });
