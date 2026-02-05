@@ -10,6 +10,7 @@ const preferencesSchema = z.object({
   weeklyReportEnabled: z.boolean().optional(),
   streakReminderEnabled: z.boolean().optional(),
   pushNotificationsEnabled: z.boolean().optional(),
+  theme: z.enum(['light', 'dark', 'system']).optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -32,6 +33,7 @@ export async function GET(request: NextRequest) {
       weeklyReportEnabled: preferences.weeklyReportEnabled !== false,
       streakReminderEnabled: preferences.streakReminderEnabled !== false,
       pushNotificationsEnabled: preferences.pushNotificationsEnabled === true,
+      theme: preferences.theme || 'system',
     });
   } catch (error) {
     console.error('Get preferences error:', error);
