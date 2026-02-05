@@ -2,8 +2,9 @@
   "name": "Sokudo (速度) - Developer Typing Trainer",
   "short_name": "Sokudo",
   "description": "Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts. Master developer commands at speed with real-time feedback and targeted practice.",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#0a0a0b",
   "theme_color": "#0a0a0b",
   "orientation": "any",
@@ -11,6 +12,7 @@
   "lang": "en-US",
   "dir": "ltr",
   "categories": ["productivity", "developer tools", "education"],
+  "iarc_rating_id": "",
   "icons": [
     {
       "src": "/icons/icon-72x72.png",
@@ -113,5 +115,27 @@
       ]
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/practice",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+sokudo",
+      "url": "/?challenge=%s"
+    }
+  ]
 }
