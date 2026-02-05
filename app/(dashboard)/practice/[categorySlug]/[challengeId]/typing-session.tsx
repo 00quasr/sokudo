@@ -92,7 +92,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
   const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize offline session support
-  const { saveSession, isOnline, pendingSyncCount } = useOfflineSession({
+  const { saveSession, isOnline, pendingSyncCount, triggerSync } = useOfflineSession({
     challengeId: challenge.id,
     enableAutoSync: true,
   });
@@ -201,7 +201,11 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
 
   return (
     <>
-      <OfflineIndicator isOnline={isOnline} pendingSyncCount={pendingSyncCount} />
+      <OfflineIndicator
+        isOnline={isOnline}
+        pendingSyncCount={pendingSyncCount}
+        onSyncClick={triggerSync}
+      />
 
       <TypingInput
         key={key}
