@@ -1,6 +1,10 @@
 {
   "private": true,
+  "bin": {
+    "sokudo": "./cli/bin/sokudo.js"
+  },
   "scripts": {
+    "cli:build": "npx tsx cli/index.ts",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -23,6 +27,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",
+    "commander": "^12.1.0",
     "@radix-ui/react-progress": "^1.1.8",
     "@tailwindcss/postcss": "4.1.7",
     "@types/node": "^22.15.18",
