@@ -7,6 +7,7 @@
     "start:ws": "npx tsx server.ts",
     "test": "vitest",
     "test:run": "vitest run",
+    "verify": "npx tsx scripts/verify-setup.ts",
     "db:setup": "npx tsx lib/db/setup.ts",
     "db:seed": "npx tsx lib/db/seed.ts",
     "db:seed:production": "npx tsx lib/db/seed-production.ts",

@@ -83,6 +83,15 @@ pnpm db:seed:git-basics         # Individual category seeds
 pnpm db:seed:achievements
 ```
 
+### Verify Setup
+
+```bash
+# Verify your development environment is properly configured
+pnpm verify
+```
+
+This checks database connection, migrations, environment variables, and more.
+
 ### Development
 
 ```bash
@@ -94,6 +103,8 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 ```
 
 Visit **http://localhost:3000** to see the app.
+
+**Need help?** See [ONBOARDING.md](ONBOARDING.md) for detailed setup instructions and troubleshooting.
 
 ### Test Credentials
 
@@ -351,6 +362,7 @@ Commit format: `type(scope): message`
 
 ## Documentation
 
+- **ONBOARDING.md** - New developer setup guide (start here!)
 - **CLAUDE.md** - Development guide and architecture
 - **SOKUDO_PROJECT_PLAN.md** - Comprehensive feature roadmap
 - **PRD.md** - Product requirements and task checklist
