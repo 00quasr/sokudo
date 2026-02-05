@@ -38,22 +38,27 @@ export function OfflineIndicator({ isOnline, pendingSyncCount, onSyncClick }: Of
   }
 
   return (
-    <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 duration-300">
+    <div
+      className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 duration-300"
+      role={!isOnline ? 'alert' : 'status'}
+      aria-live="polite"
+      aria-atomic="true"
+    >
       <div className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 shadow-lg">
         <div className="flex items-center gap-3">
           {!isOnline ? (
             <>
-              <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" aria-hidden="true" />
               <span className="text-sm text-zinc-300">Offline - sessions saved locally</span>
             </>
           ) : showSyncSuccess ? (
             <>
-              <div className="w-2 h-2 bg-green-500 rounded-full" />
+              <div className="w-2 h-2 bg-green-500 rounded-full" aria-hidden="true" />
               <span className="text-sm text-zinc-300">All sessions synced!</span>
             </>
           ) : pendingSyncCount > 0 ? (
             <>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" aria-hidden="true" />
               <span className="text-sm text-zinc-300">
                 {justWentOnline ? 'Back online - syncing' : 'Syncing'} {pendingSyncCount} session{pendingSyncCount !== 1 ? 's' : ''}...
               </span>
@@ -61,7 +66,7 @@ export function OfflineIndicator({ isOnline, pendingSyncCount, onSyncClick }: Of
                 <button
                   onClick={onSyncClick}
                   className="ml-2 text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                  aria-label="Retry sync"
+                  aria-label="Retry syncing sessions"
                 >
                   Retry
                 </button>

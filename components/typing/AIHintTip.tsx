@@ -85,9 +85,13 @@ export function AIHintTip({
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
+      <div
+        className="rounded-lg border border-red-500/20 bg-red-500/5 p-3"
+        role="alert"
+        aria-live="assertive"
+      >
         <div className="flex items-center gap-2 text-sm text-red-400">
-          <Lightbulb className="h-4 w-4 shrink-0" />
+          <Lightbulb className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span>{error}</span>
         </div>
       </div>
@@ -100,8 +104,9 @@ export function AIHintTip({
         onClick={fetchHint}
         className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
         data-testid="ai-hint-button"
+        aria-label="Get AI-generated tips for this challenge"
       >
-        <Sparkles className="h-4 w-4" />
+        <Sparkles className="h-4 w-4" aria-hidden="true" />
         Get AI Tips
       </button>
     );
@@ -112,8 +117,11 @@ export function AIHintTip({
       <div
         className="flex items-center justify-center gap-2 rounded-lg border border-border bg-muted/30 px-4 py-3 text-sm text-muted-foreground"
         data-testid="ai-hint-loading"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
       >
-        <Loader2 className="h-4 w-4 animate-spin" />
+        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         Generating tips...
       </div>
     );
@@ -124,23 +132,31 @@ export function AIHintTip({
       <button
         onClick={() => setExpanded((prev) => !prev)}
         className="flex w-full items-center justify-between px-4 py-2.5 text-sm"
+        aria-expanded={expanded}
+        aria-controls="ai-hint-details"
+        aria-label={expanded ? 'Collapse AI tips' : 'Expand AI tips'}
       >
         <div className="flex items-center gap-2 text-purple-400">
-          <Sparkles className="h-4 w-4" />
+          <Sparkles className="h-4 w-4" aria-hidden="true" />
           <span className="font-medium">AI Tips</span>
         </div>
         {expanded ? (
-          <ChevronUp className="h-4 w-4 text-muted-foreground" />
+          <ChevronUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
         )}
       </button>
 
       {expanded && hint && (
-        <div className="space-y-3 border-t border-purple-500/10 px-4 py-3">
+        <div
+          id="ai-hint-details"
+          className="space-y-3 border-t border-purple-500/10 px-4 py-3"
+          role="region"
+          aria-label="AI-generated tips and explanations"
+        >
           <div>
             <div className="mb-1 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-purple-400/70">
-              <Lightbulb className="h-3 w-3" />
+              <Lightbulb className="h-3 w-3" aria-hidden="true" />
               Tip
             </div>
             <p className="text-sm text-foreground/90" data-testid="ai-hint-tip">

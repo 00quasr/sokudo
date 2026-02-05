@@ -376,6 +376,8 @@ export function TypingInput({
         role="textbox"
         aria-label="Typing input area"
         aria-readonly="true"
+        aria-describedby="keyboard-shortcuts-hint"
+        aria-invalid={errors.size > 0}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onClick={handleContainerClick}
@@ -463,6 +465,8 @@ export function TypingInput({
                   style.fontWeight,
                   isCurrent && 'bg-primary/20'
                 )}
+                aria-current={isCurrent ? 'location' : undefined}
+                aria-invalid={hasError && isTyped ? 'true' : undefined}
               >
                 {/* Cursor indicator with blink animation - larger for tablets */}
                 {isCurrent && (
@@ -490,10 +494,14 @@ export function TypingInput({
 
         {/* Completion message */}
         {isComplete && (
-          <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border text-center">
+          <div
+            className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border text-center"
+            role="status"
+            aria-live="polite"
+          >
             <p className="text-green-600 dark:text-green-400 font-medium text-base sm:text-lg md:text-xl">Complete!</p>
             <p className="hidden md:block text-sm text-muted-foreground mt-1">
-              Press <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Enter</kbd> for next challenge or <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Esc</kbd> to try again
+              Press <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs" aria-hidden="true">Enter</kbd> for next challenge or <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs" aria-hidden="true">Esc</kbd> to try again
             </p>
             <p className="md:hidden text-xs sm:text-sm text-muted-foreground mt-2 px-4">
               Tap typing area to continue or restart
@@ -512,20 +520,25 @@ export function TypingInput({
       </div>
 
       {/* Keyboard shortcuts hint - hidden on touch devices for cleaner UI */}
-      <div className="hidden md:flex items-center gap-4 text-xs text-muted-foreground">
+      <div
+        id="keyboard-shortcuts-hint"
+        className="hidden md:flex items-center gap-4 text-xs text-muted-foreground"
+        role="region"
+        aria-label="Available keyboard shortcuts"
+      >
         <span>
-          <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Esc</kbd> Restart
+          <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono" aria-hidden="true">Esc</kbd> Restart
         </span>
         <span>
-          <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Tab</kbd> Skip
+          <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono" aria-hidden="true">Tab</kbd> Skip
         </span>
         {isComplete && (
           <span>
-            <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">Enter</kbd> Next
+            <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono" aria-hidden="true">Enter</kbd> Next
           </span>
         )}
         <span>
-          <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono">⌫</kbd> Undo
+          <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono" aria-hidden="true">⌫</kbd> Undo
         </span>
       </div>
     </div>

@@ -152,54 +152,63 @@ export function SessionComplete({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+      <DialogContent
+        className="sm:max-w-md"
+        showCloseButton={false}
+        aria-describedby="session-performance-message"
+      >
         <DialogHeader className="text-center sm:text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
-            <Trophy className="h-8 w-8 text-green-500" />
+            <Trophy className="h-8 w-8 text-green-500" aria-hidden="true" />
           </div>
           <DialogTitle className="text-2xl">{title}</DialogTitle>
-          <DialogDescription>{message}</DialogDescription>
+          <DialogDescription id="session-performance-message">{message}</DialogDescription>
         </DialogHeader>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3" role="group" aria-label="Session statistics">
           <div className="rounded-lg bg-muted/50 p-4 text-center">
             <div className="mb-1 flex items-center justify-center gap-1.5 text-muted-foreground">
-              <Zap className="h-4 w-4" />
+              <Zap className="h-4 w-4" aria-hidden="true" />
               <span className="text-xs uppercase tracking-wide">WPM</span>
             </div>
-            <div className="text-3xl font-bold text-foreground">{result.wpm}</div>
+            <div className="text-3xl font-bold text-foreground" aria-label={`${result.wpm} words per minute`}>{result.wpm}</div>
           </div>
           <div className="rounded-lg bg-muted/50 p-4 text-center">
             <div className="mb-1 flex items-center justify-center gap-1.5 text-muted-foreground">
-              <Target className="h-4 w-4" />
+              <Target className="h-4 w-4" aria-hidden="true" />
               <span className="text-xs uppercase tracking-wide">Accuracy</span>
             </div>
-            <div className="text-3xl font-bold text-foreground">{result.accuracy}%</div>
+            <div className="text-3xl font-bold text-foreground" aria-label={`${result.accuracy} percent accuracy`}>{result.accuracy}%</div>
           </div>
           <div className="rounded-lg bg-muted/50 p-4 text-center">
             <div className="mb-1 flex items-center justify-center gap-1.5 text-muted-foreground">
-              <Clock className="h-4 w-4" />
+              <Clock className="h-4 w-4" aria-hidden="true" />
               <span className="text-xs uppercase tracking-wide">Time</span>
             </div>
-            <div className="text-3xl font-bold text-foreground">
+            <div className="text-3xl font-bold text-foreground" aria-label={`Time taken ${formatTime(result.durationMs)}`}>
               {formatTime(result.durationMs)}
             </div>
           </div>
           <div className="rounded-lg bg-muted/50 p-4 text-center">
             <div className="mb-1 flex items-center justify-center gap-1.5 text-muted-foreground">
-              <XCircle className="h-4 w-4" />
+              <XCircle className="h-4 w-4" aria-hidden="true" />
               <span className="text-xs uppercase tracking-wide">Errors</span>
             </div>
-            <div className="text-3xl font-bold text-foreground">{result.errors}</div>
+            <div className="text-3xl font-bold text-foreground" aria-label={`${result.errors} errors`}>{result.errors}</div>
           </div>
         </div>
 
         {/* Category completion summary */}
         {isCategoryComplete && categoryStats && (
-          <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
+          <div
+            className="rounded-lg border border-green-500/20 bg-green-500/10 p-4"
+            role="status"
+            aria-live="polite"
+            aria-label="Category completion summary"
+          >
             <div className="mb-3 flex items-center gap-2 text-center justify-center">
-              <Trophy className="h-5 w-5 text-green-500" />
+              <Trophy className="h-5 w-5 text-green-500" aria-hidden="true" />
               <h3 className="text-lg font-semibold text-foreground">Category Complete!</h3>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center text-sm">
@@ -237,6 +246,9 @@ export function SessionComplete({
             className={`rounded-lg border p-3 text-center text-sm ${
               difficultyBgColors[adaptiveDifficulty.recommendedDifficulty] ?? 'bg-muted/50'
             }`}
+            role="status"
+            aria-live="polite"
+            aria-label={`Difficulty adjusted from ${adaptiveDifficulty.currentDifficulty} to ${adaptiveDifficulty.recommendedDifficulty}`}
           >
             <span className="text-muted-foreground">Difficulty adjusted: </span>
             <span className={difficultyColors[adaptiveDifficulty.currentDifficulty] ?? ''}>
@@ -271,10 +283,12 @@ export function SessionComplete({
           <button
             onClick={onRetry}
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-2 transition-colors hover:bg-muted"
+            aria-label="Try again - press R"
+            aria-keyshortcuts="r"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-4 w-4" aria-hidden="true" />
             Try Again
-            <kbd className="ml-1 hidden rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground sm:inline-block">
+            <kbd className="ml-1 hidden rounded bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground sm:inline-block" aria-hidden="true">
               R
             </kbd>
           </button>
@@ -282,10 +296,12 @@ export function SessionComplete({
             href={nextChallengeHref}
             data-next-challenge
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground transition-colors hover:bg-primary/90"
+            aria-label={`${effectiveNextId ? 'Next challenge' : 'More challenges'} - press N or Enter`}
+            aria-keyshortcuts="n Enter"
           >
             {effectiveNextId ? 'Next Challenge' : 'More Challenges'}
-            <ChevronRight className="h-4 w-4" />
-            <kbd className="ml-1 hidden rounded bg-primary-foreground/20 px-1.5 py-0.5 text-xs font-medium text-primary-foreground sm:inline-block">
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            <kbd className="ml-1 hidden rounded bg-primary-foreground/20 px-1.5 py-0.5 text-xs font-medium text-primary-foreground sm:inline-block" aria-hidden="true">
               N
             </kbd>
           </Link>
@@ -299,10 +315,10 @@ export function SessionComplete({
         />
 
         {/* Keyboard hints */}
-        <div className="text-center text-xs text-muted-foreground">
-          Press <kbd className="rounded bg-muted px-1 py-0.5 font-medium">R</kbd> to retry,{' '}
-          <kbd className="rounded bg-muted px-1 py-0.5 font-medium">N</kbd> for next challenge,{' '}
-          <kbd className="rounded bg-muted px-1 py-0.5 font-medium">Esc</kbd> to close
+        <div className="text-center text-xs text-muted-foreground" role="region" aria-label="Keyboard shortcuts">
+          Press <kbd className="rounded bg-muted px-1 py-0.5 font-medium" aria-hidden="true">R</kbd> to retry,{' '}
+          <kbd className="rounded bg-muted px-1 py-0.5 font-medium" aria-hidden="true">N</kbd> for next challenge,{' '}
+          <kbd className="rounded bg-muted px-1 py-0.5 font-medium" aria-hidden="true">Esc</kbd> to close
         </div>
       </DialogContent>
     </Dialog>

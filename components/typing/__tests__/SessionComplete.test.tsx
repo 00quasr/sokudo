@@ -290,6 +290,89 @@ describe('SessionComplete', () => {
 
       expect(screen.getByText('Outstanding speed and accuracy!')).toBeTruthy();
     });
+
+    it('should have aria-describedby on dialog content', () => {
+      const { container } = render(<SessionComplete {...defaultProps} />);
+
+      const dialogContent = container.querySelector('[aria-describedby="session-performance-message"]');
+      expect(dialogContent).toBeTruthy();
+    });
+
+    it('should have aria-labels on stat values', () => {
+      const { container } = render(<SessionComplete {...defaultProps} result={createResult({ wpm: 75, accuracy: 98 })} />);
+
+      const wpmStat = container.querySelector('[aria-label*="75 words per minute"]');
+      const accuracyStat = container.querySelector('[aria-label*="98 percent accuracy"]');
+
+      expect(wpmStat).toBeTruthy();
+      expect(accuracyStat).toBeTruthy();
+    });
+
+    it('should have aria-keyshortcuts on action buttons', () => {
+      const { container } = render(<SessionComplete {...defaultProps} nextChallengeId={5} />);
+
+      const retryButton = screen.getByText('Try Again').closest('button');
+      const nextButton = screen.getByText('Next Challenge').closest('a');
+
+      expect(retryButton?.getAttribute('aria-keyshortcuts')).toBe('r');
+      expect(nextButton?.getAttribute('aria-keyshortcuts')).toBe('n Enter');
+    });
+
+    it('should have role region on keyboard shortcuts hint', () => {
+      const { container } = render(<SessionComplete {...defaultProps} />);
+
+      const keyboardHints = container.querySelector('[role="region"][aria-label="Keyboard shortcuts"]');
+      expect(keyboardHints).toBeTruthy();
+    });
+
+    it('should have aria-hidden on decorative icons', () => {
+      const { container } = render(<SessionComplete {...defaultProps} />);
+
+      const icons = container.querySelectorAll('svg[aria-hidden="true"]');
+      expect(icons.length).toBeGreaterThan(0);
+    });
+
+    it('should have status role on category completion summary when category is complete', () => {
+      const categoryStats = {
+        totalSessions: 10,
+        uniqueChallenges: 5,
+        avgWpm: 60,
+        avgAccuracy: 95,
+        totalTimeMs: 300000,
+        totalErrors: 20,
+        bestWpm: 75,
+      };
+
+      const { container } = render(
+        <SessionComplete
+          {...defaultProps}
+          nextChallengeId={undefined}
+          categoryStats={categoryStats}
+        />
+      );
+
+      const completionSummary = container.querySelector('[role="status"][aria-label="Category completion summary"]');
+      expect(completionSummary).toBeTruthy();
+    });
+
+    it('should have status role and aria-live on difficulty adjustment indicator', () => {
+      const adaptiveDifficulty = {
+        recommendedDifficulty: 'intermediate',
+        currentDifficulty: 'beginner',
+        reason: 'You are performing well',
+      };
+
+      const { container } = render(
+        <SessionComplete
+          {...defaultProps}
+          adaptiveDifficulty={adaptiveDifficulty}
+        />
+      );
+
+      const difficultyIndicator = container.querySelector('[role="status"][aria-live="polite"]');
+      expect(difficultyIndicator).toBeTruthy();
+      expect(difficultyIndicator?.getAttribute('aria-label')).toContain('Difficulty adjusted');
+    });
   });
 
   describe('stats display', () => {

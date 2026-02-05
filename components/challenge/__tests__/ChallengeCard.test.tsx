@@ -253,4 +253,76 @@ describe('ChallengeCard', () => {
       expect(gauge).toBeNull();
     });
   });
+
+  describe('accessibility', () => {
+    it('should have descriptive aria-label on link', () => {
+      const challenge = createMockChallenge({
+        content: 'git commit -m "test"',
+        difficulty: 'beginner',
+        avgWpm: 45
+      });
+      render(<ChallengeCard challenge={challenge} categorySlug="git-basics" />);
+
+      const link = screen.getByRole('link');
+      const ariaLabel = link.getAttribute('aria-label');
+
+      expect(ariaLabel).toBeTruthy();
+      expect(ariaLabel).toContain('git commit -m "test"');
+      expect(ariaLabel).toContain('beginner difficulty');
+      expect(ariaLabel).toContain('45 words per minute');
+    });
+
+    it('should include index in aria-label when provided', () => {
+      const challenge = createMockChallenge({ content: 'git status' });
+      render(<ChallengeCard challenge={challenge} categorySlug="git-basics" index={0} />);
+
+      const link = screen.getByRole('link');
+      const ariaLabel = link.getAttribute('aria-label');
+
+      expect(ariaLabel).toContain('Challenge 1');
+    });
+
+    it('should truncate long content in aria-label', () => {
+      const challenge = createMockChallenge({
+        content: 'This is a very long command that exceeds fifty characters for testing aria label truncation'
+      });
+      render(<ChallengeCard challenge={challenge} categorySlug="git-basics" />);
+
+      const link = screen.getByRole('link');
+      const ariaLabel = link.getAttribute('aria-label');
+
+      expect(ariaLabel).toBeTruthy();
+      expect(ariaLabel).toContain('...');
+    });
+
+    it('should have aria-hidden on decorative icons', () => {
+      const challenge = createMockChallenge({ avgWpm: 50 });
+      const { container } = render(
+        <ChallengeCard challenge={challenge} categorySlug="git-basics" />
+      );
+
+      const icons = container.querySelectorAll('svg[aria-hidden="true"]');
+      expect(icons.length).toBeGreaterThan(0);
+    });
+
+    it('should have status role on difficulty badge', () => {
+      const challenge = createMockChallenge({ difficulty: 'intermediate' });
+      render(<ChallengeCard challenge={challenge} categorySlug="git-basics" />);
+
+      const badge = screen.getByText('intermediate');
+      expect(badge.getAttribute('role')).toBe('status');
+      expect(badge.getAttribute('aria-label')).toContain('intermediate difficulty level');
+    });
+
+    it('should have aria-label on WPM display', () => {
+      const challenge = createMockChallenge({ avgWpm: 75 });
+      const { container } = render(
+        <ChallengeCard challenge={challenge} categorySlug="git-basics" />
+      );
+
+      const wpmDisplay = container.querySelector('[aria-label*="Average speed"]');
+      expect(wpmDisplay).toBeTruthy();
+      expect(wpmDisplay?.getAttribute('aria-label')).toContain('75 words per minute');
+    });
+  });
 });

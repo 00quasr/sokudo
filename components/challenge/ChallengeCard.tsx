@@ -36,6 +36,7 @@ export function ChallengeCard({
         'group flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-all hover:border-orange-300 hover:shadow-md',
         className
       )}
+      aria-label={`${typeof index === 'number' ? `Challenge ${index + 1}: ` : ''}${challenge.content.substring(0, 50)}${challenge.content.length > 50 ? '...' : ''} - ${challenge.difficulty} difficulty${challenge.avgWpm > 0 ? `, average ${challenge.avgWpm} words per minute` : ''}`}
     >
       <div className="flex items-center gap-4">
         {typeof index === 'number' && (
@@ -57,8 +58,8 @@ export function ChallengeCard({
 
       <div className="flex items-center gap-3 shrink-0 ml-4">
         {challenge.avgWpm > 0 && (
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <Gauge className="h-3.5 w-3.5" />
+          <div className="flex items-center gap-1 text-xs text-gray-500" aria-label={`Average speed: ${challenge.avgWpm} words per minute`}>
+            <Gauge className="h-3.5 w-3.5" aria-hidden="true" />
             <span>{challenge.avgWpm} WPM</span>
           </div>
         )}
@@ -67,10 +68,12 @@ export function ChallengeCard({
             'inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize',
             difficultyClass
           )}
+          role="status"
+          aria-label={`${challenge.difficulty} difficulty level`}
         >
           {challenge.difficulty}
         </span>
-        <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-orange-500" />
+        <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-orange-500" aria-hidden="true" />
       </div>
     </Link>
   );

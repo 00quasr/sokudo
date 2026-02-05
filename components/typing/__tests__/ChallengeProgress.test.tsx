@@ -217,4 +217,63 @@ describe('ChallengeProgress', () => {
       expect(screen.queryByText('Next challenge loading...')).toBeNull();
     });
   });
+
+  describe('accessibility', () => {
+    it('should have status role', () => {
+      const { container } = render(
+        <ChallengeProgress current={5} total={30} isTransitioning={true} />
+      );
+
+      const statusElement = container.querySelector('[role="status"]');
+      expect(statusElement).toBeTruthy();
+    });
+
+    it('should have aria-live="assertive"', () => {
+      const { container } = render(
+        <ChallengeProgress current={5} total={30} isTransitioning={true} />
+      );
+
+      const liveRegion = container.querySelector('[aria-live="assertive"]');
+      expect(liveRegion).toBeTruthy();
+    });
+
+    it('should have descriptive aria-label', () => {
+      const { container } = render(
+        <ChallengeProgress current={5} total={30} isTransitioning={true} />
+      );
+
+      const element = container.querySelector('[aria-label*="Challenge 5 of 30 complete"]');
+      expect(element).toBeTruthy();
+    });
+
+    it('should have aria-hidden on decorative icons', () => {
+      const { container } = render(
+        <ChallengeProgress current={5} total={30} isTransitioning={true} />
+      );
+
+      const icons = container.querySelectorAll('svg[aria-hidden="true"]');
+      expect(icons.length).toBeGreaterThan(0);
+    });
+
+    it('should have progressbar role on progress bar', () => {
+      const { container } = render(
+        <ChallengeProgress current={15} total={30} isTransitioning={true} />
+      );
+
+      const progressbar = container.querySelector('[role="progressbar"]');
+      expect(progressbar).toBeTruthy();
+      expect(progressbar?.getAttribute('aria-valuenow')).toBe('50');
+      expect(progressbar?.getAttribute('aria-valuemin')).toBe('0');
+      expect(progressbar?.getAttribute('aria-valuemax')).toBe('100');
+    });
+
+    it('should update aria-label for category completion', () => {
+      const { container } = render(
+        <ChallengeProgress current={30} total={30} isTransitioning={true} />
+      );
+
+      const element = container.querySelector('[aria-label*="Category complete"]');
+      expect(element).toBeTruthy();
+    });
+  });
 });

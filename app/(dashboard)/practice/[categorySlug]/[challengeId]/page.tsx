@@ -67,8 +67,9 @@ export default async function ChallengePage({
             <Link
               href={`/practice/${categorySlug}`}
               className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={`Back to ${challenge.category.name} category`}
             >
-              <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
               <span className="hidden xs:inline">Back to {challenge.category.name}</span>
               <span className="xs:hidden">Back</span>
             </Link>
@@ -115,23 +116,23 @@ export default async function ChallengePage({
         />
 
         {/* Navigation hint - hidden on mobile to reduce clutter */}
-        <div className="hidden md:block mt-8 pt-6 border-t border-border">
+        <div className="hidden md:block mt-8 pt-6 border-t border-border" role="region" aria-label="Keyboard shortcuts and information">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-muted-foreground">
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Esc</kbd>
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4" role="list" aria-label="Available keyboard shortcuts">
+              <div className="flex items-center gap-1" role="listitem">
+                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs" aria-hidden="true">Esc</kbd>
                 <span>Restart</span>
               </div>
-              <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Tab</kbd>
+              <div className="flex items-center gap-1" role="listitem">
+                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs" aria-hidden="true">Tab</kbd>
                 <span>Skip</span>
               </div>
-              <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Enter</kbd>
+              <div className="flex items-center gap-1" role="listitem">
+                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs" aria-hidden="true">Enter</kbd>
                 <span>Next</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" role="status" aria-live="polite">
               <span className="text-xs sm:text-sm">Challenge stats are saved automatically</span>
             </div>
           </div>
