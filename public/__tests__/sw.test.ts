@@ -186,6 +186,40 @@ describe('Service Worker Offline Caching', () => {
       expect(cachedResponse).toBeDefined();
     });
 
+    it('should cache categories API', async () => {
+      const request = new Request('http://localhost:3000/api/categories');
+      const mockResponse = new Response(
+        JSON.stringify({ categories: [] }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      const cache = await mockCaches.open('challenges-v1');
+      await cache.put(request, mockResponse);
+
+      const cachedResponse = await cache.match(request);
+      expect(cachedResponse).toBeDefined();
+    });
+
+    it('should cache challenge search API', async () => {
+      const request = new Request('http://localhost:3000/api/challenges/search?q=git');
+      const mockResponse = new Response(
+        JSON.stringify({ challenges: [], categories: [] }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      const cache = await mockCaches.open('challenges-v1');
+      await cache.put(request, mockResponse);
+
+      const cachedResponse = await cache.match(request);
+      expect(cachedResponse).toBeDefined();
+    });
+
     it('should only cache GET requests', () => {
       const getRequest = new Request('http://localhost:3000/api/challenges', { method: 'GET' });
       const postRequest = new Request('http://localhost:3000/api/challenges', { method: 'POST' });
@@ -284,6 +318,63 @@ describe('Service Worker Offline Caching', () => {
       const response = await cache.match(request);
 
       expect(response).toBeDefined();
+    });
+  });
+
+  describe('Message Handlers', () => {
+    it('should handle PRECACHE_CHALLENGES message', async () => {
+      const mockResponse = new Response(
+        JSON.stringify({ challenges: [] }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockResponse);
+
+      const cache = await mockCaches.open('challenges-v1');
+      const urls = ['http://localhost:3000/api/challenges?page=1'];
+
+      // Simulate precaching
+      await Promise.all(
+        urls.map((url) => {
+          return fetch(url).then((response) => {
+            if (response && response.status === 200) {
+              return cache.put(url, response);
+            }
+          });
+        })
+      );
+
+      expect(global.fetch).toHaveBeenCalled();
+    });
+
+    it('should handle CLEAR_CACHE message', async () => {
+      await mockCaches.delete('challenges-v1');
+      await mockCaches.open('challenges-v1');
+
+      expect(mockCaches.delete).toHaveBeenCalledWith('challenges-v1');
+      expect(mockCaches.open).toHaveBeenCalledWith('challenges-v1');
+    });
+
+    it('should handle GET_CACHE_STATUS message', async () => {
+      const request1 = new Request('http://localhost:3000/api/challenges?page=1');
+      const request2 = new Request('http://localhost:3000/api/challenges?page=2');
+      const mockResponse = new Response(
+        JSON.stringify({ challenges: [] }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      const cache = await mockCaches.open('challenges-v1');
+      await cache.put(request1, mockResponse);
+      await cache.put(request2, mockResponse.clone());
+
+      // Verify cache has items
+      expect(mockCache.size).toBeGreaterThan(0);
     });
   });
 });

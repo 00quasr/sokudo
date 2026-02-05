@@ -30,12 +30,13 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Only cache GET requests to challenges API endpoints
+  // Only cache GET requests to challenges and categories API endpoints
   if (
     event.request.method === 'GET' &&
     (url.pathname.startsWith('/api/challenges') ||
      url.pathname.startsWith('/api/v1/challenges') ||
-     url.pathname.startsWith('/api/community-challenges'))
+     url.pathname.startsWith('/api/community-challenges') ||
+     url.pathname.startsWith('/api/categories'))
   ) {
     event.respondWith(
       caches.open(CHALLENGE_CACHE).then((cache) => {
@@ -160,4 +161,60 @@ self.addEventListener('notificationclick', (event) => {
       return clients.openWindow(url);
     })
   );
+});
+
+// Message event - handle pre-caching requests
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'PRECACHE_CHALLENGES') {
+    event.waitUntil(
+      caches.open(CHALLENGE_CACHE).then((cache) => {
+        const urls = event.data.urls || [];
+        return Promise.allSettled(
+          urls.map((url) => {
+            return fetch(url)
+              .then((response) => {
+                if (response && response.status === 200) {
+                  const headers = new Headers(response.headers);
+                  headers.append('sw-cached-time', new Date().toISOString());
+
+                  return response.blob().then((blob) => {
+                    const cachedResponse = new Response(blob, {
+                      status: response.status,
+                      statusText: response.statusText,
+                      headers: headers,
+                    });
+                    return cache.put(url, cachedResponse);
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error('Failed to precache:', url, error);
+              });
+          })
+        );
+      })
+    );
+  }
+
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    event.waitUntil(
+      caches.delete(CHALLENGE_CACHE).then(() => {
+        return caches.open(CHALLENGE_CACHE);
+      })
+    );
+  }
+
+  if (event.data && event.data.type === 'GET_CACHE_STATUS') {
+    event.waitUntil(
+      caches.open(CHALLENGE_CACHE).then((cache) => {
+        return cache.keys().then((keys) => {
+          const status = {
+            cached: keys.length,
+            version: CACHE_VERSION,
+          };
+          event.ports[0].postMessage(status);
+        });
+      })
+    );
+  }
 });

@@ -62,6 +62,7 @@ describe('Service Worker Integration', () => {
     expect(swContent).toContain('/api/challenges');
     expect(swContent).toContain('/api/v1/challenges');
     expect(swContent).toContain('/api/community-challenges');
+    expect(swContent).toContain('/api/categories');
   });
 
   it('should implement cache-first strategy', () => {
@@ -144,5 +145,33 @@ describe('Service Worker Integration', () => {
 
     expect(swContent).toContain('.catch');
     expect(swContent).toContain('Network failed');
+  });
+
+  it('should handle message event for precaching', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const swPath = path.join(__dirname, '..', 'sw.js');
+    const swContent = fs.readFileSync(swPath, 'utf-8');
+
+    expect(swContent).toContain("addEventListener('message'");
+    expect(swContent).toContain('PRECACHE_CHALLENGES');
+  });
+
+  it('should handle cache clearing', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const swPath = path.join(__dirname, '..', 'sw.js');
+    const swContent = fs.readFileSync(swPath, 'utf-8');
+
+    expect(swContent).toContain('CLEAR_CACHE');
+  });
+
+  it('should handle cache status requests', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const swPath = path.join(__dirname, '..', 'sw.js');
+    const swContent = fs.readFileSync(swPath, 'utf-8');
+
+    expect(swContent).toContain('GET_CACHE_STATUS');
   });
 });
