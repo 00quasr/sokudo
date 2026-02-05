@@ -1442,6 +1442,65 @@ export type NewOidcAccessToken = typeof oidcAccessTokens.$inferInsert;
 export type OidcRefreshToken = typeof oidcRefreshTokens.$inferSelect;
 export type NewOidcRefreshToken = typeof oidcRefreshTokens.$inferInsert;
 
+// ---- Developer Onboarding Guide ----
+
+export const developerOnboardingSteps = pgTable('developer_onboarding_steps', {
+  id: serial('id').primaryKey(),
+  stepKey: varchar('step_key', { length: 100 }).notNull().unique(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  content: text('content').notNull(),
+  category: varchar('category', { length: 50 }).notNull(),
+  stepOrder: integer('step_order').notNull(),
+  isOptional: boolean('is_optional').notNull().default(false),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const userOnboardingProgress = pgTable(
+  'user_onboarding_progress',
+  {
+    id: serial('id').primaryKey(),
+    userId: integer('user_id')
+      .notNull()
+      .references(() => users.id),
+    stepId: integer('step_id')
+      .notNull()
+      .references(() => developerOnboardingSteps.id),
+    completed: boolean('completed').notNull().default(false),
+    skipped: boolean('skipped').notNull().default(false),
+    completedAt: timestamp('completed_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex('user_onboarding_progress_user_step_idx').on(
+      table.userId,
+      table.stepId
+    ),
+  ]
+);
+
+export const developerOnboardingStepsRelations = relations(developerOnboardingSteps, ({ many }) => ({
+  userProgress: many(userOnboardingProgress),
+}));
+
+export const userOnboardingProgressRelations = relations(userOnboardingProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [userOnboardingProgress.userId],
+    references: [users.id],
+  }),
+  step: one(developerOnboardingSteps, {
+    fields: [userOnboardingProgress.stepId],
+    references: [developerOnboardingSteps.id],
+  }),
+}));
+
+export type DeveloperOnboardingStep = typeof developerOnboardingSteps.$inferSelect;
+export type NewDeveloperOnboardingStep = typeof developerOnboardingSteps.$inferInsert;
+export type UserOnboardingProgress = typeof userOnboardingProgress.$inferSelect;
+export type NewUserOnboardingProgress = typeof userOnboardingProgress.$inferInsert;
+
 export type TeamDataWithMembers = Team & {
   teamMembers: (TeamMember & {
     user: Pick<User, 'id' | 'name' | 'email'>;
