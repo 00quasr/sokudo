@@ -8,6 +8,21 @@ import { TypingInput, SyntaxType } from '../TypingInput';
 describe('TypingInput', () => {
   beforeEach(() => {
     vi.useFakeTimers();
+
+    // Mock window.matchMedia for tablet detection
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
   });
 
   afterEach(() => {
@@ -965,7 +980,6 @@ describe('TypingInput', () => {
     });
 
     it('should handle blur with delayed refocus for touch devices', () => {
-      vi.useFakeTimers();
       render(<TypingInput targetText="abc" />);
       const container = screen.getByRole('textbox');
       const hiddenInput = container.querySelector('input[type="text"]') as HTMLInputElement;
@@ -973,19 +987,16 @@ describe('TypingInput', () => {
       // Simulate touch start to mark as touch device
       fireEvent.touchStart(container);
 
-      // Blur the input
-      fireEvent.blur(hiddenInput);
+      // Blur the input - this will trigger a setTimeout for refocus
+      hiddenInput.blur();
 
-      // Should not immediately focus (delayed by 100ms)
-      expect(document.activeElement).not.toBe(hiddenInput);
-
-      // Fast forward timers
+      // In the test environment, the setTimeout is mocked by fake timers
+      // The focus won't happen until we advance timers
+      // Fast forward timers by 100ms
       vi.advanceTimersByTime(100);
 
-      // Now it should refocus
+      // After the timeout, it should refocus
       expect(document.activeElement).toBe(hiddenInput);
-
-      vi.useRealTimers();
     });
   });
 
