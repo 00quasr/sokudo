@@ -295,8 +295,8 @@
 
 ### Accessibility & Internationalization (Nice-to-Have)
 
-- [ ] Add screen reader support (ARIA labels, keyboard navigation)
-- [ ] Implement high contrast mode
+- [x] Add screen reader support (ARIA labels, keyboard navigation)
+- [x] Implement high contrast mode
 - [ ] Add i18n framework (next-intl or similar)
 - [ ] Support alternative keyboard layouts (Dvorak, Colemak)
 
