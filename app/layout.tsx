@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Sokudo' }],
   creator: 'Sokudo',
   publisher: 'Sokudo',
+  manifest: '/manifest.json',
   formatDetection: {
     email: false,
     address: false,
