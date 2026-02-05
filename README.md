@@ -104,7 +104,9 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 Visit **http://localhost:3000** to see the app.
 
-**Need help?** See [ONBOARDING.md](ONBOARDING.md) for detailed setup instructions and troubleshooting.
+**Need help?**
+- [ONBOARDING.md](ONBOARDING.md) - Detailed setup instructions
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues and solutions
 
 ### Test Credentials
 

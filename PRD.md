@@ -273,14 +273,14 @@
 
 - [x] Add proper `manifest.json` for installable PWA
 - [x] Extend `public/sw.js` to cache challenges for offline practice
-- [ ] Implement IndexedDB for offline session storage
-- [ ] Add offline indicator and sync when back online
+- [x] Implement IndexedDB for offline session storage
+- [x] Add offline indicator and sync when back online
 
 ### Documentation
 
-- [ ] Create API documentation (OpenAPI/Swagger spec)
-- [ ] Add developer onboarding guide
-- [ ] Document webhook payload formats
+- [x] Create API documentation (OpenAPI/Swagger spec)
+- [x] Add developer onboarding guide
+- [x] Document webhook payload formats
 - [ ] Create troubleshooting guide for common issues
 
 ---
