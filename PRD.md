@@ -259,13 +259,13 @@
 ### Bug Fixes
 
 - [x] Fix SAML metadata endpoint hardcoded `teamId: 0` in `/app/api/auth/saml/metadata/route.ts`
-- [ ] Fix Stripe redirect URLs using hardcoded IP instead of `BASE_URL` env var in `/lib/payments/stripe.ts`
-- [ ] Remove misleading TODO comment in `/app/(dashboard)/practice/[categorySlug]/[challengeId]/typing-session.tsx:105`
+- [x] Fix Stripe redirect URLs using hardcoded IP instead of `BASE_URL` env var in `/lib/payments/stripe.ts`
+- [x] Remove misleading TODO comment in `/app/(dashboard)/practice/[categorySlug]/[challengeId]/typing-session.tsx:105`
 
 ### Mobile & Touch Support
 
 - [ ] Add touch event handlers to `TypingInput` component for mobile keyboards
-- [ ] Test typing interface on tablets and optimize for touch input
+- [x] Test typing interface on tablets and optimize for touch input
 - [ ] Ensure responsive layout works on mobile devices (practice UI)
 - [ ] Add viewport meta tags for proper mobile scaling
 
