@@ -140,7 +140,7 @@ describe('SAML Library', () => {
 
   describe('generateSamlMetadata', () => {
     it('should generate valid SP metadata XML', () => {
-      const metadata = generateSamlMetadata(1);
+      const metadata = generateSamlMetadata();
 
       expect(metadata).toContain('<?xml version="1.0" encoding="UTF-8"?>');
       expect(metadata).toContain('md:EntityDescriptor');
@@ -153,7 +153,7 @@ describe('SAML Library', () => {
     });
 
     it('should include Assertion Consumer Service binding', () => {
-      const metadata = generateSamlMetadata(1);
+      const metadata = generateSamlMetadata();
       expect(metadata).toContain('md:AssertionConsumerService');
       expect(metadata).toContain('isDefault="true"');
     });

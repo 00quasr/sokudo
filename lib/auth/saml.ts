@@ -25,7 +25,7 @@ export function getAcsUrl(): string {
   return `${baseUrl}/api/auth/saml/callback`;
 }
 
-export function generateSamlMetadata(teamId: number): string {
+export function generateSamlMetadata(): string {
   const entityId = getSpEntityId();
   const acsUrl = getAcsUrl();
 
