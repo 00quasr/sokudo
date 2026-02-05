@@ -141,8 +141,6 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
         navigateToNext();
       }, 1500);
     }
-
-    // TODO: Save session to database via API
   }, [categorySlug, nextChallengeId, navigateToNext, challenge.category.id]);
 
   const handleRetry = useCallback(() => {
