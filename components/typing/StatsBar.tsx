@@ -40,7 +40,7 @@ export function StatsBar({
   return (
     <div
       className={cn(
-        'flex items-center gap-6 text-sm text-muted-foreground',
+        'flex flex-wrap items-center gap-3 sm:gap-6 text-sm text-muted-foreground',
         className
       )}
       role="status"
@@ -48,7 +48,7 @@ export function StatsBar({
       aria-label="Typing statistics"
     >
       {/* WPM */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <span className="text-xs uppercase tracking-wide">WPM</span>
         <span
           className="font-mono text-foreground"
@@ -59,7 +59,7 @@ export function StatsBar({
       </div>
 
       {/* Accuracy */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <span className="text-xs uppercase tracking-wide">Accuracy</span>
         <span
           className="font-mono text-foreground"
@@ -70,7 +70,7 @@ export function StatsBar({
       </div>
 
       {/* Time elapsed */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <span className="text-xs uppercase tracking-wide">Time</span>
         <span
           className="font-mono text-foreground"
@@ -82,9 +82,9 @@ export function StatsBar({
 
       {/* Progress indicator - subtle */}
       {showProgress && (
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:ml-auto w-full sm:w-auto mt-2 sm:mt-0">
           <div
-            className="h-1 w-24 rounded-full bg-muted overflow-hidden"
+            className="h-1 flex-1 sm:flex-none sm:w-24 rounded-full bg-muted overflow-hidden"
             role="progressbar"
             aria-valuenow={Math.round(progress)}
             aria-valuemin={0}
@@ -98,7 +98,7 @@ export function StatsBar({
             />
           </div>
           <span
-            className="font-mono text-xs"
+            className="font-mono text-xs whitespace-nowrap"
             data-testid="stats-progress-text"
           >
             {Math.round(progress)}%

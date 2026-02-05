@@ -221,12 +221,12 @@ export function TypingInput({
         ref={containerRef}
         tabIndex={0}
         className={cn(
-          'relative rounded-lg border border-border bg-card p-6 md:p-8',
-          'font-mono text-xl md:text-2xl leading-relaxed',
+          'relative rounded-lg border border-border bg-card p-4 sm:p-6 md:p-8',
+          'font-mono text-lg sm:text-xl md:text-2xl leading-relaxed',
           'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
           'cursor-text select-none',
           'touch-manipulation', // Prevent double-tap zoom on mobile
-          'min-h-[200px] md:min-h-[240px]', // Ensure good touch target size
+          'min-h-[180px] sm:min-h-[200px] md:min-h-[240px]', // Ensure good touch target size
           isComplete && 'border-green-600/50 dark:border-green-400/50'
         )}
         role="textbox"
@@ -260,7 +260,7 @@ export function TypingInput({
           tabIndex={-1}
         />
         {/* Character display */}
-        <div className="flex flex-wrap gap-y-1 md:gap-y-2">
+        <div className="flex flex-wrap gap-y-0.5 sm:gap-y-1 md:gap-y-2">
           {charStyles.map(({ char, style }, index) => {
             const isTyped = index < cursorPosition;
             const isCurrent = index === cursorPosition;

@@ -31,19 +31,19 @@ export function ChallengeProgress({
   const progress = (current / total) * 100;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-      <div className="rounded-lg border border-border bg-card p-6 shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm px-4">
+      <div className="rounded-lg border border-border bg-card p-4 sm:p-6 shadow-lg max-w-sm w-full">
         <div className="flex items-center gap-3">
           {current === total ? (
-            <CheckCircle2 className="h-6 w-6 text-green-500" />
+            <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0" />
           ) : (
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary flex-shrink-0" />
           )}
-          <div>
-            <div className="text-lg font-medium">
+          <div className="min-w-0">
+            <div className="text-base sm:text-lg font-medium">
               Challenge {current}/{total} complete
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs sm:text-sm text-muted-foreground">
               {current === total
                 ? 'Category complete!'
                 : 'Next challenge loading...'}
@@ -51,7 +51,7 @@ export function ChallengeProgress({
           </div>
         </div>
         {/* Progress bar */}
-        <div className="mt-4 h-2 w-64 overflow-hidden rounded-full bg-muted">
+        <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-muted">
           <div
             className="h-full bg-primary transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}

@@ -76,8 +76,8 @@ function CategoryCard({ category, locked }: { category: Category; locked: boolea
 
   if (locked) {
     return (
-      <div className="group relative block rounded-xl border border-gray-200 bg-white p-6">
-        <div className="absolute right-4 top-4 z-10">
+      <div className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6">
+        <div className="absolute right-3 top-3 sm:right-4 sm:top-4 z-10">
           <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700">
             <Lock className="h-3 w-3" />
             Pro
@@ -85,15 +85,15 @@ function CategoryCard({ category, locked }: { category: Category; locked: boolea
         </div>
 
         <div className="pointer-events-none blur-[2px] select-none">
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
-            <IconComponent className="h-6 w-6" />
+          <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
+            <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
 
-          <h3 className="mb-2 text-lg font-semibold text-gray-900">
+          <h3 className="mb-2 text-base sm:text-lg font-semibold text-gray-900">
             {category.name}
           </h3>
 
-          <p className="mb-4 text-sm text-gray-600 line-clamp-2">
+          <p className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 line-clamp-2">
             {category.description}
           </p>
 
@@ -107,9 +107,9 @@ function CategoryCard({ category, locked }: { category: Category; locked: boolea
         <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white/60">
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600"
+            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white transition-colors hover:bg-orange-600"
           >
-            <Lock className="h-4 w-4" />
+            <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Upgrade to Unlock
           </Link>
         </div>
@@ -120,10 +120,10 @@ function CategoryCard({ category, locked }: { category: Category; locked: boolea
   return (
     <Link
       href={`/practice/${category.slug}`}
-      className="group relative block rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-orange-300 hover:shadow-lg"
+      className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6 transition-all hover:border-orange-300 hover:shadow-lg"
     >
       {category.isPremium && (
-        <div className="absolute right-4 top-4">
+        <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
           <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700">
             <Lock className="h-3 w-3" />
             Pro
@@ -131,15 +131,15 @@ function CategoryCard({ category, locked }: { category: Category; locked: boolea
         </div>
       )}
 
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
-        <IconComponent className="h-6 w-6" />
+      <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
+        <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
       </div>
 
-      <h3 className="mb-2 text-lg font-semibold text-gray-900 group-hover:text-orange-600">
+      <h3 className="mb-2 text-base sm:text-lg font-semibold text-gray-900 group-hover:text-orange-600">
         {category.name}
       </h3>
 
-      <p className="mb-4 text-sm text-gray-600 line-clamp-2">
+      <p className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 line-clamp-2">
         {category.description}
       </p>
 
@@ -226,45 +226,45 @@ export default async function PracticePage() {
   const displayPremiumCategories = canAccessPremium ? premiumCategories : [];
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
       {user && isFreeTier && (
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <RemainingTimeBar />
         </div>
       )}
 
-      <div className="mb-12 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+      <div className="mb-8 sm:mb-12 text-center">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
           Choose a Category
         </h1>
-        <p className="mt-3 text-lg text-gray-600">
+        <p className="mt-2 sm:mt-3 text-base sm:text-lg text-gray-600 px-4">
           Build muscle memory for commands and patterns you use every day
         </p>
       </div>
 
       {/* Practice Recommendations */}
       {user && recommendations.length > 0 && (
-        <section className="mb-12">
+        <section className="mb-8 sm:mb-12">
           <PracticeRecommendations recommendations={recommendations} />
         </section>
       )}
 
       {/* Smart & Personalized Practice Cards */}
       {user && (
-        <section className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <section className="mb-8 sm:mb-12 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
           <Link
             href="/practice/smart"
-            className="group block rounded-xl border-2 border-dashed border-violet-300 bg-violet-50 p-6 transition-all hover:border-violet-400 hover:bg-violet-100 hover:shadow-lg"
+            className="group block rounded-xl border-2 border-dashed border-violet-300 bg-violet-50 p-4 sm:p-6 transition-all hover:border-violet-400 hover:bg-violet-100 hover:shadow-lg"
           >
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-violet-500 text-white">
-                <Brain className="h-6 w-6" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-violet-500 text-white flex-shrink-0">
+                <Brain className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-violet-600">
+              <div className="min-w-0">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-violet-600">
                   Smart Practice
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
                   AI picks optimal challenges based on your difficulty level and weaknesses
                 </p>
               </div>
@@ -273,17 +273,17 @@ export default async function PracticePage() {
 
           <Link
             href="/practice/personalized"
-            className="group block rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-6 transition-all hover:border-orange-400 hover:bg-orange-100 hover:shadow-lg"
+            className="group block rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-4 sm:p-6 transition-all hover:border-orange-400 hover:bg-orange-100 hover:shadow-lg"
           >
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
-                <Crosshair className="h-6 w-6" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white flex-shrink-0">
+                <Crosshair className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600">
+              <div className="min-w-0">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-orange-600">
                   Personalized Practice
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
                   Targeted exercises based on your error patterns, weak keys, and slow sequences
                 </p>
               </div>
@@ -293,11 +293,11 @@ export default async function PracticePage() {
       )}
 
       {displayFreeCategories.length > 0 && (
-        <section className="mb-12">
-          <h2 className="mb-6 text-xl font-semibold text-gray-900">
+        <section className="mb-8 sm:mb-12">
+          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">
             {canAccessPremium ? 'Free' : 'Categories'}
           </h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {displayFreeCategories.map((category) => (
               <CategoryCard key={category.id} category={category} locked={false} />
             ))}
@@ -307,8 +307,8 @@ export default async function PracticePage() {
 
       {displayPremiumCategories.length > 0 && (
         <section>
-          <h2 className="mb-6 text-xl font-semibold text-gray-900">Pro</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">Pro</h2>
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {displayPremiumCategories.map((category) => (
               <CategoryCard key={category.id} category={category} locked={false} />
             ))}

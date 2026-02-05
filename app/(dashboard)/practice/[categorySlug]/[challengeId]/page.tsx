@@ -62,18 +62,19 @@ export default async function ChallengePage({
     <main className="min-h-screen bg-background">
       {/* Header with navigation */}
       <header className="border-b border-border bg-card">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
             <Link
               href={`/practice/${categorySlug}`}
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Back to {challenge.category.name}
+              <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Back to {challenge.category.name}</span>
+              <span className="xs:hidden">Back</span>
             </Link>
 
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs sm:text-sm text-muted-foreground">
                 Challenge #{challenge.id}
               </span>
             </div>
@@ -91,8 +92,8 @@ export default async function ChallengePage({
         )}
 
         {/* Challenge info */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
+        <div className="mb-4 sm:mb-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
             <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {challenge.category.name}
             </span>
@@ -101,7 +102,7 @@ export default async function ChallengePage({
             </span>
           </div>
           {challenge.hint && (
-            <p className="text-sm text-muted-foreground">{challenge.hint}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">{challenge.hint}</p>
           )}
         </div>
 
@@ -115,8 +116,8 @@ export default async function ChallengePage({
 
         {/* Navigation hint */}
         <div className="mt-8 pt-6 border-t border-border">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-1">
                 <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Esc</kbd>
                 <span>Restart</span>
@@ -131,7 +132,7 @@ export default async function ChallengePage({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span>Challenge stats are saved automatically</span>
+              <span className="text-xs sm:text-sm">Challenge stats are saved automatically</span>
             </div>
           </div>
         </div>
