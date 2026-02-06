@@ -8,6 +8,9 @@ import { PWAInit } from '@/components/pwa-init';
 import { GlobalOfflineIndicator } from '@/components/GlobalOfflineIndicator';
 import { SkipLinks } from '@/components/a11y/SkipLinks';
 import { KeyboardShortcutsDialog } from '@/components/a11y/KeyboardShortcutsDialog';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale } from '@/lib/i18n/actions';
+import { getMessages } from 'next-intl/server';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.BASE_URL || 'http://localhost:3000'),
@@ -78,14 +81,17 @@ export const viewport: Viewport = {
 
 const manrope = Manrope({ subsets: ['latin'] });
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`bg-white dark:bg-gray-950 text-black dark:text-white ${manrope.className}`}
       suppressHydrationWarning
     >
@@ -93,26 +99,28 @@ export default function RootLayout({
         <PWAInit />
         <GlobalOfflineIndicator />
         <SkipLinks />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <KeyboardShortcutsDialog />
-          <SWRConfig
-            value={{
-              fallback: {
-                // We do NOT await here
-                // Only components that read this data will suspend
-                '/api/user': getUser(),
-                '/api/team': getTeamForUser()
-              }
-            }}
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
           >
-            {children}
-          </SWRConfig>
-        </ThemeProvider>
+            <KeyboardShortcutsDialog />
+            <SWRConfig
+              value={{
+                fallback: {
+                  // We do NOT await here
+                  // Only components that read this data will suspend
+                  '/api/user': getUser(),
+                  '/api/team': getTeamForUser()
+                }
+              }}
+            >
+              {children}
+            </SWRConfig>
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

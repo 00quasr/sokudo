@@ -302,7 +302,7 @@
 
 ### Infrastructure & Scale (When Needed)
 
-- [ ] Add Redis caching for leaderboards
+- [x] Add Redis caching for leaderboards
 - [ ] Implement database read replicas
 - [ ] Add comprehensive monitoring (Sentry, PostHog)
 - [ ] Build admin dashboard for content moderation

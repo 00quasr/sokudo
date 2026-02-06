@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { User } from '@/lib/db/schema';
 import useSWR, { mutate } from 'swr';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { LocaleSwitcher } from '@/components/locale-switcher';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -88,6 +89,7 @@ function Header() {
           <span className="ml-2 text-xl font-semibold text-foreground">Sokudo (速度)</span>
         </Link>
         <div className="flex items-center space-x-4">
+          <LocaleSwitcher />
           <ThemeToggle />
           <Suspense fallback={<div className="h-9" />}>
             <UserMenu />

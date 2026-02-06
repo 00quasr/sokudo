@@ -17,6 +17,21 @@ import {
 export function ThemeToggle() {
   const { setTheme } = useTheme();
   const { highContrast, setHighContrast } = useHighContrast();
+  const [mounted, setMounted] = React.useState(false);
+
+  // Delay rendering until after hydration to avoid mismatch
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" disabled>
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    );
+  }
 
   return (
     <DropdownMenu>
