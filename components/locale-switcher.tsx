@@ -10,25 +10,25 @@ export function LocaleSwitcher() {
 
   function onLocaleChange(locale: Locale) {
     startTransition(() => {
-      // Set cookie and reload to apply new locale
+      // Set cookie and add small delay to ensure cookie is persisted before reload
       document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000; SameSite=Lax`;
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 50);
     });
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1">
       {locales.map((locale) => (
         <button
           key={locale}
           onClick={() => onLocaleChange(locale)}
           disabled={isPending || currentLocale === locale}
           className={`
-            px-3 py-1.5 text-sm font-medium rounded-md transition-colors
+            px-2.5 py-1 text-sm font-medium rounded-md transition-colors
             ${
               currentLocale === locale
-                ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
-                : 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
+                ? 'bg-white/10 text-white'
+                : 'text-white/50 hover:text-white hover:bg-white/5'
             }
             disabled:opacity-50 disabled:cursor-not-allowed
           `}

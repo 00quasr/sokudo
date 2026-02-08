@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import type { CategoryBreakdown } from '@/lib/db/queries';
 
@@ -17,97 +16,89 @@ export function CategoryBreakdownSection({ data }: CategoryBreakdownProps) {
   return (
     <div className="grid lg:grid-cols-2 gap-6">
       {/* Best Categories */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-green-500" />
-            Best Categories
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl bg-white/[0.02] p-6">
+        <h2 className="flex items-center gap-2 text-lg font-medium text-white mb-4">
+          <TrendingUp className="h-5 w-5 text-emerald-500" />
+          Best categories
+        </h2>
+        <div className="space-y-4">
+          {best.byWpm && (
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-white/40">Fastest (WPM)</p>
+                <p className="font-medium text-white">{best.byWpm.categoryName}</p>
+              </div>
+              <div className="text-right">
+                <p className="font-mono font-semibold text-emerald-400">
+                  {best.byWpm.avgWpm} WPM
+                </p>
+                <p className="text-xs text-white/40">
+                  {best.byWpm.sessions} session{best.byWpm.sessions !== 1 ? 's' : ''}
+                </p>
+              </div>
+            </div>
+          )}
+          {best.byAccuracy && (
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-sm text-white/40">Most accurate</p>
+                <p className="font-medium text-white">{best.byAccuracy.categoryName}</p>
+              </div>
+              <div className="text-right">
+                <p className="font-mono font-semibold text-emerald-400">
+                  {best.byAccuracy.avgAccuracy}%
+                </p>
+                <p className="text-xs text-white/40">
+                  {best.byAccuracy.sessions} session{best.byAccuracy.sessions !== 1 ? 's' : ''}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Worst Categories */}
+      {(worst.byWpm || worst.byAccuracy) && (
+        <div className="rounded-2xl bg-white/[0.02] p-6">
+          <h2 className="flex items-center gap-2 text-lg font-medium text-white mb-4">
+            <TrendingDown className="h-5 w-5 text-amber-500" />
+            Needs improvement
+          </h2>
           <div className="space-y-4">
-            {best.byWpm && (
+            {worst.byWpm && (
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-muted-foreground">Fastest (WPM)</p>
-                  <p className="font-medium text-gray-900">{best.byWpm.categoryName}</p>
+                  <p className="text-sm text-white/40">Slowest (WPM)</p>
+                  <p className="font-medium text-white">{worst.byWpm.categoryName}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono font-semibold text-green-600">
-                    {best.byWpm.avgWpm} WPM
+                  <p className="font-mono font-semibold text-amber-400">
+                    {worst.byWpm.avgWpm} WPM
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {best.byWpm.sessions} session{best.byWpm.sessions !== 1 ? 's' : ''}
+                  <p className="text-xs text-white/40">
+                    {worst.byWpm.sessions} session{worst.byWpm.sessions !== 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
             )}
-            {best.byAccuracy && (
+            {worst.byAccuracy && (
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-muted-foreground">Most Accurate</p>
-                  <p className="font-medium text-gray-900">{best.byAccuracy.categoryName}</p>
+                  <p className="text-sm text-white/40">Least accurate</p>
+                  <p className="font-medium text-white">{worst.byAccuracy.categoryName}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-mono font-semibold text-green-600">
-                    {best.byAccuracy.avgAccuracy}%
+                  <p className="font-mono font-semibold text-amber-400">
+                    {worst.byAccuracy.avgAccuracy}%
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {best.byAccuracy.sessions} session{best.byAccuracy.sessions !== 1 ? 's' : ''}
+                  <p className="text-xs text-white/40">
+                    {worst.byAccuracy.sessions} session{worst.byAccuracy.sessions !== 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Worst Categories */}
-      {(worst.byWpm || worst.byAccuracy) && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingDown className="h-5 w-5 text-orange-500" />
-              Needs Improvement
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {worst.byWpm && (
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Slowest (WPM)</p>
-                    <p className="font-medium text-gray-900">{worst.byWpm.categoryName}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-mono font-semibold text-orange-600">
-                      {worst.byWpm.avgWpm} WPM
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {worst.byWpm.sessions} session{worst.byWpm.sessions !== 1 ? 's' : ''}
-                    </p>
-                  </div>
-                </div>
-              )}
-              {worst.byAccuracy && (
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Least Accurate</p>
-                    <p className="font-medium text-gray-900">{worst.byAccuracy.categoryName}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-mono font-semibold text-orange-600">
-                      {worst.byAccuracy.avgAccuracy}%
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {worst.byAccuracy.sessions} session{worst.byAccuracy.sessions !== 1 ? 's' : ''}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        </div>
       )}
     </div>
   );

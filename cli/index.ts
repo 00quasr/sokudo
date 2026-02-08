@@ -11,13 +11,13 @@ import { sync } from './commands/sync';
 const program = new Command();
 
 program
-  .name('sokudo')
+  .name('hayaku')
   .description('Terminal-based typing trainer for developers')
   .version('1.0.0');
 
 program
   .command('login')
-  .description('Authenticate with your Sokudo account')
+  .description('Authenticate with your Hayaku account')
   .option('-k, --api-key <key>', 'Use API key for authentication')
   .action(login);
 

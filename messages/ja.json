@@ -32,7 +32,7 @@
     "signInWithGithub": "GitHubでサインイン"
   },
   "home": {
-    "title": "Sokudo（速度）",
+    "title": "Hayaku（速く）",
     "subtitle": "開発者向けタイピング練習",
     "description": "gitコマンド、ターミナルワークフロー、Reactパターン、AIプロンプトの筋肉記憶を構築します。",
     "getStarted": "始める",
@@ -73,7 +73,7 @@
     "currentPlan": "現在のプラン"
   },
   "metadata": {
-    "title": "Sokudo（速度）- 開発者向けタイピング練習",
+    "title": "Hayaku（速く）- 開発者向けタイピング練習",
     "description": "gitコマンド、ターミナルワークフロー、Reactパターン、AIプロンプトの筋肉記憶を構築します。リアルタイムフィードバックとターゲットを絞った練習で開発者のコマンドをマスターします。"
   }
 }

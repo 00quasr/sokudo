@@ -12,7 +12,6 @@ export function Terminal() {
     'kubectl apply -f deployment.yaml',
     'npm run build && npm test',
     'git rebase -i HEAD~3',
-    'Type faster. Code better. 🎉',
   ];
 
   useEffect(() => {
@@ -32,36 +31,45 @@ export function Terminal() {
   };
 
   return (
-    <div className="w-full rounded-lg shadow-lg overflow-hidden bg-gray-900 text-white font-mono text-sm relative">
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          </div>
-          <button
-            onClick={copyToClipboard}
-            className="text-gray-400 hover:text-white transition-colors"
-            aria-label="Copy to clipboard"
+    <div className="w-full rounded-2xl overflow-hidden bg-[#111113] border border-white/[0.08] font-mono text-sm">
+      {/* Terminal header */}
+      <div className="px-4 py-3 border-b border-white/[0.08] flex justify-between items-center">
+        <div className="flex space-x-2">
+          <div className="w-3 h-3 rounded-full bg-white/10"></div>
+          <div className="w-3 h-3 rounded-full bg-white/10"></div>
+          <div className="w-3 h-3 rounded-full bg-white/10"></div>
+        </div>
+        <span className="text-xs text-white/40">terminal</span>
+        <button
+          onClick={copyToClipboard}
+          className="text-white/40 hover:text-white/70 transition-colors"
+          aria-label="Copy to clipboard"
+        >
+          {copied ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
+        </button>
+      </div>
+
+      {/* Terminal content */}
+      <div className="p-4 space-y-2">
+        {terminalSteps.map((step, index) => (
+          <div
+            key={index}
+            className={`flex items-start gap-2 ${index > terminalStep ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
           >
-            {copied ? (
-              <Check className="h-5 w-5" />
-            ) : (
-              <Copy className="h-5 w-5" />
-            )}
-          </button>
-        </div>
-        <div className="space-y-2">
-          {terminalSteps.map((step, index) => (
-            <div
-              key={index}
-              className={`${index > terminalStep ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-            >
-              <span className="text-green-400">$</span> {step}
-            </div>
-          ))}
-        </div>
+            <span className="text-white/40 select-none">$</span>
+            <span className="text-white/80">{step}</span>
+          </div>
+        ))}
+        {terminalStep >= terminalSteps.length - 1 && (
+          <div className="flex items-center gap-2 pt-2 mt-2 border-t border-white/[0.08]">
+            <span className="text-white/40 select-none">$</span>
+            <span className="w-2 h-4 bg-white animate-pulse"></span>
+          </div>
+        )}
       </div>
     </div>
   );

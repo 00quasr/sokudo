@@ -60,22 +60,22 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
     return (
       <div
         className={cn(
-          'flex items-center justify-between gap-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2',
+          'flex items-center justify-between gap-4 rounded-xl bg-white/[0.03] px-4 py-2.5',
           className
         )}
         role="alert"
         data-testid="remaining-time-bar"
       >
-        <div className="flex items-center gap-2 text-sm text-red-700">
+        <div className="flex items-center gap-2 text-sm text-white/60">
           <Clock className="h-4 w-4" />
           <span>Daily practice limit reached</span>
         </div>
         <Link
           href="/pricing"
-          className="inline-flex items-center gap-1.5 rounded-md bg-orange-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-orange-600"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-medium text-black transition-colors hover:bg-white/90"
         >
           <Zap className="h-3.5 w-3.5" />
-          Upgrade for Unlimited
+          Upgrade
         </Link>
       </div>
     );
@@ -84,10 +84,7 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-4 rounded-lg border px-4 py-2',
-        isLow
-          ? 'border-yellow-200 bg-yellow-50'
-          : 'border-gray-200 bg-gray-50',
+        'flex items-center gap-4 rounded-xl bg-white/[0.03] px-4 py-2.5',
         className
       )}
       role="status"
@@ -95,9 +92,9 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
       data-testid="remaining-time-bar"
     >
       <div className="flex items-center gap-2 text-sm">
-        <Clock className={cn('h-4 w-4', isLow ? 'text-yellow-600' : 'text-gray-500')} />
-        <span className={cn(isLow ? 'text-yellow-700' : 'text-gray-600')}>
-          <span className="font-medium" data-testid="remaining-time">
+        <Clock className="h-4 w-4 text-white/40" />
+        <span className="text-white/60">
+          <span className="font-medium text-white/80" data-testid="remaining-time">
             {formatTime(remainingMs)}
           </span>
           {' remaining today'}
@@ -106,7 +103,7 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
 
       {/* Progress bar */}
       <div
-        className="h-1.5 w-24 rounded-full bg-gray-200 overflow-hidden"
+        className="h-1 w-20 rounded-full bg-white/[0.08] overflow-hidden"
         role="progressbar"
         aria-valuenow={usedPercent}
         aria-valuemin={0}
@@ -114,23 +111,20 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
         aria-label="Daily practice time used"
       >
         <div
-          className={cn(
-            'h-full transition-all duration-300',
-            isLow ? 'bg-yellow-500' : 'bg-orange-500'
-          )}
+          className="h-full bg-white/30 transition-all duration-300"
           style={{ width: `${usedPercent}%` }}
           data-testid="remaining-time-progress"
         />
       </div>
 
-      <span className="text-xs text-gray-500" data-testid="remaining-time-percent">
+      <span className="text-xs text-white/40" data-testid="remaining-time-percent">
         {usedPercent}% used
       </span>
 
       {isLow && (
         <Link
           href="/pricing"
-          className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-orange-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-orange-600"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-medium text-black transition-colors hover:bg-white/90"
         >
           <Zap className="h-3.5 w-3.5" />
           Upgrade

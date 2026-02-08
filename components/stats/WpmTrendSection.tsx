@@ -20,13 +20,13 @@ export function WpmTrendSection({ data7Days, data30Days }: WpmTrendSectionProps)
   return (
     <div className="space-y-3">
       <div className="flex justify-end">
-        <div className="inline-flex rounded-lg bg-gray-100 p-1">
+        <div className="inline-flex rounded-lg bg-white/5 p-1">
           <button
             onClick={() => setPeriod('7')}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
               period === '7'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white/10 text-white'
+                : 'text-white/50 hover:text-white'
             }`}
           >
             7 days
@@ -35,8 +35,8 @@ export function WpmTrendSection({ data7Days, data30Days }: WpmTrendSectionProps)
             onClick={() => setPeriod('30')}
             className={`px-3 py-1 text-sm rounded-md transition-colors ${
               period === '30'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white/10 text-white'
+                : 'text-white/50 hover:text-white'
             }`}
           >
             30 days

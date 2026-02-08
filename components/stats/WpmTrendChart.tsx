@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 export interface WpmTrendDataPoint {
@@ -79,23 +78,23 @@ export function WpmTrendChart({ data, period }: WpmTrendChartProps) {
   };
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
+    <div className="rounded-2xl bg-white/[0.02] p-6">
+      <div className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            WPM Trend
-            <span className="text-sm font-normal text-muted-foreground">
+          <h2 className="flex items-center gap-2 text-lg font-medium text-white">
+            WPM trend
+            <span className="text-sm font-normal text-white/40">
               (Last {period} days)
             </span>
-          </CardTitle>
+          </h2>
           {trendPercentage !== 0 && (
             <div
               className={`flex items-center gap-1 text-sm font-medium ${
                 trendPercentage > 0
-                  ? 'text-green-600'
+                  ? 'text-white'
                   : trendPercentage < 0
-                    ? 'text-red-500'
-                    : 'text-gray-500'
+                    ? 'text-white/40'
+                    : 'text-white/50'
               }`}
             >
               {trendPercentage > 0 ? (
@@ -110,115 +109,113 @@ export function WpmTrendChart({ data, period }: WpmTrendChartProps) {
             </div>
           )}
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="relative">
-          {/* Y-axis labels */}
-          <div className="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-xs text-muted-foreground">
-            <span>{Math.round(chartMax)}</span>
-            <span>{Math.round(chartMin)}</span>
-          </div>
+      </div>
+      <div className="relative">
+        {/* Y-axis labels */}
+        <div className="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-xs text-white/40">
+          <span>{Math.round(chartMax)}</span>
+          <span>{Math.round(chartMin)}</span>
+        </div>
 
-          {/* Chart area */}
-          <div className="ml-10">
-            <svg
-              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-              className="w-full h-40"
-              preserveAspectRatio="none"
-            >
-              {/* Grid lines */}
-              <line
-                x1="0"
-                y1={chartHeight / 2}
-                x2={chartWidth}
-                y2={chartHeight / 2}
-                stroke="#e5e7eb"
-                strokeWidth="0.5"
-                strokeDasharray="2,2"
-              />
+        {/* Chart area */}
+        <div className="ml-10">
+          <svg
+            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+            className="w-full h-40"
+            preserveAspectRatio="none"
+          >
+            {/* Grid lines */}
+            <line
+              x1="0"
+              y1={chartHeight / 2}
+              x2={chartWidth}
+              y2={chartHeight / 2}
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth="0.5"
+              strokeDasharray="2,2"
+            />
 
-              {/* Area fill */}
-              <path d={areaPath} fill="url(#wpmGradient)" opacity="0.3" />
+            {/* Area fill */}
+            <path d={areaPath} fill="url(#wpmGradient)" opacity="0.4" />
 
-              {/* Line */}
-              <path
-                d={linePath}
-                fill="none"
-                stroke="#f97316"
+            {/* Line */}
+            <path
+              d={linePath}
+              fill="none"
+              stroke="#60a5fa"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+
+            {/* Data points */}
+            {points.map((point, i) => (
+              <circle
+                key={i}
+                cx={point.x}
+                cy={point.y}
+                r={hoveredIndex === i ? 4 : 2.5}
+                fill={hoveredIndex === i ? '#60a5fa' : '#08090a'}
+                stroke="#60a5fa"
                 strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                className="cursor-pointer transition-all"
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
                 vectorEffect="non-scaling-stroke"
               />
+            ))}
 
-              {/* Data points */}
-              {points.map((point, i) => (
-                <circle
-                  key={i}
-                  cx={point.x}
-                  cy={point.y}
-                  r={hoveredIndex === i ? 4 : 2.5}
-                  fill={hoveredIndex === i ? '#f97316' : '#fff'}
-                  stroke="#f97316"
-                  strokeWidth="2"
-                  className="cursor-pointer transition-all"
-                  onMouseEnter={() => setHoveredIndex(i)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  vectorEffect="non-scaling-stroke"
-                />
-              ))}
+            {/* Gradient definition */}
+            <defs>
+              <linearGradient
+                id="wpmGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop offset="0%" stopColor="#60a5fa" />
+                <stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
 
-              {/* Gradient definition */}
-              <defs>
-                <linearGradient
-                  id="wpmGradient"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop offset="0%" stopColor="#f97316" />
-                  <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-            </svg>
+          {/* X-axis labels */}
+          <div className="flex justify-between text-xs text-white/40 mt-2">
+            <span>{formatDateLabel(data[0].date)}</span>
+            {data.length > 2 && (
+              <span>
+                {formatDateLabel(data[Math.floor(data.length / 2)].date)}
+              </span>
+            )}
+            <span>{formatDateLabel(data[data.length - 1].date)}</span>
+          </div>
+        </div>
 
-            {/* X-axis labels */}
-            <div className="flex justify-between text-xs text-muted-foreground mt-2">
-              <span>{formatDateLabel(data[0].date)}</span>
-              {data.length > 2 && (
-                <span>
-                  {formatDateLabel(data[Math.floor(data.length / 2)].date)}
-                </span>
-              )}
-              <span>{formatDateLabel(data[data.length - 1].date)}</span>
+        {/* Tooltip */}
+        {hoveredIndex !== null && data[hoveredIndex] && (
+          <div
+            className="absolute bg-[#1a1a1d] text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none z-10 border border-white/[0.08]"
+            style={{
+              left: `calc(${(hoveredIndex / Math.max(data.length - 1, 1)) * 100}% + 40px)`,
+              top: '-8px',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <div className="font-semibold">
+              {formatDateLabel(data[hoveredIndex].date)}
+            </div>
+            <div className="text-white/80">
+              {data[hoveredIndex].avgWpm} WPM
+            </div>
+            <div className="text-white/40 text-xs">
+              {data[hoveredIndex].sessions} session
+              {data[hoveredIndex].sessions !== 1 ? 's' : ''}
             </div>
           </div>
-
-          {/* Tooltip */}
-          {hoveredIndex !== null && data[hoveredIndex] && (
-            <div
-              className="absolute bg-gray-900 text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none z-10"
-              style={{
-                left: `calc(${(hoveredIndex / Math.max(data.length - 1, 1)) * 100}% + 40px)`,
-                top: '-8px',
-                transform: 'translateX(-50%)',
-              }}
-            >
-              <div className="font-semibold">
-                {formatDateLabel(data[hoveredIndex].date)}
-              </div>
-              <div className="text-orange-400">
-                {data[hoveredIndex].avgWpm} WPM
-              </div>
-              <div className="text-gray-400 text-xs">
-                {data[hoveredIndex].sessions} session
-                {data[hoveredIndex].sessions !== 1 ? 's' : ''}
-              </div>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+        )}
+      </div>
+    </div>
   );
 }

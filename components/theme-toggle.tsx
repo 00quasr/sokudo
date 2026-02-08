@@ -1,65 +1,38 @@
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun, Check } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Eye } from 'lucide-react';
 import { useHighContrast } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuCheckboxItem
-} from '@/components/ui/dropdown-menu';
 
+// Simplified toggle - just high contrast for accessibility
 export function ThemeToggle() {
-  const { setTheme } = useTheme();
   const { highContrast, setHighContrast } = useHighContrast();
   const [mounted, setMounted] = React.useState(false);
 
-  // Delay rendering until after hydration to avoid mismatch
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" disabled>
-        <Sun className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Toggle theme</span>
+      <Button variant="ghost" size="icon" disabled className="text-white/50">
+        <Eye className="h-[1.2rem] w-[1.2rem]" />
+        <span className="sr-only">Toggle high contrast</span>
       </Button>
     );
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
-          System
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={highContrast}
-          onCheckedChange={setHighContrast}
-        >
-          High Contrast
-        </DropdownMenuCheckboxItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setHighContrast(!highContrast)}
+      className={`text-white/50 hover:text-white hover:bg-white/5 ${highContrast ? 'bg-white/10 text-white' : ''}`}
+      title={highContrast ? 'Disable high contrast' : 'Enable high contrast'}
+    >
+      <Eye className="h-[1.2rem] w-[1.2rem]" />
+      <span className="sr-only">Toggle high contrast</span>
+    </Button>
   );
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   TrendingUp,
   TrendingDown,
@@ -53,32 +52,32 @@ function StatItem({
   };
 
   const getTrendColor = () => {
-    if (change > 0) return 'text-green-600';
-    if (change < 0) return 'text-red-500';
-    return 'text-gray-500';
+    if (change > 0) return 'text-emerald-400';
+    if (change < 0) return 'text-rose-400';
+    return 'text-white/50';
   };
 
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
-      <div className="bg-gray-100 rounded-full p-2">{icon}</div>
+    <div className="flex items-start gap-3 py-3 border-b border-white/[0.08] last:border-0">
+      <div className="bg-white/5 rounded-full p-2">{icon}</div>
       <div className="flex-1">
-        <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+        <p className="text-xs text-white/40 tracking-wide mb-1">
           {label}
         </p>
         <div className="flex items-baseline gap-4">
           <div>
-            <span className="text-lg font-mono font-semibold">
+            <span className="text-lg font-mono font-semibold text-white">
               {thisMonth}
               {suffix}
             </span>
-            <span className="text-xs text-muted-foreground ml-1">this month</span>
+            <span className="text-xs text-white/40 ml-1">this month</span>
           </div>
           <div>
-            <span className="text-sm font-mono text-gray-500">
+            <span className="text-sm font-mono text-white/50">
               {lastMonth}
               {suffix}
             </span>
-            <span className="text-xs text-muted-foreground ml-1">last month</span>
+            <span className="text-xs text-white/40 ml-1">last month</span>
           </div>
         </div>
       </div>
@@ -102,61 +101,61 @@ export function MonthlyComparisonSection({ data }: MonthlyComparisonSectionProps
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-orange-500" />
-          Monthly Comparison
-          <span className="text-sm font-normal text-muted-foreground">
+    <div className="rounded-2xl bg-white/[0.02] p-6">
+      <div className="pb-4">
+        <h2 className="flex items-center gap-2 text-lg font-medium text-white">
+          <Calendar className="h-5 w-5 text-white/60" />
+          Monthly comparison
+          <span className="text-sm font-normal text-white/40">
             ({thisMonth.monthLabel} vs {lastMonth.monthLabel})
           </span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-0">
+        </h2>
+      </div>
+      <div className="space-y-0">
         <StatItem
           label="Sessions"
           thisMonth={thisMonth.totalSessions}
           lastMonth={lastMonth.totalSessions}
           change={changes.sessions}
-          icon={<Keyboard className="h-4 w-4 text-gray-600" />}
+          icon={<Keyboard className="h-4 w-4 text-white/60" />}
         />
         <StatItem
           label="Avg WPM"
           thisMonth={thisMonth.avgWpm}
           lastMonth={lastMonth.avgWpm}
           change={changes.avgWpm}
-          icon={<TrendingUp className="h-4 w-4 text-orange-600" />}
+          icon={<TrendingUp className="h-4 w-4 text-white/60" />}
         />
         <StatItem
-          label="Avg Accuracy"
+          label="Avg accuracy"
           thisMonth={thisMonth.avgAccuracy}
           lastMonth={lastMonth.avgAccuracy}
           change={changes.avgAccuracy}
           suffix="%"
-          icon={<Target className="h-4 w-4 text-green-600" />}
+          icon={<Target className="h-4 w-4 text-white/60" />}
         />
         <StatItem
-          label="Practice Time"
+          label="Practice time"
           thisMonth={formatTime(thisMonth.totalPracticeTimeMs)}
           lastMonth={formatTime(lastMonth.totalPracticeTimeMs)}
           change={changes.practiceTime}
-          icon={<Clock className="h-4 w-4 text-blue-600" />}
+          icon={<Clock className="h-4 w-4 text-white/60" />}
         />
         <StatItem
           label="Best WPM"
           thisMonth={thisMonth.bestWpm}
           lastMonth={lastMonth.bestWpm}
           change={changes.bestWpm}
-          icon={<Trophy className="h-4 w-4 text-yellow-600" />}
+          icon={<Trophy className="h-4 w-4 text-white/60" />}
         />
         <StatItem
-          label="Days Practiced"
+          label="Days practiced"
           thisMonth={thisMonth.daysWithPractice}
           lastMonth={lastMonth.daysWithPractice}
           change={changes.daysWithPractice}
-          icon={<CalendarDays className="h-4 w-4 text-purple-600" />}
+          icon={<CalendarDays className="h-4 w-4 text-white/60" />}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

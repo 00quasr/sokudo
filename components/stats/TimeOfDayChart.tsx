@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sun, Moon, Sunrise, Sunset } from 'lucide-react';
 
 export interface TimeOfDayDataPoint {
@@ -85,142 +84,140 @@ export function TimeOfDayChart({ data }: TimeOfDayChartProps) {
   });
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
+    <div className="rounded-2xl bg-white/[0.02] p-6">
+      <div className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            Speed by Time of Day
-          </CardTitle>
+          <h2 className="text-lg font-medium text-white">
+            Speed by time of day
+          </h2>
           {bestHour && worstHour && bestHour.hour !== worstHour.hour && (
             <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1 text-green-600">
+              <div className="flex items-center gap-1 text-white">
                 {getTimeOfDayIcon(bestHour.hour)}
                 <span className="font-medium">{formatHour(bestHour.hour)}</span>
-                <span className="text-muted-foreground">best</span>
+                <span className="text-white/40">best</span>
               </div>
             </div>
           )}
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="relative">
-          {/* Y-axis labels */}
-          <div className="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-xs text-muted-foreground">
-            <span>{Math.round(chartMax)}</span>
-            <span>{Math.round(chartMin)}</span>
-          </div>
+      </div>
+      <div className="relative">
+        {/* Y-axis labels */}
+        <div className="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-xs text-white/40">
+          <span>{Math.round(chartMax)}</span>
+          <span>{Math.round(chartMin)}</span>
+        </div>
 
-          {/* Chart area */}
-          <div className="ml-10">
-            <svg
-              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-              className="w-full h-40"
-              preserveAspectRatio="none"
-            >
-              {/* Grid lines */}
-              <line
-                x1="0"
-                y1={chartHeight / 2}
-                x2={chartWidth}
-                y2={chartHeight / 2}
-                stroke="#e5e7eb"
-                strokeWidth="0.5"
-                strokeDasharray="2,2"
+        {/* Chart area */}
+        <div className="ml-10">
+          <svg
+            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+            className="w-full h-40"
+            preserveAspectRatio="none"
+          >
+            {/* Grid lines */}
+            <line
+              x1="0"
+              y1={chartHeight / 2}
+              x2={chartWidth}
+              y2={chartHeight / 2}
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth="0.5"
+              strokeDasharray="2,2"
+            />
+
+            {/* Bars */}
+            {bars.map((bar, i) => (
+              <rect
+                key={bar.hour}
+                x={bar.x}
+                y={chartHeight - bar.height}
+                width={actualBarWidth}
+                height={bar.height}
+                fill={
+                  bar.hasData
+                    ? hoveredIndex === i
+                      ? '#818cf8'
+                      : '#6366f1'
+                    : 'rgba(255,255,255,0.05)'
+                }
+                opacity={bar.hasData ? 1 : 0.3}
+                rx="0.5"
+                className="cursor-pointer transition-colors"
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
               />
+            ))}
+          </svg>
 
-              {/* Bars */}
-              {bars.map((bar, i) => (
-                <rect
-                  key={bar.hour}
-                  x={bar.x}
-                  y={chartHeight - bar.height}
-                  width={actualBarWidth}
-                  height={bar.height}
-                  fill={
-                    bar.hasData
-                      ? hoveredIndex === i
-                        ? '#ea580c'
-                        : '#f97316'
-                      : '#e5e7eb'
-                  }
-                  opacity={bar.hasData ? 1 : 0.3}
-                  rx="0.5"
-                  className="cursor-pointer transition-colors"
-                  onMouseEnter={() => setHoveredIndex(i)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                />
-              ))}
-            </svg>
-
-            {/* X-axis labels */}
-            <div className="flex justify-between text-xs text-muted-foreground mt-2">
-              <span>12 AM</span>
-              <span>6 AM</span>
-              <span>12 PM</span>
-              <span>6 PM</span>
-              <span>12 AM</span>
-            </div>
+          {/* X-axis labels */}
+          <div className="flex justify-between text-xs text-white/40 mt-2">
+            <span>12 AM</span>
+            <span>6 AM</span>
+            <span>12 PM</span>
+            <span>6 PM</span>
+            <span>12 AM</span>
           </div>
-
-          {/* Tooltip */}
-          {hoveredIndex !== null && (
-            <div
-              className="absolute bg-gray-900 text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none z-10"
-              style={{
-                left: `calc(${(hoveredIndex / 24) * 100}% + 40px)`,
-                top: '-8px',
-                transform: 'translateX(-50%)',
-              }}
-            >
-              <div className="font-semibold flex items-center gap-2">
-                {getTimeOfDayIcon(hoveredIndex)}
-                {formatHour(hoveredIndex)}
-              </div>
-              {bars[hoveredIndex].hasData ? (
-                <>
-                  <div className="text-orange-400">
-                    {bars[hoveredIndex].avgWpm} WPM
-                  </div>
-                  <div className="text-gray-400 text-xs">
-                    {bars[hoveredIndex].sessions} session
-                    {bars[hoveredIndex].sessions !== 1 ? 's' : ''}
-                  </div>
-                </>
-              ) : (
-                <div className="text-gray-400 text-xs">No sessions</div>
-              )}
-            </div>
-          )}
         </div>
 
-        {/* Summary */}
-        {data.length >= 2 && bestHour && worstHour && bestHour.hour !== worstHour.hour && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">
-                  Peak Performance
-                </p>
-                <div className="flex items-center gap-2">
-                  {getTimeOfDayIcon(bestHour.hour)}
-                  <span className="font-medium">{getTimeOfDayLabel(bestHour.hour)}</span>
-                  <span className="font-mono text-green-600">{bestHour.avgWpm} WPM</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">
-                  Lowest Performance
-                </p>
-                <div className="flex items-center gap-2">
-                  {getTimeOfDayIcon(worstHour.hour)}
-                  <span className="font-medium">{getTimeOfDayLabel(worstHour.hour)}</span>
-                  <span className="font-mono text-red-500">{worstHour.avgWpm} WPM</span>
-                </div>
-              </div>
+        {/* Tooltip */}
+        {hoveredIndex !== null && (
+          <div
+            className="absolute bg-[#1a1a1d] text-white px-3 py-2 rounded-lg text-sm shadow-lg pointer-events-none z-10 border border-white/[0.08]"
+            style={{
+              left: `calc(${(hoveredIndex / 24) * 100}% + 40px)`,
+              top: '-8px',
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <div className="font-semibold flex items-center gap-2">
+              {getTimeOfDayIcon(hoveredIndex)}
+              {formatHour(hoveredIndex)}
             </div>
+            {bars[hoveredIndex].hasData ? (
+              <>
+                <div className="text-white/80">
+                  {bars[hoveredIndex].avgWpm} WPM
+                </div>
+                <div className="text-white/40 text-xs">
+                  {bars[hoveredIndex].sessions} session
+                  {bars[hoveredIndex].sessions !== 1 ? 's' : ''}
+                </div>
+              </>
+            ) : (
+              <div className="text-white/40 text-xs">No sessions</div>
+            )}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Summary */}
+      {data.length >= 2 && bestHour && worstHour && bestHour.hour !== worstHour.hour && (
+        <div className="mt-4 pt-4 border-t border-white/[0.08]">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-white/40 text-xs tracking-wide mb-1">
+                Peak performance
+              </p>
+              <div className="flex items-center gap-2">
+                {getTimeOfDayIcon(bestHour.hour)}
+                <span className="font-medium text-white">{getTimeOfDayLabel(bestHour.hour)}</span>
+                <span className="font-mono text-white">{bestHour.avgWpm} WPM</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-white/40 text-xs tracking-wide mb-1">
+                Lowest performance
+              </p>
+              <div className="flex items-center gap-2">
+                {getTimeOfDayIcon(worstHour.hour)}
+                <span className="font-medium text-white">{getTimeOfDayLabel(worstHour.hour)}</span>
+                <span className="font-mono text-white/50">{worstHour.avgWpm} WPM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,263 +1,8 @@
 @import "tailwindcss";
-/*
-  ---break---
-*/
-@custom-variant dark (&:is(.dark *));
-
 @import "tw-animate-css";
 
-@variant dark (&:is(.dark *));
-
+/* Linear-inspired dark theme (dark only) */
 @theme {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
-
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
-
-  --color-sidebar: hsl(var(--sidebar-background));
-  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
-  --color-sidebar-primary: hsl(var(--sidebar-primary));
-  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
-  --color-sidebar-accent: hsl(var(--sidebar-accent));
-  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
-  --color-sidebar-border: hsl(var(--sidebar-border));
-  --color-sidebar-ring: hsl(var(--sidebar-ring));
-
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-}
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-}
-
-@layer utilities {
-  body {
-    font-family: "Manrope", Arial, Helvetica, sans-serif;
-  }
-}
-
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/*
-  ---break---
-*/
-
-:root {
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(240 10% 3.9%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(240 10% 3.9%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(240 10% 3.9%);
-  --primary: hsl(240 5.9% 10%);
-  --primary-foreground: hsl(0 0% 98%);
-  --secondary: hsl(240 4.8% 95.9%);
-  --secondary-foreground: hsl(240 5.9% 10%);
-  --muted: hsl(240 4.8% 95.9%);
-  --muted-foreground: hsl(240 3.8% 46.1%);
-  --accent: hsl(240 4.8% 95.9%);
-  --accent-foreground: hsl(240 5.9% 10%);
-  --destructive: hsl(0 84.2% 60.2%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(240 5.9% 90%);
-  --input: hsl(240 5.9% 90%);
-  --ring: hsl(240 10% 3.9%);
-  --chart-1: hsl(12 76% 61%);
-  --chart-2: hsl(173 58% 39%);
-  --chart-3: hsl(197 37% 24%);
-  --chart-4: hsl(43 74% 66%);
-  --chart-5: hsl(27 87% 67%);
-  --radius: 0.6rem;
-}
-
-/*
-  ---break---
-*/
-
-.dark {
-  --background: hsl(240 10% 3.9%);
-  --foreground: hsl(0 0% 98%);
-  --card: hsl(240 10% 3.9%);
-  --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(240 10% 3.9%);
-  --popover-foreground: hsl(0 0% 98%);
-  --primary: hsl(0 0% 98%);
-  --primary-foreground: hsl(240 5.9% 10%);
-  --secondary: hsl(240 3.7% 15.9%);
-  --secondary-foreground: hsl(0 0% 98%);
-  --muted: hsl(240 3.7% 15.9%);
-  --muted-foreground: hsl(240 5% 64.9%);
-  --accent: hsl(240 3.7% 15.9%);
-  --accent-foreground: hsl(0 0% 98%);
-  --destructive: hsl(0 62.8% 30.6%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(240 3.7% 15.9%);
-  --input: hsl(240 3.7% 15.9%);
-  --ring: hsl(240 4.9% 83.9%);
-  --chart-1: hsl(220 70% 50%);
-  --chart-2: hsl(160 60% 45%);
-  --chart-3: hsl(30 80% 55%);
-  --chart-4: hsl(280 65% 60%);
-  --chart-5: hsl(340 75% 55%);
-}
-
-.high-contrast {
-  --background: hsl(0 0% 0%);
-  --foreground: hsl(0 0% 100%);
-  --card: hsl(0 0% 0%);
-  --card-foreground: hsl(0 0% 100%);
-  --popover: hsl(0 0% 0%);
-  --popover-foreground: hsl(0 0% 100%);
-  --primary: hsl(0 0% 100%);
-  --primary-foreground: hsl(0 0% 0%);
-  --secondary: hsl(0 0% 10%);
-  --secondary-foreground: hsl(0 0% 100%);
-  --muted: hsl(0 0% 15%);
-  --muted-foreground: hsl(0 0% 90%);
-  --accent: hsl(0 0% 15%);
-  --accent-foreground: hsl(0 0% 100%);
-  --destructive: hsl(0 100% 50%);
-  --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(0 0% 40%);
-  --input: hsl(0 0% 20%);
-  --ring: hsl(0 0% 100%);
-  --chart-1: hsl(210 100% 70%);
-  --chart-2: hsl(150 100% 60%);
-  --chart-3: hsl(45 100% 70%);
-  --chart-4: hsl(270 100% 75%);
-  --chart-5: hsl(330 100% 70%);
-}
-
-/*
-  ---break---
-*/
-
-@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -286,18 +31,96 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Linear spacing system */
+  --space-section: 120px;
+  --space-block: 64px;
+  --space-element: 24px;
+  --space-tight: 12px;
+
+  /* Linear max-widths */
+  --max-width-hero: 900px;
+  --max-width-content: 1200px;
+  --max-width-narrow: 600px;
 }
 
-/*
-  ---break---
-*/
+@layer utilities {
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+}
+
+@layer base {
+  /* Linear-inspired dark theme - dark only, no light mode */
+  :root {
+    /* Near-black background */
+    --background: 220 10% 4%;           /* #08090a */
+    --foreground: 0 0% 96%;             /* #f5f5f5 */
+
+    /* Card/section surfaces */
+    --card: 240 6% 7%;                  /* #111113 */
+    --card-foreground: 0 0% 96%;        /* #f5f5f5 */
+
+    /* Popover */
+    --popover: 240 6% 7%;               /* #111113 */
+    --popover-foreground: 0 0% 96%;     /* #f5f5f5 */
+
+    /* Primary - white CTA */
+    --primary: 0 0% 100%;               /* #ffffff */
+    --primary-foreground: 0 0% 0%;      /* #000000 */
+
+    /* Secondary */
+    --secondary: 0 0% 10%;              /* #1a1a1d */
+    --secondary-foreground: 0 0% 96%;   /* #f5f5f5 */
+
+    /* Muted */
+    --muted: 0 0% 10%;                  /* #1a1a1d */
+    --muted-foreground: 0 0% 54%;       /* #8a8a8a */
+
+    /* Accent */
+    --accent: 0 0% 10%;                 /* #1a1a1d */
+    --accent-foreground: 0 0% 96%;      /* #f5f5f5 */
+
+    /* Destructive */
+    --destructive: 0 84% 60%;           /* #ef4444 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Success (for typing) */
+    --success: 142 71% 45%;             /* #22c55e */
+
+    /* Border - very subtle */
+    --border: 0 0% 100% / 0.08;
+    --input: 0 0% 100% / 0.08;
+    --ring: 0 0% 100%;
+
+    /* Charts */
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* Radius */
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 240 6% 7%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 100% / 0.08;
+    --sidebar-ring: 0 0% 100%;
+  }
+}
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
 
@@ -313,10 +136,10 @@
 
 @keyframes cursor-glow {
   0%, 100% {
-    box-shadow: 0 0 4px 1px hsl(var(--primary) / 0.4);
+    box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.2);
   }
   50% {
-    box-shadow: 0 0 8px 2px hsl(var(--primary) / 0.6);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.4);
   }
 }
 
@@ -350,16 +173,13 @@
 /* Enhanced cursor visibility for tablets */
 @media (pointer: coarse) and (min-width: 768px) {
   .animate-cursor-blink {
-    /* Slower, more visible blink on tablets */
     animation: cursor-blink 1.2s ease-in-out infinite;
-    /* Thicker cursor for better visibility */
     width: 3px !important;
   }
 }
 
 /* Touch device optimizations */
 @layer utilities {
-  /* Prevent double-tap zoom and improve touch responsiveness */
   .touch-manipulation {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -367,73 +187,55 @@
     user-select: none;
   }
 
-  /* Improve text selection for typing area on tablets */
   @media (pointer: coarse) {
-    /* Coarse pointer indicates touch device */
     .typing-area-text {
       user-select: none;
       -webkit-user-select: none;
     }
 
-    /* Larger touch targets for mobile/tablet */
     .touch-target {
-      min-height: 44px; /* iOS recommended minimum */
+      min-height: 44px;
       min-width: 44px;
     }
   }
 
-  /* Tablet-specific optimizations (768px - 1024px typical tablet range) */
   @media (min-width: 768px) and (max-width: 1024px) {
-    /* Optimize typing area for tablet viewports */
     .typing-container-tablet {
-      /* Ensure typing area doesn't get obscured by virtual keyboard */
       margin-bottom: env(safe-area-inset-bottom, 20px);
-      /* Smoother transitions for touch interactions */
       transition: box-shadow 0.2s ease-in-out, transform 0.1s ease-out;
-      /* Increase touch target size for better tablet UX */
       min-height: 240px;
     }
 
-    /* Add subtle lift effect on active touch to provide feedback */
     .typing-container-tablet:active {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* Tablet portrait mode optimizations */
     @media (orientation: portrait) {
       .typing-area-tablet-portrait {
-        /* Reserve space for keyboard - typical iPad keyboard is ~300-350px */
         padding-bottom: max(env(keyboard-inset-height, 350px), 20px);
       }
 
       .typing-container-tablet {
-        /* Optimize vertical space usage in portrait */
         max-height: 50vh;
-        /* Larger font for better readability on tablets in portrait */
         font-size: 1.125rem;
         line-height: 1.75;
       }
     }
 
-    /* Tablet landscape mode optimizations */
     @media (orientation: landscape) {
       .typing-area-tablet-landscape {
-        /* In landscape, keyboard takes less vertical space */
         padding-bottom: max(env(keyboard-inset-height, 250px), 20px);
       }
 
       .typing-container-tablet {
-        /* More compact in landscape to preserve screen real estate */
         max-height: 60vh;
-        /* Slightly larger text in landscape for comfortable reading */
         font-size: 1.25rem;
         line-height: 1.6;
       }
     }
   }
 
-  /* iPad Pro specific (1024px+) */
   @media (min-width: 1024px) and (max-width: 1366px) and (pointer: coarse) {
     .typing-container-ipad-pro {
       max-width: 90%;
@@ -442,9 +244,7 @@
     }
   }
 
-  /* Improve scrolling on touch devices when keyboard appears */
   @supports (-webkit-touch-callout: none) {
-    /* iOS-specific: prevent scroll issues when keyboard appears */
     .typing-scroll-fix {
       position: relative;
       overflow-y: auto;
@@ -452,31 +252,25 @@
     }
   }
 
-  /* Small phone optimizations (< 375px) */
   @media (max-width: 374px) {
     .typing-container-tablet {
-      /* Reduce padding on very small screens */
       padding-left: 0.75rem !important;
       padding-right: 0.75rem !important;
     }
   }
 
-  /* Landscape mode optimizations for phones */
   @media (max-height: 500px) and (orientation: landscape) {
     .typing-scroll-fix {
-      /* Reduce gaps and padding in landscape on small screens */
       gap: 0.5rem;
     }
 
     .typing-container-tablet {
-      /* Compact padding for landscape mode */
       padding-top: 0.75rem !important;
       padding-bottom: 0.75rem !important;
       min-height: 140px !important;
     }
   }
 
-  /* Safe area insets for notched devices */
   @supports (padding: env(safe-area-inset-top)) {
     .typing-scroll-fix {
       padding-left: env(safe-area-inset-left);
@@ -492,7 +286,6 @@
     }
   }
 
-  /* Prevent text size adjustment on orientation change (iOS Safari) */
   @media screen and (orientation: landscape) {
     html {
       -webkit-text-size-adjust: 100%;
@@ -500,20 +293,16 @@
     }
   }
 
-  /* Tablet-specific touch improvements */
   @media (pointer: coarse) and (min-width: 768px) {
-    /* Prevent accidental zooms on double-tap for tablets */
     .typing-container-tablet {
       touch-action: manipulation;
     }
 
-    /* Optimize button and interactive element sizes for tablets */
     button,
     a[role="button"],
     [role="button"] {
       min-height: 44px;
       min-width: 44px;
-      /* Add touch feedback */
       transition: transform 0.1s ease-out, background-color 0.15s ease;
     }
 
@@ -523,45 +312,35 @@
       transform: scale(0.98);
     }
 
-    /* Better spacing for touch targets on tablets */
     .typing-scroll-fix {
       gap: 1rem;
     }
 
-    /* Optimize stats bar for tablet touch */
     .stats-bar {
       padding: 0.75rem 1rem;
       min-height: 48px;
     }
   }
 
-  /* iPad-specific optimizations using hover query */
   @media (hover: none) and (min-width: 768px) {
-    /* This targets touch-only devices with tablet+ screens (iPads) */
     .typing-container-tablet {
-      /* Prevent iOS Safari bounce scrolling from interfering */
       overscroll-behavior: contain;
     }
 
-    /* Optimize for iPad split-screen and slide-over */
     @supports (-webkit-touch-callout: none) {
       .typing-container-tablet {
-        /* Account for multitasking on iPad */
         max-width: min(100%, 900px);
       }
     }
   }
 
-  /* High DPI tablet displays (Retina iPads, high-end Android tablets) */
   @media (pointer: coarse) and (min-width: 768px) and (min-resolution: 2dppx) {
     .typing-container-tablet {
-      /* Sharper text rendering on high DPI tablets */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
     }
 
-    /* Ensure cursor is crisp on retina displays */
     .animate-cursor-blink {
       transform: translateZ(0);
       will-change: opacity;

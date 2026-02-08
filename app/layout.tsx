@@ -1,9 +1,8 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { Manrope } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { getUser, getTeamForUser } from '@/lib/db/queries';
 import { SWRConfig } from 'swr';
-import { ThemeProvider } from '@/components/theme-provider';
 import { PWAInit } from '@/components/pwa-init';
 import { GlobalOfflineIndicator } from '@/components/GlobalOfflineIndicator';
 import { SkipLinks } from '@/components/a11y/SkipLinks';
@@ -15,14 +14,14 @@ import { getMessages } from 'next-intl/server';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.BASE_URL || 'http://localhost:3000'),
   title: {
-    default: 'Sokudo (速度) - Developer Typing Trainer',
-    template: '%s | Sokudo'
+    default: 'Hayaku (速く) - Developer Typing Trainer',
+    template: '%s | Hayaku'
   },
   description: 'Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts. Master developer commands at speed with real-time feedback and targeted practice.',
   keywords: ['typing trainer', 'developer tools', 'git commands', 'terminal practice', 'coding speed', 'WPM', 'programming practice', 'React patterns', 'AI prompts', 'developer productivity'],
-  authors: [{ name: 'Sokudo' }],
-  creator: 'Sokudo',
-  publisher: 'Sokudo',
+  authors: [{ name: 'Hayaku' }],
+  creator: 'Hayaku',
+  publisher: 'Hayaku',
   manifest: '/manifest.json',
   formatDetection: {
     email: false,
@@ -33,24 +32,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: '/',
-    siteName: 'Sokudo',
-    title: 'Sokudo (速度) - Developer Typing Trainer',
+    siteName: 'Hayaku',
+    title: 'Hayaku (速く) - Developer Typing Trainer',
     description: 'Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts. Master developer commands at speed.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Sokudo - Developer Typing Trainer'
+        alt: 'Hayaku - Developer Typing Trainer'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sokudo (速度) - Developer Typing Trainer',
+    title: 'Hayaku (速く) - Developer Typing Trainer',
     description: 'Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts.',
     images: ['/og-image.png'],
-    creator: '@sokudo'
+    creator: '@hayaku'
   },
   robots: {
     index: true,
@@ -73,13 +72,10 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0b' }
-  ]
+  themeColor: '#08090a'
 };
 
-const manrope = Manrope({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] });
 
 export default async function RootLayout({
   children
@@ -92,34 +88,24 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`bg-white dark:bg-gray-950 text-black dark:text-white ${manrope.className}`}
-      suppressHydrationWarning
+      className={`dark ${inter.className}`}
+      style={{ colorScheme: 'dark' }}
     >
-      <body className="min-h-[100dvh] bg-gray-50">
+      <body className="min-h-[100dvh] bg-background text-foreground antialiased">
         <PWAInit />
         <GlobalOfflineIndicator />
         <SkipLinks />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+          <SWRConfig
+            value={{
+              fallback: {
+                '/api/user': getUser(),
+                '/api/team': getTeamForUser()
+              }
+            }}
           >
-            <KeyboardShortcutsDialog />
-            <SWRConfig
-              value={{
-                fallback: {
-                  // We do NOT await here
-                  // Only components that read this data will suspend
-                  '/api/user': getUser(),
-                  '/api/team': getTeamForUser()
-                }
-              }}
-            >
-              {children}
-            </SWRConfig>
-          </ThemeProvider>
+            {children}
+          </SWRConfig>
         </NextIntlClientProvider>
       </body>
     </html>

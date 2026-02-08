@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Trophy,
   Target,
@@ -75,99 +74,89 @@ export default async function StatsPage() {
   const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
 
   return (
-    <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
-        Your Stats
+    <div>
+      <h1 className="text-xl font-medium text-white mb-6">
+        Your stats
       </h1>
 
       {!hasData ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center text-center py-12">
-            <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No stats yet
-            </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
-              Complete some typing challenges to start tracking your progress.
-              Your WPM, accuracy, and streaks will appear here.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl bg-white/[0.02] p-12 flex flex-col items-center justify-center text-center">
+          <AlertCircle className="h-12 w-12 text-white/40 mb-4" />
+          <h3 className="text-lg font-medium text-white mb-2">
+            No stats yet
+          </h3>
+          <p className="text-sm text-white/40 max-w-sm">
+            Complete some typing challenges to start tracking your progress.
+            Your WPM, accuracy, and streaks will appear here.
+          </p>
+        </div>
       ) : (
         <div className="space-y-6">
           {/* Overview Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-orange-100 rounded-full p-2">
-                    <TrendingUp className="h-5 w-5 text-orange-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                      Avg WPM
-                    </p>
-                    <p className="text-2xl font-mono font-semibold">
-                      {stats.avgWpm}
-                    </p>
-                  </div>
+            <div className="rounded-2xl bg-white/[0.02] p-5">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/5 rounded-xl p-2">
+                  <TrendingUp className="h-5 w-5 text-white/60" />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <p className="text-xs text-white/40">
+                    Avg WPM
+                  </p>
+                  <p className="text-2xl font-mono font-medium text-white">
+                    {stats.avgWpm}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-100 rounded-full p-2">
-                    <Target className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                      Avg Accuracy
-                    </p>
-                    <p className="text-2xl font-mono font-semibold">
-                      {stats.avgAccuracy}%
-                    </p>
-                  </div>
+            <div className="rounded-2xl bg-white/[0.02] p-5">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/5 rounded-xl p-2">
+                  <Target className="h-5 w-5 text-white/60" />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <p className="text-xs text-white/40">
+                    Avg accuracy
+                  </p>
+                  <p className="text-2xl font-mono font-medium text-white">
+                    {stats.avgAccuracy}%
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-100 rounded-full p-2">
-                    <Clock className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                      Practice Time
-                    </p>
-                    <p className="text-2xl font-mono font-semibold">
-                      {formatTime(stats.totalPracticeTimeMs)}
-                    </p>
-                  </div>
+            <div className="rounded-2xl bg-white/[0.02] p-5">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/5 rounded-xl p-2">
+                  <Clock className="h-5 w-5 text-white/60" />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <p className="text-xs text-white/40">
+                    Practice time
+                  </p>
+                  <p className="text-2xl font-mono font-medium text-white">
+                    {formatTime(stats.totalPracticeTimeMs)}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <div className="bg-purple-100 rounded-full p-2">
-                    <Flame className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                      Current Streak
-                    </p>
-                    <p className="text-2xl font-mono font-semibold">
-                      {stats.currentStreak} days
-                    </p>
-                  </div>
+            <div className="rounded-2xl bg-white/[0.02] p-5">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/5 rounded-xl p-2">
+                  <Flame className="h-5 w-5 text-white/60" />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <p className="text-xs text-white/40">
+                    Current streak
+                  </p>
+                  <p className="text-2xl font-mono font-medium text-white">
+                    {stats.currentStreak} days
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Practice Calendar */}
@@ -209,193 +198,175 @@ export default async function StatsPage() {
 
           {/* Best Stats & Details */}
           <div className="grid lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-orange-500" />
-                  Personal Bests
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Best WPM
-                    </span>
-                    <span className="font-mono font-semibold">
-                      {stats.bestWpm}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Best Accuracy
-                    </span>
-                    <span className="font-mono font-semibold">
-                      {stats.bestAccuracy}%
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Longest Streak
-                    </span>
-                    <span className="font-mono font-semibold">
-                      {stats.longestStreak} days
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Total Sessions
-                    </span>
-                    <span className="font-mono font-semibold">
-                      {stats.totalSessions}
-                    </span>
-                  </div>
+            <div className="rounded-2xl bg-white/[0.02] p-6">
+              <h2 className="flex items-center gap-2 text-lg font-medium text-white mb-4">
+                <Trophy className="h-5 w-5 text-white/60" />
+                Personal bests
+              </h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/50">
+                    Best WPM
+                  </span>
+                  <span className="font-mono font-medium text-white">
+                    {stats.bestWpm}
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/50">
+                    Best accuracy
+                  </span>
+                  <span className="font-mono font-medium text-white">
+                    {stats.bestAccuracy}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/50">
+                    Longest streak
+                  </span>
+                  <span className="font-mono font-medium text-white">
+                    {stats.longestStreak} days
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/50">
+                    Total sessions
+                  </span>
+                  <span className="font-mono font-medium text-white">
+                    {stats.totalSessions}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Keyboard className="h-5 w-5 text-orange-500" />
-                  Keystroke Stats
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Total Keystrokes
-                    </span>
-                    <span className="font-mono font-semibold">
-                      {stats.totalKeystrokes.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Total Errors
-                    </span>
-                    <span className="font-mono font-semibold">
-                      {stats.totalErrors.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Error Rate
-                    </span>
-                    <span className="font-mono font-semibold">
-                      {stats.totalKeystrokes > 0
-                        ? (
-                            (stats.totalErrors / stats.totalKeystrokes) *
-                            100
-                          ).toFixed(1)
-                        : 0}
-                      %
-                    </span>
-                  </div>
+            <div className="rounded-2xl bg-white/[0.02] p-6">
+              <h2 className="flex items-center gap-2 text-lg font-medium text-white mb-4">
+                <Keyboard className="h-5 w-5 text-white/60" />
+                Keystroke stats
+              </h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/50">
+                    Total keystrokes
+                  </span>
+                  <span className="font-mono font-medium text-white">
+                    {stats.totalKeystrokes.toLocaleString()}
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/50">
+                    Total errors
+                  </span>
+                  <span className="font-mono font-medium text-white">
+                    {stats.totalErrors.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white/50">
+                    Error rate
+                  </span>
+                  <span className="font-mono font-medium text-white">
+                    {stats.totalKeystrokes > 0
+                      ? (
+                          (stats.totalErrors / stats.totalKeystrokes) *
+                          100
+                        ).toFixed(1)
+                      : 0}
+                    %
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Category Performance */}
           {categoryPerformance.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Category Performance</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {categoryPerformance.map((cat) => (
-                    <div
-                      key={cat.categoryId}
-                      className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {cat.categoryName}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {cat.sessions} session{cat.sessions !== 1 ? 's' : ''}
+            <div className="rounded-2xl bg-white/[0.02] p-6">
+              <h2 className="text-lg font-medium text-white mb-4">Category performance</h2>
+              <div className="space-y-3">
+                {categoryPerformance.map((cat) => (
+                  <div
+                    key={cat.categoryId}
+                    className="flex items-center justify-between py-3 border-b border-white/[0.08] last:border-0"
+                  >
+                    <div>
+                      <p className="font-medium text-white">
+                        {cat.categoryName}
+                      </p>
+                      <p className="text-xs text-white/40">
+                        {cat.sessions} session{cat.sessions !== 1 ? 's' : ''}
+                      </p>
+                    </div>
+                    <div className="flex gap-6 text-sm">
+                      <div className="text-right">
+                        <p className="text-white/40 text-xs">WPM</p>
+                        <p className="font-mono font-medium text-white">
+                          {cat.avgWpm}
                         </p>
                       </div>
-                      <div className="flex gap-6 text-sm">
-                        <div className="text-right">
-                          <p className="text-muted-foreground text-xs">WPM</p>
-                          <p className="font-mono font-semibold">
-                            {cat.avgWpm}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-muted-foreground text-xs">
-                            Accuracy
-                          </p>
-                          <p className="font-mono font-semibold">
-                            {cat.avgAccuracy}%
-                          </p>
-                        </div>
+                      <div className="text-right">
+                        <p className="text-white/40 text-xs">
+                          Accuracy
+                        </p>
+                        <p className="font-mono font-medium text-white">
+                          {cat.avgAccuracy}%
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {/* Recent Sessions */}
           {recentSessions.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Sessions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {recentSessions.map((session) => (
-                    <div
-                      key={session.id}
-                      className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {session.challenge.category.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatDate(new Date(session.completedAt))}
+            <div className="rounded-2xl bg-white/[0.02] p-6">
+              <h2 className="text-lg font-medium text-white mb-4">Recent sessions</h2>
+              <div className="space-y-3">
+                {recentSessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className="flex items-center justify-between py-3 border-b border-white/[0.08] last:border-0"
+                  >
+                    <div>
+                      <p className="font-medium text-white">
+                        {session.challenge.category.name}
+                      </p>
+                      <p className="text-xs text-white/40">
+                        {formatDate(new Date(session.completedAt))}
+                      </p>
+                    </div>
+                    <div className="flex gap-6 text-sm">
+                      <div className="text-right">
+                        <p className="text-white/40 text-xs">WPM</p>
+                        <p className="font-mono font-medium text-white">
+                          {session.wpm}
                         </p>
                       </div>
-                      <div className="flex gap-6 text-sm">
-                        <div className="text-right">
-                          <p className="text-muted-foreground text-xs">WPM</p>
-                          <p className="font-mono font-semibold">
-                            {session.wpm}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-muted-foreground text-xs">
-                            Accuracy
-                          </p>
-                          <p className="font-mono font-semibold">
-                            {session.accuracy}%
-                          </p>
-                        </div>
+                      <div className="text-right">
+                        <p className="text-white/40 text-xs">
+                          Accuracy
+                        </p>
+                        <p className="font-mono font-medium text-white">
+                          {session.accuracy}%
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {/* Share Stats Card */}
           {user?.username && (
-            <Card>
-              <CardContent className="pt-6">
-                <ShareStatsCard username={user.username} baseUrl={baseUrl} />
-              </CardContent>
-            </Card>
+            <div className="rounded-2xl bg-white/[0.02] p-6">
+              <ShareStatsCard username={user.username} baseUrl={baseUrl} />
+            </div>
           )}
         </div>
       )}
-    </section>
+    </div>
   );
 }

@@ -2,14 +2,14 @@ import { homedir } from 'os';
 import { join } from 'path';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
-interface SokudoConfig {
+interface HayakuConfig {
   apiKey?: string;
   baseUrl: string;
   userId?: number;
   email?: string;
 }
 
-const CONFIG_DIR = join(homedir(), '.sokudo');
+const CONFIG_DIR = join(homedir(), '.hayaku');
 const CONFIG_PATH = join(CONFIG_DIR, 'config.json');
 const SESSIONS_PATH = join(CONFIG_DIR, 'offline-sessions.json');
 
@@ -20,12 +20,12 @@ export class Config {
     }
   }
 
-  static load(): SokudoConfig {
+  static load(): HayakuConfig {
     this.ensureConfigDir();
 
     if (!existsSync(CONFIG_PATH)) {
       return {
-        baseUrl: process.env.SOKUDO_BASE_URL || 'http://localhost:3000'
+        baseUrl: process.env.HAYAKU_BASE_URL || 'http://localhost:3000'
       };
     }
 
@@ -35,12 +35,12 @@ export class Config {
     } catch (error) {
       console.error('Error reading config file:', error);
       return {
-        baseUrl: process.env.SOKUDO_BASE_URL || 'http://localhost:3000'
+        baseUrl: process.env.HAYAKU_BASE_URL || 'http://localhost:3000'
       };
     }
   }
 
-  static save(config: SokudoConfig): void {
+  static save(config: HayakuConfig): void {
     this.ensureConfigDir();
     writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
   }
@@ -48,7 +48,7 @@ export class Config {
   static clear(): void {
     if (existsSync(CONFIG_PATH)) {
       writeFileSync(CONFIG_PATH, JSON.stringify({
-        baseUrl: process.env.SOKUDO_BASE_URL || 'http://localhost:3000'
+        baseUrl: process.env.HAYAKU_BASE_URL || 'http://localhost:3000'
       }, null, 2));
     }
   }

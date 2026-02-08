@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 ## Project
-**Sokudo (速度)** - Developer typing trainer for building muscle memory on git commands, terminal workflows, React patterns, and AI prompts.
+**Hayaku (速く)** - Developer typing trainer for building muscle memory on git commands, terminal workflows, React patterns, and AI prompts.
 
 Stack: Next.js 15 (App Router, Turbopack), TypeScript, PostgreSQL, Drizzle ORM, Tailwind CSS 4, Shadcn/UI, Stripe, Zod
 
@@ -100,7 +100,7 @@ lib/
 
 ## UI Development: Screenshot-Driven Workflow
 
-Take screenshots:
+Take screenshots with agent-browser skill:
 - Before changes (baseline)
 - After each meaningful change
 - Before declaring done
@@ -138,34 +138,8 @@ Stripe test card: `4242 4242 4242 4242` (any future date, any CVC)
 
 ## Skills
 
-Install skills to enhance Claude's capabilities:
-
-```bash
-# Browser automation (for testing flows)
-npx skills add vercel-labs/agent-browser
-
-# Frontend & Design
-npx skills add vercel-labs/agent-skills/vercel-react-best-practices
-npx skills add vercel-labs/agent-skills/web-design-guidelines
-npx skills add anthropics/skills/frontend-design
-
-# Database
-npx skills add supabase/agent-skills/supabase-postgres-best-practices
-
-# Testing & Quality
-npx skills add obra/superpowers/test-driven-development
-npx skills add obra/superpowers/systematic-debugging
-npx skills add wshobson/agents/code-review-excellence
-
-# Architecture
-npx skills add wshobson/agents/architecture-patterns
-npx skills add wshobson/agents/nextjs-app-router-patterns
-npx skills add wshobson/agents/api-design-principles
-
-# Workflow
-npx skills add obra/superpowers/writing-plans
-npx skills add obra/superpowers/executing-plans
-```
+- Use agent-browser for ui testing
+- and find-skills for new skills that could help 
 
 Browse more: https://skills.sh
 
@@ -248,7 +222,7 @@ ralphy --sonnet "add JSDoc to all lib functions"
 ## Links
 
 - Boilerplate: https://github.com/nextjs/saas-starter
-- Project Plan: `SOKUDO_PROJECT_PLAN.md`
+- Project Plan: `HAYAKU_PROJECT_PLAN.md`
 - Drizzle Docs: https://orm.drizzle.team/
 - Stripe Billing: https://stripe.com/docs/billing
 - Shadcn/UI: https://ui.shadcn.com/

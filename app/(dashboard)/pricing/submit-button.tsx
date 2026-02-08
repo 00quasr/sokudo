@@ -11,9 +11,10 @@ export function SubmitButton({ popular = false }: { popular?: boolean }) {
     <Button
       type="submit"
       disabled={pending}
-      variant={popular ? "default" : "outline"}
-      className={`w-full rounded-md ${
-        popular ? 'bg-orange-500 hover:bg-orange-600 text-white' : ''
+      className={`w-full rounded-full h-11 font-medium ${
+        popular
+          ? 'bg-white text-black hover:bg-white/90'
+          : 'bg-white/10 text-white hover:bg-white/20'
       }`}
     >
       {pending ? (
@@ -23,7 +24,7 @@ export function SubmitButton({ popular = false }: { popular?: boolean }) {
         </>
       ) : (
         <>
-          Start Free Trial
+          Start free trial
           <ArrowRight className="ml-2 h-4 w-4" />
         </>
       )}

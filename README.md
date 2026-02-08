@@ -1,4 +1,4 @@
-# Sokudo (速度)
+# Hayaku (速く)
 
 **Developer Typing Trainer** - Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts.
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-Sokudo is a typing trainer designed specifically for developers. Unlike traditional typing tests, Sokudo helps you build muscle memory for:
+Hayaku is a typing trainer designed specifically for developers. Unlike traditional typing tests, Hayaku helps you build muscle memory for:
 
 - **Git commands** - Common workflows, advanced operations
 - **Terminal commands** - Shell navigation, file operations, system utilities
@@ -61,7 +61,7 @@ Sokudo is a typing trainer designed specifically for developers. Unlike traditio
 
 ```bash
 git clone <your-repo-url>
-cd sokudo
+cd hayaku
 pnpm install
 ```
 
@@ -168,7 +168,7 @@ WPM = (correct characters / 5) / minutes
 Accuracy = (correct keystrokes / total keystrokes) * 100
 ```
 
-Standard word = 5 characters. Sokudo tracks both WPM (corrected) and raw WPM (including errors).
+Standard word = 5 characters. Hayaku tracks both WPM (corrected) and raw WPM (including errors).
 
 ### Free Tier Limits
 
@@ -200,7 +200,7 @@ Flagged sessions are rejected by the API.
 
 ### OAuth 2.0 Provider
 
-Sokudo implements a full OAuth 2.0 authorization server with PKCE support:
+Hayaku implements a full OAuth 2.0 authorization server with PKCE support:
 
 ```bash
 # Create OAuth client
@@ -252,7 +252,7 @@ POST /api/keys
 
 Use in requests:
 ```bash
-curl -H "Authorization: Bearer sk_..." https://sokudo.app/api/v1/sessions
+curl -H "Authorization: Bearer sk_..." https://hayaku.app/api/v1/sessions
 ```
 
 ## Database
@@ -366,7 +366,7 @@ Commit format: `type(scope): message`
 
 - **ONBOARDING.md** - New developer setup guide (start here!)
 - **CLAUDE.md** - Development guide and architecture
-- **SOKUDO_PROJECT_PLAN.md** - Comprehensive feature roadmap
+- **HAYAKU_PROJECT_PLAN.md** - Comprehensive feature roadmap
 - **PRD.md** - Product requirements and task checklist
 
 ## License

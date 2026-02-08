@@ -4,19 +4,10 @@ import {
   getUser,
   getUserProfile,
   getUserStatsOverview,
-  getCategoryPerformance,
-  getRecentSessionsForAdaptive,
-  getKeyAccuracyForUser,
-  getCharErrorPatternsForUser,
-  getProblemSequences,
 } from '@/lib/db/queries';
 import { Category } from '@/lib/db/schema';
 import { canAccessPremiumCategories, hasUnlimitedPractice } from '@/lib/limits/constants';
 import { RemainingTimeBar } from '@/components/limits/RemainingTimeBar';
-import { PracticeRecommendations } from '@/components/practice/PracticeRecommendations';
-import { generateRecommendations } from '@/lib/practice/recommendations';
-import { analyzeWeaknesses } from '@/lib/weakness/analyze';
-import type { DifficultyLevel, SessionPerformance } from '@/lib/practice/adaptive-difficulty';
 import {
   GitBranch,
   GitMerge,
@@ -29,9 +20,11 @@ import {
   Sparkles,
   Database,
   Lock,
-  Crosshair,
+  Play,
   Brain,
+  Crosshair,
   LucideIcon,
+  ArrowRight,
 } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -40,15 +33,6 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Practice',
   description: 'Choose from categories including git workflows, Docker commands, React patterns, bash scripts, and AI prompt engineering. Build muscle memory with targeted practice.',
-  openGraph: {
-    title: 'Practice - Choose Your Category',
-    description: 'Master git, Docker, React, bash, and AI prompts through deliberate typing practice.',
-    url: '/practice',
-  },
-  twitter: {
-    title: 'Practice - Choose Your Category',
-    description: 'Master git, Docker, React, bash, and AI prompts through deliberate typing practice.',
-  },
 };
 
 const iconMap: Record<string, LucideIcon> = {
@@ -64,95 +48,73 @@ const iconMap: Record<string, LucideIcon> = {
   database: Database,
 };
 
-const difficultyColors: Record<string, string> = {
-  beginner: 'bg-green-100 text-green-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-red-100 text-red-800',
-};
+const defaultIconColor = { bg: 'bg-white/[0.06]', text: 'text-white/50', hoverBg: 'group-hover:bg-white/10 group-hover:text-white/70' };
 
 function CategoryCard({ category, locked }: { category: Category; locked: boolean }) {
   const IconComponent = iconMap[category.icon || ''] || Code;
-  const difficultyClass = difficultyColors[category.difficulty] || difficultyColors.beginner;
+  const iconColor = defaultIconColor;
 
   if (locked) {
     return (
-      <article
-        className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6"
-        aria-label={`${category.name} - ${category.difficulty} difficulty - Locked, upgrade to pro to unlock`}
-      >
-        <div className="absolute right-3 top-3 sm:right-4 sm:top-4 z-10">
-          <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700">
-            <Lock className="h-3 w-3" aria-hidden="true" />
+      <div className="group relative rounded-2xl bg-white/[0.02] p-6 opacity-60">
+        <div className="absolute right-4 top-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white/60">
+            <Lock className="h-3 w-3" />
             Pro
           </span>
         </div>
 
-        <div className="pointer-events-none blur-[2px] select-none" aria-hidden="true">
-          <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
-            <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" />
-          </div>
-
-          <h3 className="mb-2 text-base sm:text-lg font-semibold text-gray-900">
-            {category.name}
-          </h3>
-
-          <p className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 line-clamp-2">
-            {category.description}
-          </p>
-
-          <div className="flex items-center gap-2">
-            <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium capitalize ${difficultyClass}`}>
-              {category.difficulty}
-            </span>
-          </div>
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/40">
+          <IconComponent className="h-5 w-5" />
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white/60">
-          <Link
-            href="/pricing"
-            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-            aria-label={`Upgrade to pro to unlock ${category.name}`}
-          >
-            <Lock className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
-            Upgrade to Unlock
-          </Link>
-        </div>
-      </article>
+        <h3 className="text-base font-medium text-white/50 mb-2">
+          {category.name}
+        </h3>
+
+        <p className="text-sm text-white/30 line-clamp-2 mb-4">
+          {category.description}
+        </p>
+
+        <Link
+          href="/pricing"
+          className="inline-flex items-center gap-1.5 text-sm text-white/40 hover:text-white/60 transition-colors"
+        >
+          Upgrade to unlock
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
     );
   }
 
   return (
     <Link
       href={`/practice/${category.slug}`}
-      className="group relative block rounded-xl border border-gray-200 bg-white p-4 sm:p-6 transition-all hover:border-orange-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-      aria-label={`Practice ${category.name} - ${category.difficulty} difficulty${category.isPremium ? ' - Pro category' : ''}`}
+      className="group relative rounded-2xl bg-white/[0.02] p-6 hover:bg-white/[0.04] transition-colors"
     >
       {category.isPremium && (
-        <div className="absolute right-3 top-3 sm:right-4 sm:top-4">
-          <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700">
-            <Lock className="h-3 w-3" aria-hidden="true" />
-            <span className="sr-only">Pro category</span>
+        <div className="absolute right-4 top-4">
+          <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white/60">
             Pro
           </span>
         </div>
       )}
 
-      <div className="mb-3 sm:mb-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
-        <IconComponent className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+      <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl ${iconColor.bg} ${iconColor.text} ${iconColor.hoverBg} transition-colors`}>
+        <IconComponent className="h-5 w-5" />
       </div>
 
-      <h3 className="mb-2 text-base sm:text-lg font-semibold text-gray-900 group-hover:text-orange-600">
+      <h3 className="text-base font-medium text-white mb-2 group-hover:text-white transition-colors">
         {category.name}
       </h3>
 
-      <p className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 line-clamp-2">
+      <p className="text-sm text-white/50 line-clamp-2 mb-4">
         {category.description}
       </p>
 
-      <div className="flex items-center gap-2">
-        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium capitalize ${difficultyClass}`}>
-          {category.difficulty}
-        </span>
+      <div className="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/60 transition-colors">
+        <Play className="h-3.5 w-3.5" />
+        <span>Start practice</span>
       </div>
     </Link>
   );
@@ -166,171 +128,148 @@ export default async function PracticePage() {
 
   let canAccessPremium = false;
   let isFreeTier = true;
-  let recommendations: Awaited<ReturnType<typeof generateRecommendations>> = [];
+  let stats = null;
 
   if (user) {
-    const [
-      profile,
-      stats,
-      categoryPerformance,
-      recentSessions,
-      keyData,
-      errorPatterns,
-      problemSeqs,
-    ] = await Promise.all([
+    const [profile, userStats] = await Promise.all([
       getUserProfile(user.id),
       getUserStatsOverview(),
-      getCategoryPerformance(),
-      getRecentSessionsForAdaptive(10),
-      getKeyAccuracyForUser(user.id),
-      getCharErrorPatternsForUser(user.id),
-      getProblemSequences(user.id, 10),
     ]);
-
     canAccessPremium = canAccessPremiumCategories(profile?.subscriptionTier ?? 'free');
     isFreeTier = !hasUnlimitedPractice(profile?.subscriptionTier ?? 'free');
-
-    const weaknessReport =
-      keyData.length > 0 || errorPatterns.length > 0 || problemSeqs.length > 0
-        ? analyzeWeaknesses(keyData, errorPatterns, problemSeqs)
-        : null;
-
-    const sessionPerformance: SessionPerformance[] = recentSessions.map((s) => ({
-      wpm: s.wpm,
-      accuracy: s.accuracy,
-      errors: s.errors,
-      keystrokes: s.keystrokes,
-      durationMs: s.durationMs,
-      challengeDifficulty: s.challengeDifficulty as DifficultyLevel,
-    }));
-
-    recommendations = generateRecommendations({
-      sessions: sessionPerformance,
-      weaknessReport,
-      categoryPerformance,
-      allCategories: categories.map((c) => ({
-        id: c.id,
-        name: c.name,
-        slug: c.slug,
-        difficulty: c.difficulty,
-        isPremium: c.isPremium,
-      })),
-      currentStreak: profile?.currentStreak ?? 0,
-      totalSessions: stats.totalSessions,
-      avgWpm: stats.avgWpm,
-      avgAccuracy: stats.avgAccuracy,
-      canAccessPremium,
-    });
+    stats = userStats;
   }
 
   const freeCategories = categories.filter((c) => !c.isPremium);
   const premiumCategories = categories.filter((c) => c.isPremium);
 
-  // For free users, only show categories they can access
-  const accessibleCategories = canAccessPremium ? categories : freeCategories;
-  const displayFreeCategories = canAccessPremium ? freeCategories : accessibleCategories;
-  const displayPremiumCategories = canAccessPremium ? premiumCategories : [];
-
   return (
-    <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
-      {user && isFreeTier && (
-        <div className="mb-6 sm:mb-8">
-          <RemainingTimeBar />
-        </div>
-      )}
+    <main className="min-h-screen bg-[#08090a]">
+      <div className="max-w-[1000px] mx-auto px-6 py-12 md:py-16">
+        {/* Free tier time bar */}
+        {user && isFreeTier && (
+          <div className="mb-10">
+            <RemainingTimeBar />
+          </div>
+        )}
 
-      <div className="mb-8 sm:mb-12 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
-          Choose a Category
-        </h1>
-        <p className="mt-2 sm:mt-3 text-base sm:text-lg text-gray-600 px-4">
-          Build muscle memory for commands and patterns you use every day
-        </p>
+        {/* Header */}
+        <div className="mb-10">
+          <h1 className="text-2xl md:text-3xl font-medium text-white">
+            Practice
+          </h1>
+          <p className="mt-2 text-white/50">
+            Select a category to start a seamless typing session
+          </p>
+        </div>
+
+        {/* Quick stats for logged in users */}
+        {user && stats && stats.totalSessions > 0 && (
+          <div className="grid grid-cols-3 gap-4 mb-10">
+            <div className="rounded-xl bg-white/[0.03] p-4">
+              <p className="text-xl font-medium text-white">
+                {Math.round(stats.avgWpm)}
+              </p>
+              <p className="text-xs text-white/40 mt-1">Avg WPM</p>
+            </div>
+            <div className="rounded-xl bg-white/[0.03] p-4">
+              <p className="text-xl font-medium text-white">
+                {Math.round(stats.avgAccuracy)}%
+              </p>
+              <p className="text-xs text-white/40 mt-1">Accuracy</p>
+            </div>
+            <div className="rounded-xl bg-white/[0.03] p-4">
+              <p className="text-xl font-medium text-white">
+                {stats.totalSessions}
+              </p>
+              <p className="text-xs text-white/40 mt-1">Sessions</p>
+            </div>
+          </div>
+        )}
+
+        {/* Smart practice options for logged in users */}
+        {user && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+            <Link
+              href="/practice/smart"
+              className="group rounded-xl bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.06] text-white/60 group-hover:text-white/80 transition-colors">
+                  <Brain className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-white/90 group-hover:text-white">
+                    Smart practice
+                  </h3>
+                  <p className="text-xs text-white/40">
+                    AI picks challenges based on your level
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/practice/personalized"
+              className="group rounded-xl bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.06] text-white/60 group-hover:text-white/80 transition-colors">
+                  <Crosshair className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-white/90 group-hover:text-white">
+                    Personalized practice
+                  </h3>
+                  <p className="text-xs text-white/40">
+                    Target your weak spots and error patterns
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
+
+        {/* Categories */}
+        {freeCategories.length > 0 && (
+          <section className="mb-10">
+            {canAccessPremium && premiumCategories.length > 0 && (
+              <h2 className="text-sm font-medium text-white/40 mb-4">
+                Free categories
+              </h2>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {freeCategories.map((category) => (
+                <CategoryCard key={category.id} category={category} locked={false} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Premium categories */}
+        {premiumCategories.length > 0 && (
+          <section>
+            <h2 className="text-sm font-medium text-white/40 mb-4">
+              Pro categories
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {premiumCategories.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  locked={!canAccessPremium}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {categories.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-white/40">No categories available yet.</p>
+          </div>
+        )}
       </div>
-
-      {/* Practice Recommendations */}
-      {user && recommendations.length > 0 && (
-        <section className="mb-8 sm:mb-12" aria-labelledby="recommendations-heading">
-          <h2 id="recommendations-heading" className="sr-only">Practice Recommendations</h2>
-          <PracticeRecommendations recommendations={recommendations} />
-        </section>
-      )}
-
-      {/* Smart & Personalized Practice Cards */}
-      {user && (
-        <section className="mb-8 sm:mb-12 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2" aria-labelledby="ai-practice-heading">
-          <h2 id="ai-practice-heading" className="sr-only">AI-Powered Practice Options</h2>
-          <Link
-            href="/practice/smart"
-            className="group block rounded-xl border-2 border-dashed border-violet-300 bg-violet-50 p-4 sm:p-6 transition-all hover:border-violet-400 hover:bg-violet-100 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
-            aria-label="Smart Practice - AI picks optimal challenges based on your difficulty level and weaknesses"
-          >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-violet-500 text-white flex-shrink-0">
-                <Brain className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-violet-600">
-                  Smart Practice
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
-                  AI picks optimal challenges based on your difficulty level and weaknesses
-                </p>
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            href="/practice/personalized"
-            className="group block rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-4 sm:p-6 transition-all hover:border-orange-400 hover:bg-orange-100 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-            aria-label="Personalized Practice - Targeted exercises based on your error patterns, weak keys, and slow sequences"
-          >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-orange-500 text-white flex-shrink-0">
-                <Crosshair className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-orange-600">
-                  Personalized Practice
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
-                  Targeted exercises based on your error patterns, weak keys, and slow sequences
-                </p>
-              </div>
-            </div>
-          </Link>
-        </section>
-      )}
-
-      {displayFreeCategories.length > 0 && (
-        <section className="mb-8 sm:mb-12" aria-labelledby="free-categories-heading">
-          <h2 id="free-categories-heading" className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">
-            {canAccessPremium ? 'Free' : 'Categories'}
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
-            {displayFreeCategories.map((category) => (
-              <CategoryCard key={category.id} category={category} locked={false} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {displayPremiumCategories.length > 0 && (
-        <section aria-labelledby="pro-categories-heading">
-          <h2 id="pro-categories-heading" className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-gray-900">Pro</h2>
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
-            {displayPremiumCategories.map((category) => (
-              <CategoryCard key={category.id} category={category} locked={false} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {accessibleCategories.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No categories available yet.</p>
-        </div>
-      )}
     </main>
   );
 }

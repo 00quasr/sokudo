@@ -14,7 +14,7 @@ import { selectSmartChallenges } from '@/lib/practice/smart-practice';
 import { canAccessPremiumCategories, hasUnlimitedPractice } from '@/lib/limits/constants';
 import type { DifficultyLevel, SessionPerformance } from '@/lib/practice/adaptive-difficulty';
 import { RemainingTimeBar } from '@/components/limits/RemainingTimeBar';
-import { ArrowLeft, Brain } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { SmartPracticeClient } from './smart-practice-client';
 
@@ -75,27 +75,24 @@ export default async function SmartPracticePage() {
   const isFreeTier = !hasUnlimitedPractice(profile?.subscriptionTier ?? 'free');
 
   return (
-    <main className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <Link
-              href="/practice"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Categories
-            </Link>
+    <main className="min-h-screen bg-[#08090a]">
+      <div className="max-w-3xl mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <Link
+            href="/practice"
+            className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to categories
+          </Link>
 
-            <div className="flex items-center gap-2">
-              <Brain className="h-4 w-4 text-violet-500" />
-              <span className="text-sm font-medium">Smart Practice</span>
-            </div>
+          <div className="text-right">
+            <p className="text-sm font-medium text-white">Smart Practice</p>
+            <p className="text-xs text-white/40">{result.challenges.length} challenges</p>
           </div>
         </div>
-      </header>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {isFreeTier && (
           <div className="mb-6">
             <RemainingTimeBar />
@@ -107,31 +104,6 @@ export default async function SmartPracticePage() {
           adaptive={result.adaptive}
           summary={result.summary}
         />
-
-        <div className="mt-8 pt-6 border-t border-border">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Esc</kbd>
-                <span>Restart</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Tab</kbd>
-                <span>Skip</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 rounded bg-muted font-mono text-xs">Enter</kbd>
-                <span>Next</span>
-              </div>
-            </div>
-            <Link
-              href="/practice/personalized"
-              className="text-violet-500 hover:text-violet-600 transition-colors"
-            >
-              Try Personalized Practice
-            </Link>
-          </div>
-        </div>
       </div>
     </main>
   );

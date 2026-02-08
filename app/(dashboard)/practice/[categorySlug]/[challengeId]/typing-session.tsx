@@ -1,10 +1,9 @@
 'use client';
 
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TypingInput, TypingStats, KeystrokeEvent, SyntaxType } from '@/components/typing/TypingInput';
 import { SessionComplete, SessionResult, AdaptiveDifficultyInfo, CategoryAggregateStats } from '@/components/typing/SessionComplete';
-import { ChallengeProgress } from '@/components/typing/ChallengeProgress';
 import { OfflineIndicator } from '@/components/typing/OfflineIndicator';
 import { Challenge, Category } from '@/lib/db/schema';
 import { useOfflineSession } from '@/lib/hooks/useOfflineSession';
@@ -88,8 +87,6 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
   const [key, setKey] = useState(0);
   const [adaptiveDifficulty, setAdaptiveDifficulty] = useState<AdaptiveDifficultyInfo | null>(null);
   const [categoryStats, setCategoryStats] = useState<CategoryAggregateStats | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const autoAdvanceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize offline session support
   const { saveSession, isOnline, pendingSyncCount, triggerSync } = useOfflineSession({
@@ -101,10 +98,8 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
   const navigateToNext = useCallback(() => {
     const targetId = adaptiveDifficulty?.suggestedChallengeId ?? nextChallengeId;
     if (targetId) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        router.push(`/practice/${categorySlug}/${targetId}`);
-      }, 1500);
+      // Navigate directly without transition delay - user control is immediate
+      router.push(`/practice/${categorySlug}/${targetId}`);
     } else {
       router.push(`/practice/${categorySlug}`);
     }
@@ -146,20 +141,10 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
       });
     }
 
-    // Auto-advance to next challenge after 1.5 seconds (if not last challenge)
-    if (!isLastChallenge) {
-      autoAdvanceTimerRef.current = setTimeout(() => {
-        navigateToNext();
-      }, 1500);
-    }
-  }, [categorySlug, nextChallengeId, navigateToNext, challenge.category.id, saveSession]);
+    // User presses Enter to advance - no auto-advance, giving full control
+  }, [categorySlug, nextChallengeId, challenge.category.id, saveSession]);
 
   const handleRetry = useCallback(() => {
-    // Cancel auto-advance if user presses Escape to retry
-    if (autoAdvanceTimerRef.current) {
-      clearTimeout(autoAdvanceTimerRef.current);
-      autoAdvanceTimerRef.current = null;
-    }
     setSessionResult(null);
     setShowModal(false);
     setAdaptiveDifficulty(null);
@@ -176,26 +161,12 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
     navigateToNext();
   }, [navigateToNext]);
 
-  // Enter = go to next challenge after completion (cancels auto-advance timer)
+  // Enter = go to next challenge after completion
   const handleNext = useCallback(() => {
-    // Cancel auto-advance timer since user manually pressed Enter
-    if (autoAdvanceTimerRef.current) {
-      clearTimeout(autoAdvanceTimerRef.current);
-      autoAdvanceTimerRef.current = null;
-    }
     navigateToNext();
   }, [navigateToNext]);
 
   const syntaxType = mapSyntaxType(challenge.syntaxType);
-
-  // Cleanup auto-advance timer on unmount
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceTimerRef.current) {
-        clearTimeout(autoAdvanceTimerRef.current);
-      }
-    };
-  }, []);
 
   return (
     <>
@@ -236,13 +207,7 @@ export function TypingSession({ challenge, categorySlug, nextChallengeId, challe
         />
       )}
 
-      {challengePosition && (
-        <ChallengeProgress
-          current={challengePosition.current}
-          total={challengePosition.total}
-          isTransitioning={isTransitioning}
-        />
-      )}
+      {/* Progress shown inline in the stats bar instead of blocking overlay */}
     </>
   );
 }

@@ -1,7 +1,8 @@
 {
   "private": true,
+  "name": "hayaku",
   "bin": {
-    "sokudo": "./cli/bin/sokudo.js"
+    "hayaku": "./cli/bin/hayaku.js"
   },
   "scripts": {
     "cli:build": "npx tsx cli/index.ts",

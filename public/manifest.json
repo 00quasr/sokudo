@@ -1,6 +1,6 @@
 {
-  "name": "Sokudo (速度) - Developer Typing Trainer",
-  "short_name": "Sokudo",
+  "name": "Hayaku (速く) - Developer Typing Trainer",
+  "short_name": "Hayaku",
   "description": "Build muscle memory for git commands, terminal workflows, React patterns, and AI prompts. Master developer commands at speed with real-time feedback and targeted practice.",
   "start_url": "/?source=pwa",
   "display": "standalone",
@@ -134,7 +134,7 @@
   },
   "protocol_handlers": [
     {
-      "protocol": "web+sokudo",
+      "protocol": "web+hayaku",
       "url": "/?challenge=%s"
     }
   ]

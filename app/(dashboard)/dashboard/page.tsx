@@ -2,13 +2,6 @@
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter
-} from '@/components/ui/card';
 import { customerPortalAction } from '@/lib/payments/actions';
 import { useActionState } from 'react';
 import { TeamDataWithMembers, User } from '@/lib/db/schema';
@@ -29,11 +22,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 function SubscriptionSkeleton() {
   return (
-    <Card className="mb-8 h-[140px]">
-      <CardHeader>
-        <CardTitle>Team Subscription</CardTitle>
-      </CardHeader>
-    </Card>
+    <div className="rounded-2xl bg-white/[0.02] p-6 mb-6 h-[120px] animate-pulse" />
   );
 }
 
@@ -43,61 +32,43 @@ function ManageSubscription() {
   const hasSubscription = teamData?.subscriptionStatus === 'active' || teamData?.subscriptionStatus === 'trialing';
 
   return (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle>Team Subscription</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-            <div className="mb-4 sm:mb-0">
-              <p className="font-medium">
-                Current Plan: {teamData?.planName || 'Free'}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {teamData?.subscriptionStatus === 'active'
-                  ? 'Billed monthly'
-                  : teamData?.subscriptionStatus === 'trialing'
-                  ? 'Trial period'
-                  : 'No active subscription'}
-              </p>
-            </div>
-            {hasSubscription ? (
-              <form action={customerPortalAction}>
-                <Button type="submit" variant="outline">
-                  Manage Subscription
-                </Button>
-              </form>
-            ) : (
-              <Button variant="default" asChild>
-                <a href="/pricing">Upgrade Plan</a>
-              </Button>
-            )}
-          </div>
+    <div className="rounded-2xl bg-white/[0.02] p-6 mb-6">
+      <h2 className="text-lg font-medium text-white mb-4">Team subscription</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <p className="font-medium text-white">
+            {teamData?.planName || 'Free'}
+          </p>
+          <p className="text-sm text-white/40">
+            {teamData?.subscriptionStatus === 'active'
+              ? 'Billed monthly'
+              : teamData?.subscriptionStatus === 'trialing'
+              ? 'Trial period'
+              : 'No active subscription'}
+          </p>
         </div>
-      </CardContent>
-    </Card>
+        {hasSubscription ? (
+          <form action={customerPortalAction}>
+            <Button
+              type="submit"
+              className="rounded-full bg-white/10 text-white hover:bg-white/20"
+            >
+              Manage subscription
+            </Button>
+          </form>
+        ) : (
+          <Button asChild className="rounded-full bg-white text-black hover:bg-white/90">
+            <a href="/pricing">Upgrade plan</a>
+          </Button>
+        )}
+      </div>
+    </div>
   );
 }
 
 function TeamMembersSkeleton() {
   return (
-    <Card className="mb-8 h-[140px]">
-      <CardHeader>
-        <CardTitle>Team Members</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="animate-pulse space-y-4 mt-1">
-          <div className="flex items-center space-x-4">
-            <div className="size-8 rounded-full bg-gray-200"></div>
-            <div className="space-y-2">
-              <div className="h-4 w-32 bg-gray-200 rounded"></div>
-              <div className="h-3 w-14 bg-gray-200 rounded"></div>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="rounded-2xl bg-white/[0.02] p-6 mb-6 h-[140px] animate-pulse" />
   );
 }
 
@@ -114,74 +85,57 @@ function TeamMembers() {
 
   if (!teamData?.teamMembers?.length) {
     return (
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Team Members</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">No team members yet.</p>
-        </CardContent>
-      </Card>
+      <div className="rounded-2xl bg-white/[0.02] p-6 mb-6">
+        <h2 className="text-lg font-medium text-white mb-4">Team members</h2>
+        <p className="text-white/40">No team members yet.</p>
+      </div>
     );
   }
 
   return (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle>Team Members</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-4">
-          {teamData.teamMembers.map((member, index) => (
-            <li key={member.id} className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <Avatar>
-                  {/* 
-                    This app doesn't save profile images, but here
-                    is how you'd show them:
-
-                    <AvatarImage
-                      src={member.user.image || ''}
-                      alt={getUserDisplayName(member.user)}
-                    />
-                  */}
-                  <AvatarFallback>
-                    {getUserDisplayName(member.user)
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">
-                    {getUserDisplayName(member.user)}
-                  </p>
-                  <p className="text-sm text-muted-foreground capitalize">
-                    {member.role}
-                  </p>
-                </div>
+    <div className="rounded-2xl bg-white/[0.02] p-6 mb-6">
+      <h2 className="text-lg font-medium text-white mb-4">Team members</h2>
+      <ul className="space-y-4">
+        {teamData.teamMembers.map((member, index) => (
+          <li key={member.id} className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Avatar className="border border-white/10">
+                <AvatarFallback className="bg-white/5 text-white/70 text-sm">
+                  {getUserDisplayName(member.user)
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium text-white">
+                  {getUserDisplayName(member.user)}
+                </p>
+                <p className="text-sm text-white/40 capitalize">
+                  {member.role}
+                </p>
               </div>
-              {index > 1 ? (
-                <form action={removeAction}>
-                  <input type="hidden" name="memberId" value={member.id} />
-                  <Button
-                    type="submit"
-                    variant="outline"
-                    size="sm"
-                    disabled={isRemovePending}
-                  >
-                    {isRemovePending ? 'Removing...' : 'Remove'}
-                  </Button>
-                </form>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-        {removeState?.error && (
-          <p className="text-red-500 mt-4">{removeState.error}</p>
-        )}
-      </CardContent>
-    </Card>
+            </div>
+            {index > 1 ? (
+              <form action={removeAction}>
+                <input type="hidden" name="memberId" value={member.id} />
+                <Button
+                  type="submit"
+                  className="rounded-full bg-white/10 text-white hover:bg-white/20"
+                  size="sm"
+                  disabled={isRemovePending}
+                >
+                  {isRemovePending ? 'Removing...' : 'Remove'}
+                </Button>
+              </form>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+      {removeState?.error && (
+        <p className="text-red-400 mt-4 text-sm">{removeState.error}</p>
+      )}
+    </div>
   );
 }
 
@@ -197,11 +151,7 @@ type TeamInvitation = {
 
 function PendingInvitationsSkeleton() {
   return (
-    <Card className="mb-8 h-[140px]">
-      <CardHeader>
-        <CardTitle>Pending Invitations</CardTitle>
-      </CardHeader>
-    </Card>
+    <div className="rounded-2xl bg-white/[0.02] p-6 mb-6 h-[100px] animate-pulse" />
   );
 }
 
@@ -240,80 +190,72 @@ function PendingInvitations() {
   };
 
   return (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Mail className="h-5 w-5" />
-          Pending Invitations
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-3">
-          {pendingInvitations.map((invitation) => (
-            <li
-              key={invitation.id}
-              className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0 last:pb-0"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100">
-                  <Mail className="h-4 w-4 text-orange-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-sm">{invitation.email}</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="capitalize">{invitation.role}</span>
-                    <span>&middot;</span>
-                    <Clock className="h-3 w-3" />
-                    <span>{formatDate(invitation.invitedAt)}</span>
-                    {invitation.invitedByName && (
-                      <>
-                        <span>&middot;</span>
-                        <span>by {invitation.invitedByName}</span>
-                      </>
-                    )}
-                  </div>
+    <div className="rounded-2xl bg-white/[0.02] p-6 mb-6">
+      <h2 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
+        <Mail className="h-5 w-5 text-white/60" />
+        Pending invitations
+      </h2>
+      <ul className="space-y-3">
+        {pendingInvitations.map((invitation) => (
+          <li
+            key={invitation.id}
+            className="flex items-center justify-between border-b border-white/[0.08] pb-3 last:border-0 last:pb-0"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5">
+                <Mail className="h-4 w-4 text-white/60" />
+              </div>
+              <div>
+                <p className="font-medium text-sm text-white">{invitation.email}</p>
+                <div className="flex items-center gap-2 text-xs text-white/40">
+                  <span className="capitalize">{invitation.role}</span>
+                  <span>&middot;</span>
+                  <Clock className="h-3 w-3" />
+                  <span>{formatDate(invitation.invitedAt)}</span>
+                  {invitation.invitedByName && (
+                    <>
+                      <span>&middot;</span>
+                      <span>by {invitation.invitedByName}</span>
+                    </>
+                  )}
                 </div>
               </div>
-              {isOwner && (
-                <form action={handleCancel}>
-                  <input
-                    type="hidden"
-                    name="invitationId"
-                    value={invitation.id}
-                  />
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    disabled={isCancelPending}
-                    className="text-muted-foreground hover:text-red-600"
-                  >
-                    {isCancelPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <X className="h-4 w-4" />
-                    )}
-                  </Button>
-                </form>
-              )}
-            </li>
-          ))}
-        </ul>
-        {cancelState?.error && (
-          <p className="text-red-500 mt-3 text-sm">{cancelState.error}</p>
-        )}
-      </CardContent>
-    </Card>
+            </div>
+            {isOwner && (
+              <form action={handleCancel}>
+                <input
+                  type="hidden"
+                  name="invitationId"
+                  value={invitation.id}
+                />
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  size="sm"
+                  disabled={isCancelPending}
+                  className="text-white/40 hover:text-red-400 hover:bg-transparent"
+                >
+                  {isCancelPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <X className="h-4 w-4" />
+                  )}
+                </Button>
+              </form>
+            )}
+          </li>
+        ))}
+      </ul>
+      {cancelState?.error && (
+        <p className="text-red-400 mt-3 text-sm">{cancelState.error}</p>
+      )}
+    </div>
   );
 }
 
 function InviteTeamMemberSkeleton() {
   return (
-    <Card className="h-[260px]">
-      <CardHeader>
-        <CardTitle>Invite Team Member</CardTitle>
-      </CardHeader>
-    </Card>
+    <div className="rounded-2xl bg-white/[0.02] p-6 h-[220px] animate-pulse" />
   );
 }
 
@@ -326,83 +268,78 @@ function InviteTeamMember() {
   >(inviteTeamMember, {});
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Invite Team Member</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form action={inviteAction} className="space-y-4">
-          <div>
-            <Label htmlFor="email" className="mb-2">
-              Email
-            </Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter email"
-              required
-              disabled={!isOwner}
-            />
-          </div>
-          <div>
-            <Label>Role</Label>
-            <RadioGroup
-              defaultValue="member"
-              name="role"
-              className="flex space-x-4"
-              disabled={!isOwner}
-            >
-              <div className="flex items-center space-x-2 mt-2">
-                <RadioGroupItem value="member" id="member" />
-                <Label htmlFor="member">Member</Label>
-              </div>
-              <div className="flex items-center space-x-2 mt-2">
-                <RadioGroupItem value="owner" id="owner" />
-                <Label htmlFor="owner">Owner</Label>
-              </div>
-            </RadioGroup>
-          </div>
-          {inviteState?.error && (
-            <p className="text-red-500">{inviteState.error}</p>
-          )}
-          {inviteState?.success && (
-            <p className="text-green-500">{inviteState.success}</p>
-          )}
-          <Button
-            type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white"
-            disabled={isInvitePending || !isOwner}
+    <div className="rounded-2xl bg-white/[0.02] p-6">
+      <h2 className="text-lg font-medium text-white mb-4">Invite team member</h2>
+      <form action={inviteAction} className="space-y-4">
+        <div>
+          <Label htmlFor="email" className="text-sm text-white/70 mb-2 block">
+            Email
+          </Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="teammate@example.com"
+            required
+            disabled={!isOwner}
+            className="rounded-xl bg-white/5 border-white/[0.08] text-white placeholder:text-white/30 focus:border-white/20"
+          />
+        </div>
+        <div>
+          <Label className="text-sm text-white/70 mb-2 block">Role</Label>
+          <RadioGroup
+            defaultValue="member"
+            name="role"
+            className="flex space-x-4"
+            disabled={!isOwner}
           >
-            {isInvitePending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Inviting...
-              </>
-            ) : (
-              <>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Invite Member
-              </>
-            )}
-          </Button>
-        </form>
-      </CardContent>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="member" id="member" className="border-white/30 text-white" />
+              <Label htmlFor="member" className="text-white/70">Member</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="owner" id="owner" className="border-white/30 text-white" />
+              <Label htmlFor="owner" className="text-white/70">Owner</Label>
+            </div>
+          </RadioGroup>
+        </div>
+        {inviteState?.error && (
+          <p className="text-red-400 text-sm">{inviteState.error}</p>
+        )}
+        {inviteState?.success && (
+          <p className="text-green-400 text-sm">{inviteState.success}</p>
+        )}
+        <Button
+          type="submit"
+          className="rounded-full bg-white text-black hover:bg-white/90"
+          disabled={isInvitePending || !isOwner}
+        >
+          {isInvitePending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Inviting...
+            </>
+          ) : (
+            <>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Invite member
+            </>
+          )}
+        </Button>
+      </form>
       {!isOwner && (
-        <CardFooter>
-          <p className="text-sm text-muted-foreground">
-            You must be a team owner to invite new members.
-          </p>
-        </CardFooter>
+        <p className="text-sm text-white/40 mt-4">
+          You must be a team owner to invite new members.
+        </p>
       )}
-    </Card>
+    </div>
   );
 }
 
 export default function SettingsPage() {
   return (
-    <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium mb-6">Team Settings</h1>
+    <div>
+      <h1 className="text-xl font-medium text-white mb-6">Team settings</h1>
       <Suspense fallback={<SubscriptionSkeleton />}>
         <ManageSubscription />
       </Suspense>
@@ -415,6 +352,6 @@ export default function SettingsPage() {
       <Suspense fallback={<InviteTeamMemberSkeleton />}>
         <InviteTeamMember />
       </Suspense>
-    </section>
+    </div>
   );
 }

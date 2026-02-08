@@ -16,7 +16,7 @@ export function ShareStatsCard({ username, baseUrl }: ShareStatsCardProps) {
   const ogImageUrl = `${baseUrl}/api/og/stats/${username}`;
 
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    `Check out my developer typing stats on Sokudo!\n\n${profileUrl}`
+    `Check out my developer typing stats on Hayaku!\n\n${profileUrl}`
   )}`;
 
   const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
@@ -52,16 +52,16 @@ export function ShareStatsCard({ username, baseUrl }: ShareStatsCardProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Share2 className="h-5 w-5 text-orange-500" />
-        <h3 className="text-sm font-semibold text-gray-900">Share Your Stats</h3>
+        <Share2 className="h-5 w-5 text-white/60" />
+        <h3 className="text-sm font-semibold text-white">Share your stats</h3>
       </div>
 
       {/* Preview card */}
-      <div className="rounded-lg border border-gray-200 overflow-hidden">
+      <div className="rounded-lg border border-white/[0.08] overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={ogImageUrl}
-          alt={`${username}'s Sokudo stats card`}
+          alt={`${username}'s Hayaku stats card`}
           className="w-full h-auto"
           loading="lazy"
         />
@@ -76,11 +76,11 @@ export function ShareStatsCard({ username, baseUrl }: ShareStatsCardProps) {
           className="gap-2"
         >
           {copied ? (
-            <Check className="h-4 w-4 text-green-600" />
+            <Check className="h-4 w-4 text-white" />
           ) : (
             <Link2 className="h-4 w-4" />
           )}
-          {copied ? 'Copied!' : 'Copy Link'}
+          {copied ? 'Copied!' : 'Copy link'}
         </Button>
 
         <Button
@@ -128,7 +128,7 @@ export function ShareStatsCard({ username, baseUrl }: ShareStatsCardProps) {
           className="gap-2"
         >
           <Link2 className="h-4 w-4" />
-          Copy Image URL
+          Copy image URL
         </Button>
       </div>
     </div>
