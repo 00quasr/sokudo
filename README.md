@@ -7,7 +7,10 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Overview
+w<img width="3222" height="8658" alt="Screenshot 2026-02-08 at 23-03-01 Home Hayaku" src="https://github.com/user-attachments/assets/c91bab31-1fc6-4516-b3ef-52a47e0eea23" />
+
+
+## Overvie
 
 Hayaku is a typing trainer designed specifically for developers. Unlike traditional typing tests, Hayaku helps you build muscle memory for:
 
