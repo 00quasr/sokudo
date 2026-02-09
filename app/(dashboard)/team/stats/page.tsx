@@ -78,7 +78,7 @@ export default async function TeamStatsPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Team Statistics
       </h1>
 
@@ -86,10 +86,10 @@ export default async function TeamStatsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <Users className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               You need to be part of a team to view team statistics.
               Ask your team owner for an invitation.
             </p>
@@ -99,10 +99,10 @@ export default async function TeamStatsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No activity yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Your team members haven&apos;t completed any typing sessions yet.
               Start practicing to see team statistics!
             </p>
@@ -116,8 +116,8 @@ export default async function TeamStatsPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-orange-100 rounded-full p-2">
-                      <TrendingUp className="h-5 w-5 text-orange-600" />
+                    <div className="bg-orange-500/20 rounded-full p-2">
+                      <TrendingUp className="h-5 w-5 text-orange-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -134,8 +134,8 @@ export default async function TeamStatsPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-green-100 rounded-full p-2">
-                      <Target className="h-5 w-5 text-green-600" />
+                    <div className="bg-green-500/20 rounded-full p-2">
+                      <Target className="h-5 w-5 text-green-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -152,8 +152,8 @@ export default async function TeamStatsPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-blue-100 rounded-full p-2">
-                      <Clock className="h-5 w-5 text-blue-600" />
+                    <div className="bg-blue-500/20 rounded-full p-2">
+                      <Clock className="h-5 w-5 text-blue-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -170,8 +170,8 @@ export default async function TeamStatsPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-purple-100 rounded-full p-2">
-                      <Users className="h-5 w-5 text-purple-600" />
+                    <div className="bg-purple-500/20 rounded-full p-2">
+                      <Users className="h-5 w-5 text-purple-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -206,14 +206,14 @@ export default async function TeamStatsPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-yellow-100 rounded-full p-2">
-                      <Trophy className="h-5 w-5 text-yellow-600" />
+                    <div className="bg-yellow-500/20 rounded-full p-2">
+                      <Trophy className="h-5 w-5 text-yellow-400" />
                     </div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">
                       Team Best WPM
                     </p>
                   </div>
-                  <p className="text-2xl font-mono font-semibold text-orange-600">
+                  <p className="text-2xl font-mono font-semibold text-orange-400">
                     {overview.teamBestWpm} WPM
                   </p>
                 </CardContent>
@@ -222,14 +222,14 @@ export default async function TeamStatsPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-blue-100 rounded-full p-2">
-                      <BarChart3 className="h-5 w-5 text-blue-600" />
+                    <div className="bg-blue-500/20 rounded-full p-2">
+                      <BarChart3 className="h-5 w-5 text-blue-400" />
                     </div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">
                       Total Sessions
                     </p>
                   </div>
-                  <p className="text-2xl font-mono font-semibold text-blue-600">
+                  <p className="text-2xl font-mono font-semibold text-blue-400">
                     {overview.totalSessions}
                   </p>
                 </CardContent>
@@ -238,14 +238,14 @@ export default async function TeamStatsPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-purple-100 rounded-full p-2">
-                      <Flame className="h-5 w-5 text-purple-600" />
+                    <div className="bg-purple-500/20 rounded-full p-2">
+                      <Flame className="h-5 w-5 text-purple-400" />
                     </div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">
                       Avg Streak
                     </p>
                   </div>
-                  <p className="text-2xl font-mono font-semibold text-purple-600">
+                  <p className="text-2xl font-mono font-semibold text-purple-400">
                     {overview.avgStreak} days
                   </p>
                 </CardContent>
@@ -264,10 +264,10 @@ export default async function TeamStatsPage() {
                   {categoryPerformance.map((cat) => (
                     <div
                       key={cat.categoryId}
-                      className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
+                      className="flex items-center justify-between py-2 border-b border-white/[0.08] last:border-0"
                     >
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-white">
                           {cat.categoryName}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -308,7 +308,7 @@ export default async function TeamStatsPage() {
                   {recentActivity.map((activity, index) => (
                     <div
                       key={`${activity.userId}-${index}`}
-                      className="flex items-center gap-3 py-2 border-b border-gray-100 last:border-0"
+                      className="flex items-center gap-3 py-2 border-b border-white/[0.08] last:border-0"
                     >
                       <Avatar className="size-8">
                         <AvatarFallback className="text-xs">
@@ -317,10 +317,10 @@ export default async function TeamStatsPage() {
                       </Avatar>
 
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate text-sm">
+                        <p className="font-medium text-white truncate text-sm">
                           {activity.userName || activity.userEmail}
                           {currentUser?.id === activity.userId && (
-                            <span className="ml-2 text-xs text-orange-600 font-normal">(you)</span>
+                            <span className="ml-2 text-xs text-orange-400 font-normal">(you)</span>
                           )}
                         </p>
                         <p className="text-xs text-muted-foreground">

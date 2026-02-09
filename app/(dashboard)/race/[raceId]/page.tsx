@@ -20,7 +20,7 @@ export default async function RaceRoomPage({
       <Suspense
         fallback={
           <div className="flex items-center justify-center py-20">
-            <div className="text-gray-500">Loading race...</div>
+            <div className="text-white/50">Loading race...</div>
           </div>
         }
       >

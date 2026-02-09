@@ -42,15 +42,15 @@ function AchievementCard({ achievement }: { achievement: TeamAchievementWithStat
     <div
       className={`flex items-center gap-4 p-4 rounded-lg border ${
         achievement.earned
-          ? 'border-orange-200 bg-orange-50/50'
-          : 'border-gray-200 bg-gray-50/50 opacity-60'
+          ? 'border-orange-500/30 bg-orange-500/10'
+          : 'border-white/[0.06] bg-white/[0.02] opacity-60'
       }`}
     >
       <div
         className={`rounded-full p-3 ${
           achievement.earned
-            ? 'bg-orange-100 text-orange-600'
-            : 'bg-gray-100 text-gray-400'
+            ? 'bg-orange-500/20 text-orange-400'
+            : 'bg-white/[0.06] text-white/40'
         }`}
       >
         {getAchievementIcon(achievement.icon)}
@@ -58,14 +58,14 @@ function AchievementCard({ achievement }: { achievement: TeamAchievementWithStat
       <div className="flex-1 min-w-0">
         <p
           className={`font-medium ${
-            achievement.earned ? 'text-gray-900' : 'text-gray-500'
+            achievement.earned ? 'text-white' : 'text-white/50'
           }`}
         >
           {achievement.name}
         </p>
         <p className="text-xs text-muted-foreground">{achievement.description}</p>
         {achievement.earned && achievement.earnedAt && (
-          <p className="text-xs text-orange-600 mt-1">
+          <p className="text-xs text-orange-400 mt-1">
             Earned {formatDate(achievement.earnedAt)}
           </p>
         )}
@@ -92,7 +92,7 @@ export default async function TeamAchievementsPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Team Achievements
       </h1>
 
@@ -100,10 +100,10 @@ export default async function TeamAchievementsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <Users className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               You need to be part of a team to view team achievements.
               Ask your team owner for an invitation.
             </p>
@@ -113,10 +113,10 @@ export default async function TeamAchievementsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No achievements available
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Team achievements haven&apos;t been set up yet.
             </p>
           </CardContent>
@@ -128,8 +128,8 @@ export default async function TeamAchievementsPage() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="bg-orange-100 rounded-full p-2">
-                    <Trophy className="h-5 w-5 text-orange-600" />
+                  <div className="bg-orange-500/20 rounded-full p-2">
+                    <Trophy className="h-5 w-5 text-orange-400" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -149,8 +149,8 @@ export default async function TeamAchievementsPage() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="bg-green-100 rounded-full p-2">
-                    <Target className="h-5 w-5 text-green-600" />
+                  <div className="bg-green-500/20 rounded-full p-2">
+                    <Target className="h-5 w-5 text-green-400" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -167,8 +167,8 @@ export default async function TeamAchievementsPage() {
             <Card className="col-span-2 lg:col-span-1">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="bg-purple-100 rounded-full p-2">
-                    <Flame className="h-5 w-5 text-purple-600" />
+                  <div className="bg-purple-500/20 rounded-full p-2">
+                    <Flame className="h-5 w-5 text-purple-400" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">

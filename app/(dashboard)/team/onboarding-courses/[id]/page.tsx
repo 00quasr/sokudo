@@ -74,7 +74,7 @@ export default async function OnboardingCourseDetailPage({
     <section className="flex-1 p-4 lg:p-8">
       <Link
         href="/team/onboarding-courses"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-gray-900 mb-4"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-white mb-4"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Courses
@@ -82,22 +82,22 @@ export default async function OnboardingCourseDetailPage({
 
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+          <h1 className="text-lg lg:text-2xl font-medium text-white">
             {course.name}
           </h1>
           {course.status === 'active' && (
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">
               Active
             </span>
           )}
           {course.status === 'archived' && (
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.1] text-white/60">
               Archived
             </span>
           )}
         </div>
         {course.description && (
-          <p className="text-sm text-gray-600">{course.description}</p>
+          <p className="text-sm text-white/60">{course.description}</p>
         )}
         <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
           <Avatar className="size-5">
@@ -113,14 +113,14 @@ export default async function OnboardingCourseDetailPage({
       <Card className="mb-6">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-900">
+            <span className="text-sm font-medium text-white">
               Your Progress
             </span>
             <span className="text-sm text-muted-foreground">
               {completedSteps}/{totalSteps} steps
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-white/[0.1] rounded-full h-2">
             <div
               className="bg-orange-500 h-2 rounded-full transition-all"
               style={{ width: `${progressPercent}%` }}
@@ -152,15 +152,15 @@ export default async function OnboardingCourseDetailPage({
                   <div
                     key={step.id}
                     className={`border rounded-lg p-4 ${
-                      isCompleted ? 'border-green-200 bg-green-50/50' : 'border-gray-200'
+                      isCompleted ? 'border-green-500/20 bg-green-500/10' : 'border-white/[0.08]'
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-shrink-0 mt-0.5">
                         {isCompleted ? (
-                          <CheckCircle2 className="h-5 w-5 text-green-600" />
+                          <CheckCircle2 className="h-5 w-5 text-green-400" />
                         ) : (
-                          <Circle className="h-5 w-5 text-gray-300" />
+                          <Circle className="h-5 w-5 text-white/30" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -168,14 +168,14 @@ export default async function OnboardingCourseDetailPage({
                           <span className="text-xs font-medium text-muted-foreground">
                             Step {index + 1}
                           </span>
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400">
                             {step.categoryName}
                           </span>
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.1] text-white/60">
                             {step.challengeDifficulty}
                           </span>
                         </div>
-                        <p className="font-mono text-sm text-gray-700 truncate">
+                        <p className="font-mono text-sm text-white/70 truncate">
                           {step.challengeContent.slice(0, 100)}
                           {step.challengeContent.length > 100 ? '...' : ''}
                         </p>

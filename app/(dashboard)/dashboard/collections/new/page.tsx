@@ -27,7 +27,7 @@ export default function NewCollectionPage() {
             Back
           </Button>
         </Link>
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Create Collection
         </h1>
       </div>

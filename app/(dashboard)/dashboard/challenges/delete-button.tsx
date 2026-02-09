@@ -19,7 +19,7 @@ export function DeleteChallengeButton({ challengeId }: { challengeId: number }) 
         type="submit"
         variant="ghost"
         size="sm"
-        className="text-red-500 hover:text-red-600 hover:bg-red-50"
+        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
         disabled={isPending}
       >
         {isPending ? (

@@ -30,13 +30,13 @@ export default async function CollectionDetailPage({
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+            <h1 className="text-lg lg:text-2xl font-medium text-white">
               {collection.name}
             </h1>
             {collection.isPublic ? (
               <Globe className="h-4 w-4 text-green-500" />
             ) : (
-              <Lock className="h-4 w-4 text-gray-400" />
+              <Lock className="h-4 w-4 text-white/40" />
             )}
           </div>
           {collection.description && (
@@ -57,11 +57,11 @@ export default async function CollectionDetailPage({
       {collection.challenges.length === 0 ? (
         <Card className="mt-4">
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
-            <FileText className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <FileText className="h-12 w-12 text-white/40 mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">
               No challenges in this collection
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Add challenges to this collection using the form above, or create new custom challenges first.
             </p>
           </CardContent>
@@ -76,7 +76,7 @@ export default async function CollectionDetailPage({
                     {index + 1}.
                   </span>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-gray-900 truncate">
+                    <h3 className="font-medium text-white truncate">
                       {item.challengeName}
                     </h3>
                     <p className="text-sm text-muted-foreground truncate font-mono">

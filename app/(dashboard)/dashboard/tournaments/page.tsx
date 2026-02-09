@@ -47,9 +47,9 @@ function timeRemaining(date: Date): string {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    upcoming: 'bg-blue-100 text-blue-700',
-    active: 'bg-green-100 text-green-700',
-    completed: 'bg-gray-100 text-gray-500',
+    upcoming: 'bg-blue-500/20 text-blue-400',
+    active: 'bg-green-500/20 text-green-400',
+    completed: 'bg-white/[0.1] text-white/50',
   };
 
   return (
@@ -125,7 +125,7 @@ export default async function TournamentsPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Weekly Tournaments
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -137,10 +137,10 @@ export default async function TournamentsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No tournaments yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Tournaments will appear here when they are scheduled. Check back
               soon for upcoming competitions.
             </p>
@@ -176,7 +176,7 @@ export default async function TournamentsPage() {
 
           {completed.length > 0 && (
             <div>
-              <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
+              <h2 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-3">
                 Completed
               </h2>
               <div className="space-y-3">
@@ -209,7 +209,7 @@ function TournamentCard({
                 <Trophy
                   className={`h-4 w-4 flex-shrink-0 ${isActive ? 'text-green-500' : 'text-orange-500'}`}
                 />
-                <h3 className="font-medium text-gray-900 truncate">
+                <h3 className="font-medium text-white truncate">
                   {tournament.name}
                 </h3>
                 <StatusBadge status={tournament.status} />

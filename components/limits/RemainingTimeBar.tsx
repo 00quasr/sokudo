@@ -92,9 +92,9 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
       data-testid="remaining-time-bar"
     >
       <div className="flex items-center gap-2 text-sm">
-        <Clock className="h-4 w-4 text-white/40" />
+        <Clock className={cn("h-4 w-4", isLow ? "text-orange-400" : "text-yellow-400")} />
         <span className="text-white/60">
-          <span className="font-medium text-white/80" data-testid="remaining-time">
+          <span className={cn("font-medium", isLow ? "text-orange-400" : "text-white/80")} data-testid="remaining-time">
             {formatTime(remainingMs)}
           </span>
           {' remaining today'}
@@ -103,7 +103,7 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
 
       {/* Progress bar */}
       <div
-        className="h-1 w-20 rounded-full bg-white/[0.08] overflow-hidden"
+        className="h-1.5 w-24 rounded-full bg-white/[0.08] overflow-hidden"
         role="progressbar"
         aria-valuenow={usedPercent}
         aria-valuemin={0}
@@ -111,7 +111,10 @@ export function RemainingTimeBar({ className }: RemainingTimeBarProps) {
         aria-label="Daily practice time used"
       >
         <div
-          className="h-full bg-white/30 transition-all duration-300"
+          className={cn(
+            "h-full transition-all duration-300 rounded-full",
+            isLow ? "bg-orange-500" : "bg-yellow-500"
+          )}
           style={{ width: `${usedPercent}%` }}
           data-testid="remaining-time-progress"
         />

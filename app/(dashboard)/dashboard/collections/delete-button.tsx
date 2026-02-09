@@ -20,7 +20,7 @@ export function DeleteCollectionButton({ collectionId }: { collectionId: number 
         variant="outline"
         size="sm"
         disabled={isPending}
-        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
         onClick={(e) => {
           if (!confirm('Delete this collection? The challenges inside will not be deleted.')) {
             e.preventDefault();

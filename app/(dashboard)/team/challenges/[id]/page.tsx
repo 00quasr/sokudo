@@ -34,7 +34,7 @@ function getInitials(name: string | null, email: string): string {
 
 function getRankIcon(rank: number) {
   if (rank === 1) return <Trophy className="h-5 w-5 text-yellow-500" />;
-  if (rank === 2) return <Medal className="h-5 w-5 text-gray-400" />;
+  if (rank === 2) return <Medal className="h-5 w-5 text-white/40" />;
   if (rank === 3) return <Medal className="h-5 w-5 text-amber-700" />;
   return (
     <span className="text-sm font-mono font-semibold text-muted-foreground w-5 text-center">
@@ -64,8 +64,8 @@ function ResultRow({
 }) {
   return (
     <div
-      className={`flex items-center gap-4 py-4 px-4 border-b border-gray-100 last:border-0 ${
-        isCurrentUser ? 'bg-orange-50/50' : ''
+      className={`flex items-center gap-4 py-4 px-4 border-b border-white/[0.08] last:border-0 ${
+        isCurrentUser ? 'bg-orange-500/10' : ''
       }`}
     >
       <div className="flex items-center justify-center w-8">
@@ -73,16 +73,16 @@ function ResultRow({
       </div>
 
       <Avatar className="size-9">
-        <AvatarFallback className={rank <= 3 ? 'bg-orange-100 text-orange-700' : ''}>
+        <AvatarFallback className={rank <= 3 ? 'bg-orange-500/20 text-orange-400' : ''}>
           {getInitials(result.userName, result.userEmail)}
         </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-gray-900 truncate">
+        <p className="font-medium text-white truncate">
           {result.userName || result.userEmail}
           {isCurrentUser && (
-            <span className="ml-2 text-xs text-orange-600 font-normal">(you)</span>
+            <span className="ml-2 text-xs text-orange-400 font-normal">(you)</span>
           )}
         </p>
         <p className="text-xs text-muted-foreground">
@@ -159,29 +159,29 @@ export default async function TeamChallengeDetailPage({
     <section className="flex-1 p-4 lg:p-8">
       <Link
         href="/team/challenges"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-gray-900 mb-4"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-white mb-4"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Team Challenges
       </Link>
 
       <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Challenge Results
         </h1>
-        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400">
           {challenge.categoryName}
         </span>
-        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.1] text-white/60">
           {challenge.challengeDifficulty}
         </span>
         {status === 'active' && (
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">
             Active
           </span>
         )}
         {status === 'expired' && (
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">
             Expired
           </span>
         )}
@@ -195,7 +195,7 @@ export default async function TeamChallengeDetailPage({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <pre className="font-mono text-sm text-gray-800 whitespace-pre-wrap bg-gray-50 rounded-lg p-4">
+          <pre className="font-mono text-sm text-white/80 whitespace-pre-wrap bg-white/[0.03] rounded-lg p-4">
             {challenge.challengeContent}
           </pre>
           {challenge.challengeHint && (
@@ -211,8 +211,8 @@ export default async function TeamChallengeDetailPage({
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="bg-orange-100 rounded-full p-2">
-                <Users className="h-5 w-5 text-orange-600" />
+              <div className="bg-orange-500/20 rounded-full p-2">
+                <Users className="h-5 w-5 text-orange-400" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -229,8 +229,8 @@ export default async function TeamChallengeDetailPage({
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="bg-green-100 rounded-full p-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
+              <div className="bg-green-500/20 rounded-full p-2">
+                <TrendingUp className="h-5 w-5 text-green-400" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -247,8 +247,8 @@ export default async function TeamChallengeDetailPage({
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="bg-blue-100 rounded-full p-2">
-                <TrendingUp className="h-5 w-5 text-blue-600" />
+              <div className="bg-blue-500/20 rounded-full p-2">
+                <TrendingUp className="h-5 w-5 text-blue-400" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -265,8 +265,8 @@ export default async function TeamChallengeDetailPage({
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="bg-purple-100 rounded-full p-2">
-                <Target className="h-5 w-5 text-purple-600" />
+              <div className="bg-purple-500/20 rounded-full p-2">
+                <Target className="h-5 w-5 text-purple-400" />
               </div>
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -286,10 +286,10 @@ export default async function TeamChallengeDetailPage({
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No results yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               No team members have completed this challenge yet.
               Be the first to practice!
             </p>

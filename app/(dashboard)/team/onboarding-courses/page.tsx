@@ -49,23 +49,23 @@ function CourseCard({
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-medium text-gray-900 truncate">
+                <h3 className="font-medium text-white truncate">
                   {course.name}
                 </h3>
                 {course.status === 'active' && (
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">
                     Active
                   </span>
                 )}
                 {course.status === 'archived' && (
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.1] text-white/60">
                     Archived
                   </span>
                 )}
               </div>
 
               {course.description && (
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                <p className="text-sm text-white/60 mb-3 line-clamp-2">
                   {course.description}
                 </p>
               )}
@@ -116,7 +116,7 @@ export default async function TeamOnboardingCoursesPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Onboarding Courses
         </h1>
         {isAdmin && (
@@ -134,10 +134,10 @@ export default async function TeamOnboardingCoursesPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <Users className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               You need to be part of a team to view onboarding courses.
               Ask your team owner for an invitation.
             </p>
@@ -147,10 +147,10 @@ export default async function TeamOnboardingCoursesPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No onboarding courses yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Onboarding courses are admin-defined challenge sequences to help new
               team members get up to speed. {isAdmin ? 'Create one to get started!' : 'Ask an admin to create one.'}
             </p>

@@ -60,10 +60,10 @@ export default function BadgesPage() {
   if (!user) {
     return (
       <section className="flex-1 p-4 lg:p-8">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+        <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
           README Badges
         </h1>
-        <p className="text-sm text-gray-500">Loading...</p>
+        <p className="text-sm text-white/50">Loading...</p>
       </section>
     );
   }
@@ -71,12 +71,12 @@ export default function BadgesPage() {
   if (!username) {
     return (
       <section className="flex-1 p-4 lg:p-8">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+        <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
           README Badges
         </h1>
         <Card>
           <CardContent className="pt-6">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-white/50">
               Set a username in your{' '}
               <a href="/dashboard/general" className="text-orange-500 hover:underline">
                 General settings
@@ -91,11 +91,11 @@ export default function BadgesPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         README Badges
       </h1>
 
-      <p className="text-sm text-gray-500 mb-6">
+      <p className="text-sm text-white/50 mb-6">
         Add dynamic typing stats badges to your GitHub README or any markdown file.
         Badges update automatically as you practice.
       </p>
@@ -143,7 +143,7 @@ export default function BadgesPage() {
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-gray-500 font-medium">Markdown</span>
+              <span className="text-xs text-white/50 font-medium">Markdown</span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -163,7 +163,7 @@ export default function BadgesPage() {
                 {copiedId === 'all-md' ? 'Copied' : 'Copy'}
               </Button>
             </div>
-            <pre className="bg-gray-50 border border-gray-200 rounded-md p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+            <pre className="bg-white/[0.03] border border-white/[0.06] rounded-md p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
               {BADGE_TYPES.map(({ type }) => getMarkdown(type)).join('\n')}
             </pre>
           </div>
@@ -175,7 +175,7 @@ export default function BadgesPage() {
         <Card key={type} className="mb-4">
           <CardHeader>
             <CardTitle className="text-base">{label}</CardTitle>
-            <p className="text-xs text-gray-500">{description}</p>
+            <p className="text-xs text-white/50">{description}</p>
           </CardHeader>
           <CardContent className="space-y-3">
             {/* Preview */}
@@ -189,7 +189,7 @@ export default function BadgesPage() {
             {/* Markdown */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-500 font-medium">Markdown</span>
+                <span className="text-xs text-white/50 font-medium">Markdown</span>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -204,7 +204,7 @@ export default function BadgesPage() {
                   {copiedId === `${type}-md` ? 'Copied' : 'Copy'}
                 </Button>
               </div>
-              <pre className="bg-gray-50 border border-gray-200 rounded-md p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+              <pre className="bg-white/[0.03] border border-white/[0.06] rounded-md p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
                 {getMarkdown(type)}
               </pre>
             </div>
@@ -212,7 +212,7 @@ export default function BadgesPage() {
             {/* HTML */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-500 font-medium">HTML</span>
+                <span className="text-xs text-white/50 font-medium">HTML</span>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -227,7 +227,7 @@ export default function BadgesPage() {
                   {copiedId === `${type}-html` ? 'Copied' : 'Copy'}
                 </Button>
               </div>
-              <pre className="bg-gray-50 border border-gray-200 rounded-md p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+              <pre className="bg-white/[0.03] border border-white/[0.06] rounded-md p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
                 {getHtml(type)}
               </pre>
             </div>

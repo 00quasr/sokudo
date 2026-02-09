@@ -64,9 +64,9 @@ interface RaceDetail {
 }
 
 const difficultyColors: Record<string, string> = {
-  beginner: 'bg-green-100 text-green-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-red-100 text-red-800',
+  beginner: 'bg-green-500/20 text-green-400',
+  intermediate: 'bg-yellow-500/20 text-yellow-400',
+  advanced: 'bg-red-500/20 text-red-400',
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -206,14 +206,14 @@ export function RaceRoom({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+        <Loader2 className="h-6 w-6 animate-spin text-white/40" />
       </div>
     );
   }
 
   if (fetchError || !data) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-600">
+      <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center text-red-400">
         Failed to load race details.{' '}
         <button
           onClick={() => router.push('/race')}
@@ -248,28 +248,28 @@ export function RaceRoom({
       {/* Back to lobby */}
       <button
         onClick={() => router.push('/race')}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+        className="flex items-center gap-1 text-sm text-white/50 hover:text-white/70"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to lobby
       </button>
 
       {/* Race header */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6">
+      <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-6">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-xl font-bold text-white">
               Race #{race.id}
             </h2>
             <span
               className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
                 isWaiting
-                  ? 'bg-blue-100 text-blue-800'
+                  ? 'bg-blue-500/20 text-blue-400'
                   : isCountdown
-                    ? 'bg-purple-100 text-purple-800'
+                    ? 'bg-purple-500/20 text-purple-400'
                     : isInProgress
-                      ? 'bg-orange-100 text-orange-800'
-                      : 'bg-gray-100 text-gray-800'
+                      ? 'bg-orange-500/20 text-orange-400'
+                      : 'bg-white/[0.1] text-white/60'
               }`}
             >
               {isWaiting
@@ -283,10 +283,10 @@ export function RaceRoom({
             {wsConnected ? (
               <Wifi className="h-3.5 w-3.5 text-green-500" />
             ) : (
-              <WifiOff className="h-3.5 w-3.5 text-gray-400" />
+              <WifiOff className="h-3.5 w-3.5 text-white/40" />
             )}
           </div>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
+          <div className="flex items-center gap-4 text-sm text-white/50">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               <span>
@@ -303,14 +303,14 @@ export function RaceRoom({
         </div>
 
         {/* Category info */}
-        <div className="mb-4 flex items-center gap-3 text-sm text-gray-500">
-          <span className="font-medium text-gray-700">{race.category.name}</span>
+        <div className="mb-4 flex items-center gap-3 text-sm text-white/50">
+          <span className="font-medium text-white/70">{race.category.name}</span>
           <span
             className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize ${difficultyClass}`}
           >
             {race.category.difficulty}
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-white/50">
             {totalChallenges} challenges total
           </span>
         </div>
@@ -319,15 +319,15 @@ export function RaceRoom({
         {currentChallenge && (
           <div className="mb-4">
             <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="font-medium text-gray-700">
+              <span className="font-medium text-white/70">
                 Challenge {currentChallengeIndex + 1} of {totalChallenges}
               </span>
-              <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 text-xs text-white/50">
                 <Zap className="h-3 w-3" />
                 <span className="capitalize">{currentChallenge.syntaxType}</span>
               </div>
             </div>
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.1]">
               <div
                 className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-300"
                 style={{
@@ -340,8 +340,8 @@ export function RaceRoom({
 
         {/* Challenge preview */}
         {currentChallenge && (
-          <div className="rounded-lg bg-gray-50 p-4">
-            <code className="block whitespace-pre-wrap text-sm text-gray-700">
+          <div className="rounded-lg bg-white/[0.03] p-4">
+            <code className="block whitespace-pre-wrap text-sm text-white/70">
               {currentChallenge.content}
             </code>
           </div>
@@ -349,8 +349,8 @@ export function RaceRoom({
       </div>
 
       {/* Participants */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">
+      <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-6">
+        <h3 className="mb-4 text-lg font-semibold text-white">
           Players ({participantCount}/{race.maxPlayers})
         </h3>
 
@@ -358,25 +358,25 @@ export function RaceRoom({
           {participants.map((p, idx) => (
             <div
               key={p.id}
-              className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3"
+              className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-3"
             >
               <div className="flex items-center gap-3">
                 {idx === 0 && (
                   <Crown className="h-4 w-4 text-yellow-500" />
                 )}
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-medium text-gray-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.1] text-sm font-medium text-white/70">
                   {(p.userName ?? p.userEmail)[0].toUpperCase()}
                 </div>
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-white">
                   {p.userName ?? p.userEmail.split('@')[0]}
                 </span>
               </div>
 
               {/* Show results for finished participants */}
               {p.finishedAt && (
-                <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-4 text-sm text-white/50">
                   {p.rank && (
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-white">
                       #{p.rank}
                     </span>
                   )}
@@ -387,7 +387,7 @@ export function RaceRoom({
 
               {/* Show real-time progress for unfinished participants in active race */}
               {(isInProgress || isCountdown) && !p.finishedAt && wsState && (
-                <div className="flex items-center gap-3 text-sm text-gray-500">
+                <div className="flex items-center gap-3 text-sm text-white/50">
                   {wsState.participants.find(
                     (wp) => wp.userId === p.userId
                   )?.currentWpm ? (
@@ -400,13 +400,13 @@ export function RaceRoom({
                       WPM
                     </span>
                   ) : null}
-                  <span className="text-xs text-gray-400">Typing...</span>
+                  <span className="text-xs text-white/40">Typing...</span>
                 </div>
               )}
 
               {/* Fallback: Show typing indicator without WS data */}
               {isInProgress && !p.finishedAt && !wsState && (
-                <span className="text-xs text-gray-400">Typing...</span>
+                <span className="text-xs text-white/40">Typing...</span>
               )}
             </div>
           ))}
@@ -417,13 +417,13 @@ export function RaceRoom({
               (_, i) => (
                 <div
                   key={`empty-${i}`}
-                  className="flex items-center rounded-lg border border-dashed border-gray-200 px-4 py-3"
+                  className="flex items-center rounded-lg border border-dashed border-white/[0.08] px-4 py-3"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-gray-300 text-gray-300">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-dashed border-white/20 text-white/30">
                       ?
                     </div>
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-white/40">
                       Waiting for player...
                     </span>
                   </div>
@@ -454,7 +454,7 @@ export function RaceRoom({
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-center text-sm text-red-600">
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
           {error}
         </div>
       )}
@@ -500,7 +500,7 @@ export function RaceRoom({
         )}
 
         {isInProgress && (
-          <div className="flex w-full items-center justify-center gap-2 text-sm text-orange-600">
+          <div className="flex w-full items-center justify-center gap-2 text-sm text-orange-400">
             <Clock className="h-4 w-4" />
             <span>Race in progress...</span>
           </div>

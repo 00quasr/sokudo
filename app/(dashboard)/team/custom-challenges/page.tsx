@@ -48,18 +48,18 @@ function ChallengeCard({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-medium text-gray-900 truncate">
+              <h3 className="font-medium text-white truncate">
                 {challenge.name}
               </h3>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.1] text-white/60">
                 {challenge.difficulty}
               </span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400">
                 {challenge.syntaxType}
               </span>
             </div>
 
-            <p className="font-mono text-sm text-gray-700 truncate mb-3">
+            <p className="font-mono text-sm text-white/70 truncate mb-3">
               {challenge.content.slice(0, 100)}
               {challenge.content.length > 100 ? '...' : ''}
             </p>
@@ -103,12 +103,12 @@ export default async function TeamCustomChallengesPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Team Custom Challenges
         </h1>
         <Link
           href="/team/challenges"
-          className="text-sm text-muted-foreground hover:text-gray-900"
+          className="text-sm text-muted-foreground hover:text-white"
         >
           View Team Challenges
         </Link>
@@ -118,10 +118,10 @@ export default async function TeamCustomChallengesPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <Users className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               You need to be part of a team to view team custom challenges.
               Ask your team owner for an invitation.
             </p>
@@ -147,10 +147,10 @@ export default async function TeamCustomChallengesPage() {
             <Card>
               <CardContent className="flex flex-col items-center justify-center text-center py-12">
                 <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-white mb-2">
                   No custom challenges yet
                 </h3>
-                <p className="text-sm text-gray-500 max-w-sm">
+                <p className="text-sm text-white/50 max-w-sm">
                   Create custom typing challenges for your team to practice.
                   Only team members can see these challenges.
                 </p>

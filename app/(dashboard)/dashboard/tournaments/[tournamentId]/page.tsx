@@ -50,7 +50,7 @@ function timeRemaining(date: Date): string {
 
 function RankIcon({ rank }: { rank: number }) {
   if (rank === 1) return <Crown className="h-4 w-4 text-yellow-500" />;
-  if (rank === 2) return <Trophy className="h-4 w-4 text-gray-400" />;
+  if (rank === 2) return <Trophy className="h-4 w-4 text-white/40" />;
   if (rank === 3) return <Medal className="h-4 w-4 text-amber-600" />;
   return (
     <span className="text-xs font-mono text-muted-foreground">#{rank}</span>
@@ -159,14 +159,14 @@ export default async function TournamentDetailPage({
       ? 'text-green-600'
       : tournament.status === 'upcoming'
         ? 'text-blue-600'
-        : 'text-gray-500';
+        : 'text-white/50';
 
   return (
     <section className="flex-1 p-4 lg:p-8 max-w-4xl">
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-1">
           <Trophy className="h-5 w-5 text-orange-500" />
-          <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+          <h1 className="text-lg lg:text-2xl font-medium text-white">
             {tournament.name}
           </h1>
         </div>
@@ -221,7 +221,7 @@ export default async function TournamentDetailPage({
       <Card className="mt-6">
         <CardContent className="p-0">
           <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900">
+            <h2 className="text-sm font-semibold text-white">
               Leaderboard
             </h2>
           </div>
@@ -238,7 +238,7 @@ export default async function TournamentDetailPage({
                 return (
                   <div
                     key={entry.id}
-                    className={`flex items-center justify-between px-4 py-3 ${isCurrentUser ? 'bg-orange-50/50' : ''}`}
+                    className={`flex items-center justify-between px-4 py-3 ${isCurrentUser ? 'bg-orange-500/10' : ''}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 flex justify-center">
@@ -251,7 +251,7 @@ export default async function TournamentDetailPage({
                         )}
                       </div>
                       <span
-                        className={`text-sm ${isCurrentUser ? 'font-semibold' : 'font-medium'} text-gray-900`}
+                        className={`text-sm ${isCurrentUser ? 'font-semibold' : 'font-medium'} text-white`}
                       >
                         {entry.user.username ??
                           entry.user.name ??

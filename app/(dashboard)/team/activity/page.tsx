@@ -105,24 +105,24 @@ function ActivityFeedItem({
 }) {
   if (item.type === 'practice') {
     return (
-      <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
+      <div className="flex items-center gap-3 py-3 border-b border-white/[0.08] last:border-0">
         <Avatar className="size-8">
           <AvatarFallback className="text-xs">
             {getInitials(item.userName, item.userEmail)}
           </AvatarFallback>
         </Avatar>
 
-        <div className="bg-orange-100 rounded-full p-1.5">
-          <Keyboard className="h-4 w-4 text-orange-600" />
+        <div className="bg-orange-500/20 rounded-full p-1.5">
+          <Keyboard className="h-4 w-4 text-orange-400" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-gray-900">
+          <p className="text-sm text-white">
             <span className="font-medium">
               {item.userName || item.userEmail}
             </span>
             {isCurrentUser && (
-              <span className="ml-1.5 text-xs text-orange-600 font-normal">(you)</span>
+              <span className="ml-1.5 text-xs text-orange-400 font-normal">(you)</span>
             )}
             {' '}practiced{' '}
             <span className="font-medium">{item.categoryName}</span>
@@ -153,22 +153,22 @@ function ActivityFeedItem({
   const Icon = (item.action && actionIconMap[item.action]) || Settings;
 
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
+    <div className="flex items-center gap-3 py-3 border-b border-white/[0.08] last:border-0">
       <Avatar className="size-8">
         <AvatarFallback className="text-xs">
           {getInitials(item.userName, item.userEmail)}
         </AvatarFallback>
       </Avatar>
 
-      <div className="bg-gray-100 rounded-full p-1.5">
-        <Icon className="h-4 w-4 text-gray-600" />
+      <div className="bg-white/[0.06] rounded-full p-1.5">
+        <Icon className="h-4 w-4 text-white/60" />
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-900">
+        <p className="text-sm text-white">
           {formatAction(item.action ?? '', item.userName)}
           {isCurrentUser && (
-            <span className="ml-1.5 text-xs text-orange-600 font-normal">(you)</span>
+            <span className="ml-1.5 text-xs text-orange-400 font-normal">(you)</span>
           )}
         </p>
         <p className="text-xs text-muted-foreground">
@@ -190,7 +190,7 @@ export default async function TeamActivityPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Team Activity
       </h1>
 
@@ -198,10 +198,10 @@ export default async function TeamActivityPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <Users className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               You need to be part of a team to view team activity.
               Ask your team owner for an invitation.
             </p>
@@ -211,10 +211,10 @@ export default async function TeamActivityPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No activity yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               When team members practice or perform actions, their activity
               will appear here.
             </p>

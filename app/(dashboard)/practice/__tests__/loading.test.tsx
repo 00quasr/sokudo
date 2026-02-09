@@ -33,8 +33,8 @@ describe('PracticeLoading', () => {
   it('should render title and description skeletons', () => {
     const { container } = render(<PracticeLoading />);
 
-    // Title and description area should have skeleton placeholders
-    const headerSkeletons = container.querySelectorAll('.text-center .bg-gray-200');
+    // Title and description area should have skeleton placeholders with dark mode classes
+    const headerSkeletons = container.querySelectorAll('.text-center .animate-pulse');
     expect(headerSkeletons.length).toBeGreaterThanOrEqual(2);
   });
 

@@ -31,15 +31,15 @@ export default async function PublicCollectionPage({
       </div>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-white">
           {collection.name}
         </h1>
         {collection.description && (
-          <p className="mt-2 text-lg text-gray-600">
+          <p className="mt-2 text-lg text-white/60">
             {collection.description}
           </p>
         )}
-        <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+        <div className="flex items-center gap-4 mt-3 text-sm text-white/50">
           <span className="flex items-center gap-1">
             <Users className="h-4 w-4" />
             {authorDisplay}
@@ -58,11 +58,11 @@ export default async function PublicCollectionPage({
       {collection.challenges.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
-            <FileText className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <FileText className="h-12 w-12 text-white/40 mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">
               This collection is empty
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-white/50">
               No challenges have been added to this collection yet.
             </p>
           </CardContent>
@@ -78,7 +78,7 @@ export default async function PublicCollectionPage({
                       {index + 1}.
                     </span>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 truncate">
+                      <h3 className="font-medium text-white truncate">
                         {item.challengeName}
                       </h3>
                       <p className="text-sm text-muted-foreground truncate font-mono mt-1">

@@ -168,12 +168,12 @@ export function CreateOnboardingCourseForm({
                   type="button"
                   onClick={() => addChallenge(challenge.id)}
                   disabled={isSelected}
-                  className={`w-full text-left px-3 py-2 text-sm border-b last:border-b-0 hover:bg-gray-50 ${
+                  className={`w-full text-left px-3 py-2 text-sm border-b last:border-b-0 hover:bg-white/[0.03] ${
                     isSelected ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-600">
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-white/[0.1] text-white/60">
                       {challenge.difficulty}
                     </span>
                     <span className="font-mono text-xs truncate">
@@ -213,7 +213,7 @@ export function CreateOnboardingCourseForm({
                       type="button"
                       onClick={() => moveStep(index, 'up')}
                       disabled={index === 0}
-                      className="text-xs text-muted-foreground hover:text-gray-900 disabled:opacity-30 px-1"
+                      className="text-xs text-muted-foreground hover:text-white disabled:opacity-30 px-1"
                     >
                       Up
                     </button>
@@ -221,7 +221,7 @@ export function CreateOnboardingCourseForm({
                       type="button"
                       onClick={() => moveStep(index, 'down')}
                       disabled={index === selectedChallengeIds.length - 1}
-                      className="text-xs text-muted-foreground hover:text-gray-900 disabled:opacity-30 px-1"
+                      className="text-xs text-muted-foreground hover:text-white disabled:opacity-30 px-1"
                     >
                       Dn
                     </button>

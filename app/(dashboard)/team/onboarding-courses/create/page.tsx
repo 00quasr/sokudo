@@ -28,13 +28,13 @@ export default async function CreateOnboardingCoursePage() {
     <section className="flex-1 p-4 lg:p-8">
       <Link
         href="/team/onboarding-courses"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-gray-900 mb-4"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-white mb-4"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Courses
       </Link>
 
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Create Onboarding Course
       </h1>
 

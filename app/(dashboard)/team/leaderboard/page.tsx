@@ -26,7 +26,7 @@ function formatTime(ms: number): string {
 
 function getRankIcon(rank: number) {
   if (rank === 1) return <Trophy className="h-5 w-5 text-yellow-500" />;
-  if (rank === 2) return <Medal className="h-5 w-5 text-gray-400" />;
+  if (rank === 2) return <Medal className="h-5 w-5 text-white/40" />;
   if (rank === 3) return <Medal className="h-5 w-5 text-amber-700" />;
   return (
     <span className="text-sm font-mono font-semibold text-muted-foreground w-5 text-center">
@@ -58,8 +58,8 @@ function LeaderboardRow({
 }) {
   return (
     <div
-      className={`flex items-center gap-4 py-4 px-4 border-b border-gray-100 last:border-0 ${
-        isCurrentUser ? 'bg-orange-50/50' : ''
+      className={`flex items-center gap-4 py-4 px-4 border-b border-white/[0.08] last:border-0 ${
+        isCurrentUser ? 'bg-orange-500/10' : ''
       }`}
     >
       <div className="flex items-center justify-center w-8">
@@ -67,16 +67,16 @@ function LeaderboardRow({
       </div>
 
       <Avatar className="size-9">
-        <AvatarFallback className={rank <= 3 ? 'bg-orange-100 text-orange-700' : ''}>
+        <AvatarFallback className={rank <= 3 ? 'bg-orange-500/20 text-orange-400' : ''}>
           {getInitials(entry.userName, entry.userEmail)}
         </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-gray-900 truncate">
+        <p className="font-medium text-white truncate">
           {entry.userName || entry.userEmail}
           {isCurrentUser && (
-            <span className="ml-2 text-xs text-orange-600 font-normal">(you)</span>
+            <span className="ml-2 text-xs text-orange-400 font-normal">(you)</span>
           )}
         </p>
         <p className="text-xs text-muted-foreground">
@@ -137,7 +137,7 @@ export default async function TeamLeaderboardPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Team Leaderboard
       </h1>
 
@@ -145,10 +145,10 @@ export default async function TeamLeaderboardPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <Users className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               You need to be part of a team to view the leaderboard.
               Ask your team owner for an invitation.
             </p>
@@ -158,10 +158,10 @@ export default async function TeamLeaderboardPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No activity yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Your team members haven&apos;t completed any typing sessions yet.
               Start practicing to appear on the leaderboard!
             </p>
@@ -175,8 +175,8 @@ export default async function TeamLeaderboardPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-orange-100 rounded-full p-2">
-                      <Users className="h-5 w-5 text-orange-600" />
+                    <div className="bg-orange-500/20 rounded-full p-2">
+                      <Users className="h-5 w-5 text-orange-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -193,8 +193,8 @@ export default async function TeamLeaderboardPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-green-100 rounded-full p-2">
-                      <TrendingUp className="h-5 w-5 text-green-600" />
+                    <div className="bg-green-500/20 rounded-full p-2">
+                      <TrendingUp className="h-5 w-5 text-green-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -211,8 +211,8 @@ export default async function TeamLeaderboardPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-blue-100 rounded-full p-2">
-                      <Target className="h-5 w-5 text-blue-600" />
+                    <div className="bg-blue-500/20 rounded-full p-2">
+                      <Target className="h-5 w-5 text-blue-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -229,8 +229,8 @@ export default async function TeamLeaderboardPage() {
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3">
-                    <div className="bg-purple-100 rounded-full p-2">
-                      <Clock className="h-5 w-5 text-purple-600" />
+                    <div className="bg-purple-500/20 rounded-full p-2">
+                      <Clock className="h-5 w-5 text-purple-400" />
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -278,17 +278,17 @@ export default async function TeamLeaderboardPage() {
                   <Card>
                     <CardContent className="pt-6">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="bg-yellow-100 rounded-full p-2">
-                          <TrendingUp className="h-5 w-5 text-yellow-600" />
+                        <div className="bg-yellow-500/20 rounded-full p-2">
+                          <TrendingUp className="h-5 w-5 text-yellow-400" />
                         </div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
                           Fastest Typist
                         </p>
                       </div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-white">
                         {fastest.userName || fastest.userEmail}
                       </p>
-                      <p className="text-2xl font-mono font-semibold text-orange-600">
+                      <p className="text-2xl font-mono font-semibold text-orange-400">
                         {fastest.bestWpm} WPM
                       </p>
                     </CardContent>
@@ -305,17 +305,17 @@ export default async function TeamLeaderboardPage() {
                   <Card>
                     <CardContent className="pt-6">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="bg-green-100 rounded-full p-2">
-                          <Target className="h-5 w-5 text-green-600" />
+                        <div className="bg-green-500/20 rounded-full p-2">
+                          <Target className="h-5 w-5 text-green-400" />
                         </div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
                           Most Accurate
                         </p>
                       </div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-white">
                         {accurate.userName || accurate.userEmail}
                       </p>
-                      <p className="text-2xl font-mono font-semibold text-green-600">
+                      <p className="text-2xl font-mono font-semibold text-green-400">
                         {accurate.avgAccuracy}%
                       </p>
                     </CardContent>
@@ -332,17 +332,17 @@ export default async function TeamLeaderboardPage() {
                   <Card>
                     <CardContent className="pt-6">
                       <div className="flex items-center gap-3 mb-3">
-                        <div className="bg-purple-100 rounded-full p-2">
-                          <Flame className="h-5 w-5 text-purple-600" />
+                        <div className="bg-purple-500/20 rounded-full p-2">
+                          <Flame className="h-5 w-5 text-purple-400" />
                         </div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wide">
                           Longest Streak
                         </p>
                       </div>
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-white">
                         {streaker.userName || streaker.userEmail}
                       </p>
-                      <p className="text-2xl font-mono font-semibold text-purple-600">
+                      <p className="text-2xl font-mono font-semibold text-purple-400">
                         {streaker.currentStreak} days
                       </p>
                     </CardContent>

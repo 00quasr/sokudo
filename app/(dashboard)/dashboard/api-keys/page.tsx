@@ -59,12 +59,12 @@ function isExpired(expiresAt: string | null): boolean {
 
 function KeyStatus({ apiKey }: { apiKey: ApiKeyData }) {
   if (apiKey.revokedAt) {
-    return <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700">Revoked</span>;
+    return <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">Revoked</span>;
   }
   if (isExpired(apiKey.expiresAt)) {
-    return <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700">Expired</span>;
+    return <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400">Expired</span>;
   }
-  return <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">Active</span>;
+  return <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Active</span>;
 }
 
 function ScopeBadges({ scopes }: { scopes: string[] }) {
@@ -73,7 +73,7 @@ function ScopeBadges({ scopes }: { scopes: string[] }) {
       {(scopes as string[]).map((scope) => (
         <span
           key={scope}
-          className="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-600"
+          className="text-xs px-1.5 py-0.5 rounded bg-white/[0.1] text-white/60"
         >
           {scope === '*' ? 'full' : scope}
         </span>
@@ -188,7 +188,7 @@ function CreateKeyDialog({ onCreated }: { onCreated: () => void }) {
                 Copy your API key now. You won&apos;t be able to see it again.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md border">
+            <div className="flex items-center gap-2 p-3 bg-white/[0.03] rounded-md border">
               <code className="flex-1 text-sm font-mono break-all">{createdKey}</code>
               <CopyButton text={createdKey} />
             </div>
@@ -223,7 +223,7 @@ function CreateKeyDialog({ onCreated }: { onCreated: () => void }) {
                   {SCOPE_OPTIONS.map((opt) => (
                     <label
                       key={opt.value}
-                      className="flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-gray-50"
+                      className="flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-white/[0.03]"
                     >
                       <input
                         type="checkbox"
@@ -233,7 +233,7 @@ function CreateKeyDialog({ onCreated }: { onCreated: () => void }) {
                       />
                       <div>
                         <div className="text-sm font-medium">{opt.label}</div>
-                        <div className="text-xs text-gray-500">{opt.description}</div>
+                        <div className="text-xs text-white/50">{opt.description}</div>
                       </div>
                     </label>
                   ))}
@@ -320,10 +320,10 @@ function ApiKeyRow({
           <KeyStatus apiKey={apiKey} />
         </div>
         <div className="flex items-center gap-3 mt-1">
-          <code className="text-xs text-gray-500 font-mono">{apiKey.keyPrefix}...</code>
+          <code className="text-xs text-white/50 font-mono">{apiKey.keyPrefix}...</code>
           <ScopeBadges scopes={apiKey.scopes as string[]} />
         </div>
-        <div className="flex gap-4 mt-1 text-xs text-gray-400">
+        <div className="flex gap-4 mt-1 text-xs text-white/40">
           <span>Created {formatDate(apiKey.createdAt)}</span>
           <span>Last used {formatDate(apiKey.lastUsedAt)}</span>
           {apiKey.expiresAt && <span>Expires {formatDate(apiKey.expiresAt)}</span>}
@@ -380,15 +380,15 @@ export default function ApiKeysPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           API Keys
         </h1>
         <CreateKeyDialog onCreated={() => mutate()} />
       </div>
 
-      <p className="text-sm text-gray-500 mb-6">
+      <p className="text-sm text-white/50 mb-6">
         Manage API keys for external applications. Keys authenticate requests to the{' '}
-        <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">/api/v1</code> endpoints using Bearer token authentication.
+        <code className="text-xs bg-white/[0.1] px-1 py-0.5 rounded text-white/80">/api/v1</code> endpoints using Bearer token authentication.
       </p>
 
       <Card className="mb-8">
@@ -400,7 +400,7 @@ export default function ApiKeysPage() {
         </CardHeader>
         <CardContent className="p-0">
           {activeKeys.length === 0 ? (
-            <p className="text-sm text-gray-500 p-4">
+            <p className="text-sm text-white/50 p-4">
               No active API keys. Create one to get started.
             </p>
           ) : (
@@ -418,7 +418,7 @@ export default function ApiKeysPage() {
       {inactiveKeys.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-gray-500">
+            <CardTitle className="text-white/50">
               Revoked / Expired Keys ({inactiveKeys.length})
             </CardTitle>
           </CardHeader>

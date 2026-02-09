@@ -5,10 +5,10 @@ function SkeletonCard() {
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center gap-3">
-          <div className="bg-gray-100 rounded-full p-2 w-9 h-9 animate-pulse" />
+          <div className="bg-white/[0.06] rounded-full p-2 w-9 h-9 animate-pulse" />
           <div className="space-y-2">
-            <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
-            <div className="h-6 w-12 bg-gray-200 rounded animate-pulse" />
+            <div className="h-3 w-16 bg-white/[0.06] rounded animate-pulse" />
+            <div className="h-6 w-12 bg-white/[0.06] rounded animate-pulse" />
           </div>
         </div>
       </CardContent>
@@ -19,7 +19,7 @@ function SkeletonCard() {
 export default function StatsPageSkeleton() {
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Your Stats
       </h1>
 
@@ -37,7 +37,7 @@ export default function StatsPageSkeleton() {
           <Card>
             <CardHeader>
               <CardTitle>
-                <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-5 w-32 bg-white/[0.06] rounded animate-pulse" />
               </CardTitle>
             </CardHeader>
             <CardContent className="min-h-[160px]" />
@@ -46,7 +46,7 @@ export default function StatsPageSkeleton() {
           <Card>
             <CardHeader>
               <CardTitle>
-                <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+                <div className="h-5 w-32 bg-white/[0.06] rounded animate-pulse" />
               </CardTitle>
             </CardHeader>
             <CardContent className="min-h-[160px]" />

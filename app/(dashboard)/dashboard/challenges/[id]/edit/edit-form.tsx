@@ -41,7 +41,7 @@ export function EditChallengeForm({ challenge }: EditChallengeFormProps) {
             Back
           </Button>
         </Link>
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Edit Challenge
         </h1>
       </div>
@@ -88,7 +88,7 @@ export function EditChallengeForm({ challenge }: EditChallengeFormProps) {
                 </Button>
               </div>
               {showPreview ? (
-                <div className="min-h-[200px] rounded-md border bg-gray-50 p-4 font-mono text-sm whitespace-pre-wrap break-all">
+                <div className="min-h-[200px] rounded-md border border-white/[0.06] bg-white/[0.03] p-4 font-mono text-sm whitespace-pre-wrap break-all">
                   {content || <span className="text-muted-foreground">Nothing to preview</span>}
                 </div>
               ) : (

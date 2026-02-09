@@ -57,8 +57,8 @@ function StatCard({
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-orange-50 p-2">
-            <Icon className="h-5 w-5 text-orange-500" />
+          <div className="rounded-lg bg-orange-500/20 p-2">
+            <Icon className="h-5 w-5 text-orange-400" />
           </div>
           <div>
             <p className="text-sm text-muted-foreground">{label}</p>
@@ -169,13 +169,13 @@ function ReferralCodeSection() {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    completed: 'bg-green-100 text-green-800',
+    pending: 'bg-yellow-500/20 text-yellow-400',
+    completed: 'bg-green-500/20 text-green-400',
   };
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[status] ?? 'bg-gray-100 text-gray-800'}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[status] ?? 'bg-white/[0.1] text-white/60'}`}
     >
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
@@ -264,7 +264,7 @@ function RankBadge({ rank }: { rank: number }) {
     return <Trophy className="h-5 w-5 text-yellow-500" />;
   }
   if (rank === 2) {
-    return <Medal className="h-5 w-5 text-gray-400" />;
+    return <Medal className="h-5 w-5 text-white/40" />;
   }
   if (rank === 3) {
     return <Medal className="h-5 w-5 text-amber-600" />;
@@ -329,7 +329,7 @@ function ReferralLeaderboard({
               key={entry.userId}
               className={`border-b last:border-0 ${
                 entry.userId === currentUserId
-                  ? 'bg-orange-50/50'
+                  ? 'bg-orange-500/10'
                   : ''
               }`}
             >
@@ -381,7 +381,7 @@ export default function ReferralsPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Referrals
       </h1>
 

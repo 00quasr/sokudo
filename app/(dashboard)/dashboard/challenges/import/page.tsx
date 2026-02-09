@@ -39,7 +39,7 @@ export default function ImportChallengesPage() {
             Back
           </Button>
         </Link>
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Import Challenges from Text
         </h1>
       </div>
@@ -78,8 +78,8 @@ export default function ImportChallengesPage() {
                   onClick={() => setMode('lines')}
                   className={`flex items-center gap-2 rounded-md border px-4 py-2 text-sm transition-colors ${
                     mode === 'lines'
-                      ? 'border-orange-500 bg-orange-50 text-orange-700'
-                      : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      ? 'border-orange-500 bg-orange-500/20 text-orange-400'
+                      : 'border-white/[0.08] text-white/60 hover:border-white/[0.15]'
                   }`}
                 >
                   <Layers className="h-4 w-4" />
@@ -90,8 +90,8 @@ export default function ImportChallengesPage() {
                   onClick={() => setMode('block')}
                   className={`flex items-center gap-2 rounded-md border px-4 py-2 text-sm transition-colors ${
                     mode === 'block'
-                      ? 'border-orange-500 bg-orange-50 text-orange-700'
-                      : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      ? 'border-orange-500 bg-orange-500/20 text-orange-400'
+                      : 'border-white/[0.08] text-white/60 hover:border-white/[0.15]'
                   }`}
                 >
                   <FileText className="h-4 w-4" />
@@ -111,7 +111,7 @@ export default function ImportChallengesPage() {
                     </span>
                   )}
                 </Label>
-                <div className="mt-1 max-h-64 overflow-y-auto rounded-md border bg-gray-50 divide-y">
+                <div className="mt-1 max-h-64 overflow-y-auto rounded-md border border-white/[0.06] bg-white/[0.03] divide-y divide-white/[0.06]">
                   {preview.challenges.map((challenge, i) => (
                     <div key={i} className="px-3 py-2">
                       <p className="text-xs text-muted-foreground mb-0.5">

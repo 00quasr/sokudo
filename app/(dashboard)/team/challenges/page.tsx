@@ -53,30 +53,30 @@ function ChallengeCard({
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400">
                   {challenge.categoryName}
                 </span>
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/[0.1] text-white/60">
                   {challenge.challengeDifficulty}
                 </span>
                 {status === 'active' && (
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">
                     Active
                   </span>
                 )}
                 {status === 'expired' && (
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">
                     Expired
                   </span>
                 )}
                 {status === 'completed' && (
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400">
                     Completed
                   </span>
                 )}
               </div>
 
-              <p className="font-mono text-sm text-gray-700 truncate mb-3">
+              <p className="font-mono text-sm text-white/70 truncate mb-3">
                 {challenge.challengeContent.slice(0, 80)}
                 {challenge.challengeContent.length > 80 ? '...' : ''}
               </p>
@@ -133,12 +133,12 @@ export default async function TeamChallengesPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Team Challenges
         </h1>
         <Link
           href="/team/custom-challenges"
-          className="text-sm text-muted-foreground hover:text-gray-900"
+          className="text-sm text-muted-foreground hover:text-white"
         >
           Custom Challenges
         </Link>
@@ -148,10 +148,10 @@ export default async function TeamChallengesPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <Users className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               You need to be part of a team to view team challenges.
               Ask your team owner for an invitation.
             </p>
@@ -161,10 +161,10 @@ export default async function TeamChallengesPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No team challenges yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Team challenges let everyone practice the same content and compare results.
               Create one via the API to get started!
             </p>

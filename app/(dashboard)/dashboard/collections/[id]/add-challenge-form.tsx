@@ -17,7 +17,7 @@ export function AddChallengeForm({ collectionId }: { collectionId: number }) {
     <form action={formAction} className="flex items-end gap-2">
       <input type="hidden" name="collectionId" value={collectionId} />
       <div className="flex-1">
-        <label htmlFor="challengeId" className="text-sm font-medium text-gray-700 mb-1 block">
+        <label htmlFor="challengeId" className="text-sm font-medium text-white/70 mb-1 block">
           Add Challenge by ID
         </label>
         <Input

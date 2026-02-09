@@ -37,10 +37,10 @@ async function SessionList() {
       <Card>
         <CardContent className="flex flex-col items-center justify-center text-center py-12">
           <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-white mb-2">
             No sessions yet
           </h3>
-          <p className="text-sm text-gray-500 max-w-sm">
+          <p className="text-sm text-white/50 max-w-sm">
             Complete some typing challenges to see your session history here.
             You&apos;ll be able to replay your sessions and analyze your performance.
           </p>
@@ -63,7 +63,7 @@ async function SessionList() {
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-medium text-gray-900">
+                  <h3 className="font-medium text-white">
                     {session.challenge.category.name}
                   </h3>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
@@ -140,7 +140,7 @@ export default function HistoryPage() {
     <section className="flex-1 p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+          <h1 className="text-lg lg:text-2xl font-medium text-white">
             Session History
           </h1>
           <p className="text-sm text-muted-foreground mt-1">

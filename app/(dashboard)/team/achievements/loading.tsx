@@ -5,10 +5,10 @@ function SkeletonCard() {
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center gap-3">
-          <div className="bg-gray-100 rounded-full p-2 w-9 h-9 animate-pulse" />
+          <div className="bg-white/[0.06] rounded-full p-2 w-9 h-9 animate-pulse" />
           <div className="space-y-2">
-            <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
-            <div className="h-6 w-12 bg-gray-200 rounded animate-pulse" />
+            <div className="h-3 w-16 bg-white/[0.06] rounded animate-pulse" />
+            <div className="h-6 w-12 bg-white/[0.06] rounded animate-pulse" />
           </div>
         </div>
       </CardContent>
@@ -18,11 +18,11 @@ function SkeletonCard() {
 
 function SkeletonAchievement() {
   return (
-    <div className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 bg-gray-50/50">
-      <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
+    <div className="flex items-center gap-4 p-4 rounded-lg border border-white/[0.04] bg-white/[0.02]">
+      <div className="w-12 h-12 bg-white/[0.06] rounded-full animate-pulse" />
       <div className="flex-1 space-y-2">
-        <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
-        <div className="h-3 w-48 bg-gray-200 rounded animate-pulse" />
+        <div className="h-4 w-32 bg-white/[0.06] rounded animate-pulse" />
+        <div className="h-3 w-48 bg-white/[0.06] rounded animate-pulse" />
       </div>
     </div>
   );
@@ -31,7 +31,7 @@ function SkeletonAchievement() {
 export default function TeamAchievementsLoading() {
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Team Achievements
       </h1>
 
@@ -45,7 +45,7 @@ export default function TeamAchievementsLoading() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <div className="h-5 w-24 bg-gray-200 rounded animate-pulse" />
+              <div className="h-5 w-24 bg-white/[0.06] rounded animate-pulse" />
             </CardTitle>
           </CardHeader>
           <CardContent>

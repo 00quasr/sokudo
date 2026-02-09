@@ -27,7 +27,7 @@ export function RemoveChallengeButton({
         variant="ghost"
         size="sm"
         disabled={isPending}
-        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
       >
         {isPending ? (
           <Loader2 className="h-4 w-4 animate-spin" />

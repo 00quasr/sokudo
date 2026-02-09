@@ -136,7 +136,7 @@ export function CommunityBrowser({
         <div className="flex flex-col sm:flex-row gap-4">
           <form onSubmit={handleSearch} className="flex-1 flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
               <Input
                 type="text"
                 placeholder="Search challenges..."
@@ -168,7 +168,7 @@ export function CommunityBrowser({
 
         {/* Popularity filter */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500 flex items-center gap-1">
+          <span className="text-sm text-white/50 flex items-center gap-1">
             <Flame className="h-3.5 w-3.5" />
             Min practiced:
           </span>
@@ -188,7 +188,7 @@ export function CommunityBrowser({
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="ml-auto text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+              className="ml-auto text-xs text-white/50 hover:text-white/70 flex items-center gap-1"
             >
               <X className="h-3 w-3" />
               Clear filters
@@ -203,9 +203,9 @@ export function CommunityBrowser({
             <Card key={i}>
               <CardContent className="p-4">
                 <div className="animate-pulse space-y-3">
-                  <div className="h-5 bg-gray-200 rounded w-1/3" />
-                  <div className="h-4 bg-gray-100 rounded w-2/3" />
-                  <div className="h-3 bg-gray-100 rounded w-1/4" />
+                  <div className="h-5 bg-white/[0.08] rounded w-1/3" />
+                  <div className="h-4 bg-white/[0.06] rounded w-2/3" />
+                  <div className="h-3 bg-white/[0.06] rounded w-1/4" />
                 </div>
               </CardContent>
             </Card>
@@ -214,11 +214,11 @@ export function CommunityBrowser({
       ) : data.challenges.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
-            <Users className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <Users className="h-12 w-12 text-white/40 mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">
               No community challenges found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               {search
                 ? 'Try a different search term or clear your search.'
                 : 'Be the first to share a challenge with the community!'}
@@ -239,7 +239,7 @@ export function CommunityBrowser({
         </Card>
       ) : (
         <>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-white/50 mb-4">
             {data.pagination.total} challenge{data.pagination.total !== 1 ? 's' : ''} found
           </p>
 
@@ -260,7 +260,7 @@ export function CommunityBrowser({
                 <ChevronLeft className="h-4 w-4" />
                 Previous
               </Button>
-              <span className="text-sm text-gray-600 px-4">
+              <span className="text-sm text-white/60 px-4">
                 Page {data.pagination.page} of {data.pagination.totalPages}
               </span>
               <Button
@@ -295,13 +295,13 @@ function ChallengeRow({ challenge }: { challenge: CommunityChallenge }) {
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
-              <h3 className="font-medium text-gray-900 truncate">
+              <h3 className="font-medium text-white truncate">
                 {challenge.name}
               </h3>
-              <p className="mt-1 font-mono text-sm text-gray-600 line-clamp-2">
+              <p className="mt-1 font-mono text-sm text-white/60 line-clamp-2">
                 {preview}
               </p>
-              <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-white/50">
                 <span className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
                   {authorDisplay}

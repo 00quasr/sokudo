@@ -62,15 +62,15 @@ const sortOptions: { value: SortBy; label: string }[] = [
 ];
 
 const difficultyOptions: { value: Difficulty; label: string; color: string }[] = [
-  { value: 'beginner', label: 'Beginner', color: 'bg-green-100 text-green-800 border-green-200' },
-  { value: 'intermediate', label: 'Intermediate', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-  { value: 'advanced', label: 'Advanced', color: 'bg-red-100 text-red-800 border-red-200' },
+  { value: 'beginner', label: 'Beginner', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
+  { value: 'intermediate', label: 'Intermediate', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
+  { value: 'advanced', label: 'Advanced', color: 'bg-red-500/20 text-red-400 border-red-500/30' },
 ];
 
 const difficultyColors: Record<string, string> = {
-  beginner: 'bg-green-100 text-green-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-red-100 text-red-800',
+  beginner: 'bg-green-500/20 text-green-400',
+  intermediate: 'bg-yellow-500/20 text-yellow-400',
+  advanced: 'bg-red-500/20 text-red-400',
 };
 
 export function ChallengeSearch({
@@ -165,7 +165,7 @@ export function ChallengeSearch({
       <div className="flex flex-col gap-4 mb-6">
         <form onSubmit={handleSearch} className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/40" />
             <Input
               type="text"
               placeholder="Search challenges by content or hint..."
@@ -244,9 +244,9 @@ export function ChallengeSearch({
         {/* Active filters summary */}
         {hasActiveFilters && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">Active filters:</span>
+            <span className="text-xs text-white/50">Active filters:</span>
             {search && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/[0.1] px-2 py-0.5 text-xs text-white/70">
                 &quot;{search}&quot;
                 <button onClick={() => { setSearch(''); fetchChallenges({ page: 1, search: '', sortBy, category: selectedCategory, difficulty: selectedDifficulty }); }}>
                   <X className="h-3 w-3" />
@@ -254,7 +254,7 @@ export function ChallengeSearch({
               </span>
             )}
             {selectedCategory && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/20 px-2 py-0.5 text-xs text-orange-400">
                 {data.categories.find((c) => c.slug === selectedCategory)?.name}
                 <button onClick={() => handleCategoryChange('')}>
                   <X className="h-3 w-3" />
@@ -271,7 +271,7 @@ export function ChallengeSearch({
             )}
             <button
               onClick={clearFilters}
-              className="text-xs text-gray-500 hover:text-gray-700 underline"
+              className="text-xs text-white/50 hover:text-white/70 underline"
             >
               Clear all
             </button>
@@ -286,9 +286,9 @@ export function ChallengeSearch({
             <Card key={i}>
               <CardContent className="p-4">
                 <div className="animate-pulse space-y-3">
-                  <div className="h-5 bg-gray-200 rounded w-1/3" />
-                  <div className="h-4 bg-gray-100 rounded w-2/3" />
-                  <div className="h-3 bg-gray-100 rounded w-1/4" />
+                  <div className="h-5 bg-white/[0.08] rounded w-1/3" />
+                  <div className="h-4 bg-white/[0.06] rounded w-2/3" />
+                  <div className="h-3 bg-white/[0.06] rounded w-1/4" />
                 </div>
               </CardContent>
             </Card>
@@ -297,11 +297,11 @@ export function ChallengeSearch({
       ) : data.challenges.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
-            <Search className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <Search className="h-12 w-12 text-white/40 mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">
               No challenges found
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               {hasActiveFilters
                 ? 'Try adjusting your filters or search term.'
                 : 'No challenges available yet.'}
@@ -319,7 +319,7 @@ export function ChallengeSearch({
         </Card>
       ) : (
         <>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-white/50 mb-4">
             {data.pagination.total} challenge{data.pagination.total !== 1 ? 's' : ''} found
           </p>
 
@@ -340,7 +340,7 @@ export function ChallengeSearch({
                 <ChevronLeft className="h-4 w-4" />
                 Previous
               </Button>
-              <span className="text-sm text-gray-600 px-4">
+              <span className="text-sm text-white/60 px-4">
                 Page {data.pagination.page} of {data.pagination.totalPages}
               </span>
               <Button
@@ -375,17 +375,17 @@ function ChallengeResultRow({ challenge }: { challenge: ChallengeResult }) {
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-white">
                   {challenge.categoryName}
                 </span>
                 <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize ${difficultyClass}`}>
                   {challenge.difficulty}
                 </span>
               </div>
-              <p className="font-mono text-sm text-gray-600 line-clamp-2">
+              <p className="font-mono text-sm text-white/60 line-clamp-2">
                 {preview}
               </p>
-              <div className="flex flex-wrap gap-4 mt-2 text-xs text-gray-500">
+              <div className="flex flex-wrap gap-4 mt-2 text-xs text-white/50">
                 <span className="flex items-center gap-1">
                   <FileText className="h-3 w-3" />
                   {challenge.content.length} chars
@@ -400,7 +400,7 @@ function ChallengeResultRow({ challenge }: { challenge: ChallengeResult }) {
                   <span>Avg {challenge.avgWpm} WPM</span>
                 )}
                 {challenge.hint && (
-                  <span className="text-gray-400 italic truncate max-w-xs">
+                  <span className="text-white/40 italic truncate max-w-xs">
                     Hint: {challenge.hint}
                   </span>
                 )}

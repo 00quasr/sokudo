@@ -27,7 +27,7 @@ function formatTime(seconds: number): string {
 
 function RankIcon({ rank }: { rank: number }) {
   if (rank === 1) return <Crown className="h-4 w-4 text-yellow-500" />;
-  if (rank === 2) return <Trophy className="h-4 w-4 text-gray-400" />;
+  if (rank === 2) return <Trophy className="h-4 w-4 text-white/40" />;
   if (rank === 3) return <Medal className="h-4 w-4 text-amber-600" />;
   return <span className="text-xs font-mono text-muted-foreground">#{rank}</span>;
 }
@@ -35,16 +35,16 @@ function RankIcon({ rank }: { rank: number }) {
 function RankBadge({ rank }: { rank: number | null }) {
   if (rank === null) {
     return (
-      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-400">
+      <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.1] text-white/40">
         DNF
       </span>
     );
   }
 
   const styles: Record<number, string> = {
-    1: 'bg-yellow-100 text-yellow-700',
-    2: 'bg-gray-100 text-gray-600',
-    3: 'bg-amber-100 text-amber-700',
+    1: 'bg-yellow-500/20 text-yellow-400',
+    2: 'bg-white/[0.1] text-white/60',
+    3: 'bg-amber-500/20 text-amber-400',
   };
 
   return (
@@ -63,7 +63,7 @@ export default async function RacesPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Race History
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -75,10 +75,10 @@ export default async function RacesPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No races yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Join a race to compete against other typists. Your race history
               and results will appear here.
             </p>
@@ -104,7 +104,7 @@ export default async function RacesPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-medium text-gray-900">
+                        <h3 className="font-medium text-white">
                           {race.category.name}
                         </h3>
                         <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
@@ -142,7 +142,7 @@ export default async function RacesPage() {
                         </div>
                       )}
                       {participation.finishedAt === null && (
-                        <span className="text-xs text-gray-400 italic">Did not finish</span>
+                        <span className="text-xs text-white/40 italic">Did not finish</span>
                       )}
                     </div>
                   </div>

@@ -52,7 +52,7 @@ export default async function AchievementsPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Achievements
       </h1>
 
@@ -60,10 +60,10 @@ export default async function AchievementsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <AlertCircle className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No achievements available
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm">
+            <p className="text-sm text-white/50 max-w-sm">
               Achievement definitions haven&apos;t been set up yet. Run the
               achievement seed to get started.
             </p>
@@ -76,8 +76,8 @@ export default async function AchievementsPage() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="bg-yellow-100 rounded-full p-2">
-                    <Trophy className="h-5 w-5 text-yellow-600" />
+                  <div className="bg-yellow-500/20 rounded-full p-2">
+                    <Trophy className="h-5 w-5 text-yellow-400" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -97,8 +97,8 @@ export default async function AchievementsPage() {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="bg-green-100 rounded-full p-2">
-                    <Trophy className="h-5 w-5 text-green-600" />
+                  <div className="bg-green-500/20 rounded-full p-2">
+                    <Trophy className="h-5 w-5 text-green-400" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">
@@ -118,8 +118,8 @@ export default async function AchievementsPage() {
             <Card className="col-span-2 lg:col-span-1">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 rounded-full p-2">
-                    <Lock className="h-5 w-5 text-gray-500" />
+                  <div className="bg-white/[0.06] rounded-full p-2">
+                    <Lock className="h-5 w-5 text-white/50" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wide">

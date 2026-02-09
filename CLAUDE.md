@@ -98,6 +98,21 @@ lib/
 - Stats bar (WPM, accuracy, time) visible but not prominent
 - Progress indicator subtle
 
+**Loading skeletons (dark mode):**
+- Use `bg-white/[0.06]` for skeleton shapes (NOT gray-100/200)
+- Use `bg-white/[0.02]` for card backgrounds
+- Use `border-white/[0.04]` for skeleton borders
+- Page titles use `text-white` (NOT text-gray-900)
+- Import `Skeleton` component from `@/components/ui/skeleton`
+
+```tsx
+// Good - dark mode skeleton
+<div className="h-5 w-32 bg-white/[0.06] rounded animate-pulse" />
+
+// Bad - light mode colors on dark background
+<div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+```
+
 ## UI Development: Screenshot-Driven Workflow
 
 Take screenshots with agent-browser skill:

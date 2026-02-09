@@ -11,7 +11,7 @@ export default async function CollectionsPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Challenge Collections
         </h1>
         <Link href="/dashboard/collections/new">
@@ -26,10 +26,10 @@ export default async function CollectionsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center text-center py-12">
             <FolderOpen className="h-12 w-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               No collections yet
             </h3>
-            <p className="text-sm text-gray-500 max-w-sm mb-4">
+            <p className="text-sm text-white/50 max-w-sm mb-4">
               Group related challenges into collections to organize your practice sessions.
             </p>
             <Link href="/dashboard/collections/new">
@@ -47,13 +47,13 @@ export default async function CollectionsPage() {
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-medium text-gray-900 truncate">
+                    <h3 className="font-medium text-white truncate">
                       {collection.name}
                     </h3>
                     {collection.isPublic ? (
                       <Globe className="h-3.5 w-3.5 text-green-500 shrink-0" />
                     ) : (
-                      <Lock className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                      <Lock className="h-3.5 w-3.5 text-white/40 shrink-0" />
                     )}
                   </div>
                   {collection.description && (

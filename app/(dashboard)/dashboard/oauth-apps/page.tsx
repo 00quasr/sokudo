@@ -44,7 +44,7 @@ function ScopeBadges({ scopes }: { scopes: string[] }) {
       {scopes.map((scope) => (
         <span
           key={scope}
-          className="text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-600"
+          className="text-xs px-1.5 py-0.5 rounded bg-white/[0.1] text-white/60"
         >
           {scope}
         </span>
@@ -160,8 +160,8 @@ function CreateClientDialog({ onCreated }: { onCreated: () => void }) {
             </DialogHeader>
             <div className="space-y-3">
               <div>
-                <Label className="text-xs text-gray-500">Client ID</Label>
-                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md border">
+                <Label className="text-xs text-white/50">Client ID</Label>
+                <div className="flex items-center gap-2 p-3 bg-white/[0.03] rounded-md border">
                   <code className="flex-1 text-sm font-mono break-all">
                     {createdClientId}
                   </code>
@@ -169,8 +169,8 @@ function CreateClientDialog({ onCreated }: { onCreated: () => void }) {
                 </div>
               </div>
               <div>
-                <Label className="text-xs text-gray-500">Client Secret</Label>
-                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md border">
+                <Label className="text-xs text-white/50">Client Secret</Label>
+                <div className="flex items-center gap-2 p-3 bg-white/[0.03] rounded-md border">
                   <code className="flex-1 text-sm font-mono break-all">
                     {createdSecret}
                   </code>
@@ -215,7 +215,7 @@ function CreateClientDialog({ onCreated }: { onCreated: () => void }) {
                   onChange={(e) => setRedirectUri(e.target.value)}
                   type="url"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-white/50 mt-1">
                   Where users are redirected after authorization
                 </p>
               </div>
@@ -237,7 +237,7 @@ function CreateClientDialog({ onCreated }: { onCreated: () => void }) {
                   ].map((opt) => (
                     <label
                       key={opt.value}
-                      className="flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-gray-50"
+                      className="flex items-center gap-3 p-2 rounded border cursor-pointer hover:bg-white/[0.03]"
                     >
                       <input
                         type="checkbox"
@@ -247,7 +247,7 @@ function CreateClientDialog({ onCreated }: { onCreated: () => void }) {
                       />
                       <div>
                         <div className="text-sm font-medium">{opt.label}</div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-white/50">
                           {opt.description}
                         </div>
                       </div>
@@ -318,29 +318,29 @@ function OAuthClientRow({
         <div className="flex items-center gap-2">
           <span className="font-medium text-sm">{client.name}</span>
           {client.active ? (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">
               Active
             </span>
           ) : (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/20 text-red-400">
               Deactivated
             </span>
           )}
         </div>
         <div className="flex items-center gap-3 mt-1">
-          <code className="text-xs text-gray-500 font-mono">
+          <code className="text-xs text-white/50 font-mono">
             {client.clientId.slice(0, 20)}...
           </code>
           <ScopeBadges scopes={client.scopes} />
         </div>
-        <div className="mt-1 text-xs text-gray-400">
+        <div className="mt-1 text-xs text-white/40">
           {(client.redirectUris as string[]).map((uri) => (
             <span key={uri} className="mr-3">
               {uri}
             </span>
           ))}
         </div>
-        <div className="flex gap-4 mt-1 text-xs text-gray-400">
+        <div className="flex gap-4 mt-1 text-xs text-white/40">
           <span>Created {formatDate(client.createdAt)}</span>
         </div>
       </div>
@@ -398,13 +398,13 @@ export default function OAuthAppsPage() {
   return (
     <section className="flex-1 p-4 lg:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           OAuth Apps
         </h1>
         <CreateClientDialog onCreated={() => mutate()} />
       </div>
 
-      <p className="text-sm text-gray-500 mb-6">
+      <p className="text-sm text-white/50 mb-6">
         Register third-party applications that can access Sokudo user data
         through the OAuth 2.0 authorization code flow. Users will be asked to
         grant permission before any data is shared.
@@ -419,7 +419,7 @@ export default function OAuthAppsPage() {
         </CardHeader>
         <CardContent className="p-0">
           {activeClients.length === 0 ? (
-            <p className="text-sm text-gray-500 p-4">
+            <p className="text-sm text-white/50 p-4">
               No registered OAuth applications. Register one to get started.
             </p>
           ) : (
@@ -437,7 +437,7 @@ export default function OAuthAppsPage() {
       {inactiveClients.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-gray-500">
+            <CardTitle className="text-white/50">
               Deactivated Apps ({inactiveClients.length})
             </CardTitle>
           </CardHeader>

@@ -36,7 +36,7 @@ export function EditCollectionForm({ collection }: EditCollectionFormProps) {
             Back
           </Button>
         </Link>
-        <h1 className="text-lg lg:text-2xl font-medium text-gray-900">
+        <h1 className="text-lg lg:text-2xl font-medium text-white">
           Edit Collection
         </h1>
       </div>

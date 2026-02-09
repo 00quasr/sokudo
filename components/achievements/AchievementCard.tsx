@@ -41,14 +41,14 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
       className={cn(
         'flex items-start gap-3 rounded-lg border p-4 transition-colors',
         isEarned
-          ? 'border-yellow-500/20 bg-yellow-500/5'
-          : 'border-gray-200 bg-gray-50 opacity-60'
+          ? 'border-white/[0.08] bg-white/[0.03]'
+          : 'border-white/[0.06] bg-white/[0.02] opacity-60'
       )}
     >
       <div
         className={cn(
           'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
-          isEarned ? 'bg-yellow-500/10' : 'bg-gray-200'
+          isEarned ? 'bg-yellow-500/20' : 'bg-white/[0.06]'
         )}
       >
         {isEarned ? (
@@ -57,14 +57,14 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
             className="h-5 w-5 text-yellow-500"
           />
         ) : (
-          <Lock className="h-4 w-4 text-gray-400" />
+          <Lock className="h-4 w-4 text-white/40" />
         )}
       </div>
       <div className="min-w-0 flex-1">
         <p
           className={cn(
             'font-semibold truncate',
-            isEarned ? 'text-foreground' : 'text-gray-500'
+            isEarned ? 'text-white' : 'text-white/50'
           )}
         >
           {achievement.name}
@@ -73,7 +73,7 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
           {achievement.description}
         </p>
         {isEarned && achievement.earnedAt && (
-          <p className="mt-1 text-xs text-yellow-600">
+          <p className="mt-1 text-xs text-yellow-400">
             Earned {formatEarnedDate(achievement.earnedAt)}
           </p>
         )}
@@ -88,7 +88,7 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
               </span>
             </div>
             <div
-              className="h-1.5 w-full rounded-full bg-gray-200"
+              className="h-1.5 w-full rounded-full bg-white/[0.1]"
               role="progressbar"
               aria-valuenow={progress.percentage}
               aria-valuemin={0}
@@ -102,7 +102,7 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
                     ? 'bg-yellow-500'
                     : progress.percentage >= 50
                       ? 'bg-blue-500'
-                      : 'bg-gray-400'
+                      : 'bg-white/40'
                 )}
                 style={{ width: `${progress.percentage}%` }}
               />

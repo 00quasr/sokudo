@@ -27,6 +27,9 @@ import {
   LucideIcon,
   ArrowRight,
   Github,
+  Zap,
+  Target,
+  Trophy,
 } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -50,11 +53,23 @@ const iconMap: Record<string, LucideIcon> = {
   database: Database,
 };
 
+const iconColors: Record<string, { bg: string; text: string; hoverBg: string }> = {
+  'git-branch': { bg: 'bg-orange-500/20', text: 'text-orange-400', hoverBg: 'group-hover:bg-orange-500/30' },
+  'git-merge': { bg: 'bg-orange-500/20', text: 'text-orange-400', hoverBg: 'group-hover:bg-orange-500/30' },
+  terminal: { bg: 'bg-green-500/20', text: 'text-green-400', hoverBg: 'group-hover:bg-green-500/30' },
+  code: { bg: 'bg-blue-500/20', text: 'text-blue-400', hoverBg: 'group-hover:bg-blue-500/30' },
+  'file-type': { bg: 'bg-purple-500/20', text: 'text-purple-400', hoverBg: 'group-hover:bg-purple-500/30' },
+  container: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', hoverBg: 'group-hover:bg-cyan-500/30' },
+  package: { bg: 'bg-red-500/20', text: 'text-red-400', hoverBg: 'group-hover:bg-red-500/30' },
+  layers: { bg: 'bg-indigo-500/20', text: 'text-indigo-400', hoverBg: 'group-hover:bg-indigo-500/30' },
+  sparkles: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', hoverBg: 'group-hover:bg-yellow-500/30' },
+  database: { bg: 'bg-emerald-500/20', text: 'text-emerald-400', hoverBg: 'group-hover:bg-emerald-500/30' },
+};
 const defaultIconColor = { bg: 'bg-white/[0.06]', text: 'text-white/50', hoverBg: 'group-hover:bg-white/10 group-hover:text-white/70' };
 
 function CategoryCard({ category, locked }: { category: Category; locked: boolean }) {
   const IconComponent = iconMap[category.icon || ''] || Code;
-  const iconColor = defaultIconColor;
+  const iconColor = iconColors[category.icon || ''] || defaultIconColor;
 
   if (locked) {
     return (
@@ -171,23 +186,44 @@ export default async function PracticePage() {
         {/* Quick stats for logged in users */}
         {user && stats && stats.totalSessions > 0 && (
           <div className="grid grid-cols-3 gap-4 mb-10">
-            <div className="rounded-xl bg-white/[0.03] p-4">
-              <p className="text-xl font-medium text-white">
-                {Math.round(stats.avgWpm)}
-              </p>
-              <p className="text-xs text-white/40 mt-1">Avg WPM</p>
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-500/20">
+                  <Zap className="h-4 w-4 text-yellow-400" />
+                </div>
+                <div>
+                  <p className="text-xl font-medium text-white">
+                    {Math.round(stats.avgWpm)}
+                  </p>
+                  <p className="text-xs text-white/40">Avg WPM</p>
+                </div>
+              </div>
             </div>
-            <div className="rounded-xl bg-white/[0.03] p-4">
-              <p className="text-xl font-medium text-white">
-                {Math.round(stats.avgAccuracy)}%
-              </p>
-              <p className="text-xs text-white/40 mt-1">Accuracy</p>
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-green-500/20">
+                  <Target className="h-4 w-4 text-green-400" />
+                </div>
+                <div>
+                  <p className="text-xl font-medium text-white">
+                    {Math.round(stats.avgAccuracy)}%
+                  </p>
+                  <p className="text-xs text-white/40">Accuracy</p>
+                </div>
+              </div>
             </div>
-            <div className="rounded-xl bg-white/[0.03] p-4">
-              <p className="text-xl font-medium text-white">
-                {stats.totalSessions}
-              </p>
-              <p className="text-xs text-white/40 mt-1">Sessions</p>
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-500/20">
+                  <Trophy className="h-4 w-4 text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-xl font-medium text-white">
+                    {stats.totalSessions}
+                  </p>
+                  <p className="text-xs text-white/40">Sessions</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -197,10 +233,10 @@ export default async function PracticePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-10">
             <Link
               href="/practice/smart"
-              className="group rounded-xl bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors"
+              className="group rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 hover:bg-white/[0.05] transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.06] text-white/60 group-hover:text-white/80 transition-colors">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-500/20 text-yellow-400 group-hover:bg-yellow-500/30 transition-colors">
                   <Brain className="h-5 w-5" />
                 </div>
                 <div>
@@ -216,10 +252,10 @@ export default async function PracticePage() {
 
             <Link
               href="/practice/personalized"
-              className="group rounded-xl bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors"
+              className="group rounded-xl bg-white/[0.03] border border-white/[0.06] p-4 hover:bg-white/[0.05] transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.06] text-white/60 group-hover:text-white/80 transition-colors">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20 text-purple-400 group-hover:bg-purple-500/30 transition-colors">
                   <Crosshair className="h-5 w-5" />
                 </div>
                 <div>
@@ -238,7 +274,7 @@ export default async function PracticePage() {
               className="group rounded-xl bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors border border-dashed border-white/10"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.06] text-white/60 group-hover:text-white/80 transition-colors">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/20 text-blue-400 group-hover:bg-blue-500/30 transition-colors">
                   <Github className="h-5 w-5" />
                 </div>
                 <div>
@@ -282,7 +318,7 @@ export default async function PracticePage() {
                     </span>
                   </div>
 
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-white/50 group-hover:bg-white/10 group-hover:text-white/70 transition-colors">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400 group-hover:bg-blue-500/30 transition-colors">
                     <GitBranch className="h-5 w-5" />
                   </div>
 

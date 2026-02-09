@@ -5,10 +5,10 @@ function SkeletonCard() {
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center gap-3">
-          <div className="bg-gray-100 rounded-full p-2 w-9 h-9 animate-pulse" />
+          <div className="bg-white/[0.06] rounded-full p-2 w-9 h-9 animate-pulse" />
           <div className="space-y-2">
-            <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
-            <div className="h-6 w-12 bg-gray-200 rounded animate-pulse" />
+            <div className="h-3 w-16 bg-white/[0.06] rounded animate-pulse" />
+            <div className="h-6 w-12 bg-white/[0.06] rounded animate-pulse" />
           </div>
         </div>
       </CardContent>
@@ -18,14 +18,14 @@ function SkeletonCard() {
 
 function SkeletonRow() {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+    <div className="flex items-center justify-between py-3 border-b border-white/[0.04] last:border-0">
       <div className="space-y-2">
-        <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
-        <div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
+        <div className="h-4 w-32 bg-white/[0.06] rounded animate-pulse" />
+        <div className="h-3 w-20 bg-white/[0.06] rounded animate-pulse" />
       </div>
       <div className="flex gap-6">
-        <div className="h-8 w-16 bg-gray-200 rounded animate-pulse" />
-        <div className="h-8 w-16 bg-gray-200 rounded animate-pulse" />
+        <div className="h-8 w-16 bg-white/[0.06] rounded animate-pulse" />
+        <div className="h-8 w-16 bg-white/[0.06] rounded animate-pulse" />
       </div>
     </div>
   );
@@ -34,7 +34,7 @@ function SkeletonRow() {
 export default function TeamStatsLoading() {
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         Team Statistics
       </h1>
 
@@ -51,11 +51,11 @@ export default function TeamStatsLoading() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+              <div className="h-5 w-32 bg-white/[0.06] rounded animate-pulse" />
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-40 bg-gray-100 rounded animate-pulse" />
+            <div className="h-40 bg-white/[0.06] rounded animate-pulse" />
           </CardContent>
         </Card>
 
@@ -63,7 +63,7 @@ export default function TeamStatsLoading() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <div className="h-5 w-40 bg-gray-200 rounded animate-pulse" />
+              <div className="h-5 w-40 bg-white/[0.06] rounded animate-pulse" />
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -77,7 +77,7 @@ export default function TeamStatsLoading() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+              <div className="h-5 w-32 bg-white/[0.06] rounded animate-pulse" />
             </CardTitle>
           </CardHeader>
           <CardContent>

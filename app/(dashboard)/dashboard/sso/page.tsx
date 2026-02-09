@@ -165,7 +165,7 @@ export default function SsoSettingsPage() {
     return (
       <section className="flex-1 p-4 lg:p-8">
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          <Loader2 className="h-8 w-8 animate-spin text-white/40" />
         </div>
       </section>
     );
@@ -173,21 +173,21 @@ export default function SsoSettingsPage() {
 
   return (
     <section className="flex-1 p-4 lg:p-8">
-      <h1 className="text-lg lg:text-2xl font-medium text-gray-900 mb-6">
+      <h1 className="text-lg lg:text-2xl font-medium text-white mb-6">
         SAML SSO Configuration
       </h1>
 
       {error && (
-        <div className="mb-4 p-3 rounded-md bg-red-50 border border-red-200 flex items-start gap-2">
-          <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
-          <span className="text-red-700 text-sm">{error}</span>
+        <div className="mb-4 p-3 rounded-md bg-red-500/10 border border-red-500/20 flex items-start gap-2">
+          <AlertCircle className="h-4 w-4 text-red-400 mt-0.5 shrink-0" />
+          <span className="text-red-400 text-sm">{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="mb-4 p-3 rounded-md bg-green-50 border border-green-200 flex items-start gap-2">
-          <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-          <span className="text-green-700 text-sm">{success}</span>
+        <div className="mb-4 p-3 rounded-md bg-green-500/10 border border-green-500/20 flex items-start gap-2">
+          <CheckCircle2 className="h-4 w-4 text-green-400 mt-0.5 shrink-0" />
+          <span className="text-green-400 text-sm">{success}</span>
         </div>
       )}
 
@@ -200,9 +200,9 @@ export default function SsoSettingsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label className="mb-1 text-sm text-gray-600">Entity ID (Audience URI)</Label>
+            <Label className="mb-1 text-sm text-white/60">Entity ID (Audience URI)</Label>
             <div className="flex items-center gap-2">
-              <Input value={spEntityId} readOnly className="font-mono text-sm bg-gray-50" />
+              <Input value={spEntityId} readOnly className="font-mono text-sm bg-white/[0.03]" />
               <Button
                 type="button"
                 variant="outline"
@@ -218,9 +218,9 @@ export default function SsoSettingsPage() {
             </div>
           </div>
           <div>
-            <Label className="mb-1 text-sm text-gray-600">ACS URL (Reply URL)</Label>
+            <Label className="mb-1 text-sm text-white/60">ACS URL (Reply URL)</Label>
             <div className="flex items-center gap-2">
-              <Input value={acsUrl} readOnly className="font-mono text-sm bg-gray-50" />
+              <Input value={acsUrl} readOnly className="font-mono text-sm bg-white/[0.03]" />
               <Button
                 type="button"
                 variant="outline"
@@ -236,9 +236,9 @@ export default function SsoSettingsPage() {
             </div>
           </div>
           <div>
-            <Label className="mb-1 text-sm text-gray-600">Metadata URL</Label>
+            <Label className="mb-1 text-sm text-white/60">Metadata URL</Label>
             <div className="flex items-center gap-2">
-              <Input value={spEntityId} readOnly className="font-mono text-sm bg-gray-50" />
+              <Input value={spEntityId} readOnly className="font-mono text-sm bg-white/[0.03]" />
               <Button
                 type="button"
                 variant="outline"
@@ -315,7 +315,7 @@ export default function SsoSettingsPage() {
 
             <div>
               <Label htmlFor="slo-url" className="mb-2">
-                SLO URL (Logout URL) <span className="text-gray-400 font-normal">- optional</span>
+                SLO URL (Logout URL) <span className="text-white/40 font-normal">- optional</span>
               </Label>
               <Input
                 id="slo-url"
@@ -328,7 +328,7 @@ export default function SsoSettingsPage() {
             </div>
 
             <div className="border-t pt-4 mt-4">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Options</h3>
+              <h3 className="text-sm font-medium text-white mb-3">Options</h3>
               <div className="space-y-3">
                 <label className="flex items-center gap-3">
                   <input
@@ -338,8 +338,8 @@ export default function SsoSettingsPage() {
                     className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                   <div>
-                    <span className="text-sm font-medium text-gray-900">Enable SSO</span>
-                    <p className="text-xs text-gray-500">Allow team members to sign in via SAML SSO</p>
+                    <span className="text-sm font-medium text-white">Enable SSO</span>
+                    <p className="text-xs text-white/50">Allow team members to sign in via SAML SSO</p>
                   </div>
                 </label>
 
@@ -351,8 +351,8 @@ export default function SsoSettingsPage() {
                     className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                   <div>
-                    <span className="text-sm font-medium text-gray-900">Auto-provision users</span>
-                    <p className="text-xs text-gray-500">Automatically create accounts for new SSO users</p>
+                    <span className="text-sm font-medium text-white">Auto-provision users</span>
+                    <p className="text-xs text-white/50">Automatically create accounts for new SSO users</p>
                   </div>
                 </label>
 
@@ -364,8 +364,8 @@ export default function SsoSettingsPage() {
                     className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                   />
                   <div>
-                    <span className="text-sm font-medium text-gray-900">Allow IdP-initiated SSO</span>
-                    <p className="text-xs text-gray-500">Allow login initiated from the identity provider</p>
+                    <span className="text-sm font-medium text-white">Allow IdP-initiated SSO</span>
+                    <p className="text-xs text-white/50">Allow login initiated from the identity provider</p>
                   </div>
                 </label>
               </div>
