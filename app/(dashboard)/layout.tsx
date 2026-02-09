@@ -33,17 +33,9 @@ function UserMenu() {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-4">
-        <Link
-          href="/pricing"
-          className="text-sm text-white/60 hover:text-white transition-colors"
-        >
-          Pricing
-        </Link>
-        <Button asChild className="rounded-full bg-white text-black hover:bg-white/90 px-5">
-          <Link href="/sign-up">Get started</Link>
-        </Button>
-      </div>
+      <Button asChild className="rounded-full bg-white text-black hover:bg-white/90 px-5">
+        <Link href="/sign-up">Get started</Link>
+      </Button>
     );
   }
 
@@ -110,6 +102,12 @@ function Header() {
             className="text-sm text-white/60 hover:text-white transition-colors"
           >
             Practice
+          </Link>
+          <Link
+            href="/race"
+            className="text-sm text-white/60 hover:text-white transition-colors"
+          >
+            Race
           </Link>
           <Link
             href="/dashboard/stats"

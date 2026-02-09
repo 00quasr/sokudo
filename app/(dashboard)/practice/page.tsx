@@ -8,6 +8,7 @@ import {
 import { Category } from '@/lib/db/schema';
 import { canAccessPremiumCategories, hasUnlimitedPractice } from '@/lib/limits/constants';
 import { RemainingTimeBar } from '@/components/limits/RemainingTimeBar';
+import { getUserRepoCategories } from '@/lib/repo-scanner';
 import {
   GitBranch,
   GitMerge,
@@ -25,6 +26,7 @@ import {
   Crosshair,
   LucideIcon,
   ArrowRight,
+  Github,
 } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -129,15 +131,18 @@ export default async function PracticePage() {
   let canAccessPremium = false;
   let isFreeTier = true;
   let stats = null;
+  let repoCategories: Awaited<ReturnType<typeof getUserRepoCategories>> = [];
 
   if (user) {
-    const [profile, userStats] = await Promise.all([
+    const [profile, userStats, userRepoCategories] = await Promise.all([
       getUserProfile(user.id),
       getUserStatsOverview(),
+      getUserRepoCategories(user.id),
     ]);
     canAccessPremium = canAccessPremiumCategories(profile?.subscriptionTier ?? 'free');
     isFreeTier = !hasUnlimitedPractice(profile?.subscriptionTier ?? 'free');
     stats = userStats;
+    repoCategories = userRepoCategories;
   }
 
   const freeCategories = categories.filter((c) => !c.isPremium);
@@ -189,7 +194,7 @@ export default async function PracticePage() {
 
         {/* Smart practice options for logged in users */}
         {user && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-10">
             <Link
               href="/practice/smart"
               className="group rounded-xl bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors"
@@ -227,17 +232,90 @@ export default async function PracticePage() {
                 </div>
               </div>
             </Link>
+
+            <Link
+              href="/dashboard/repos/connect"
+              className="group rounded-xl bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors border border-dashed border-white/10"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.06] text-white/60 group-hover:text-white/80 transition-colors">
+                  <Github className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-white/90 group-hover:text-white">
+                    Import from GitHub
+                  </h3>
+                  <p className="text-xs text-white/40">
+                    Generate challenges from your repos
+                  </p>
+                </div>
+              </div>
+            </Link>
           </div>
+        )}
+
+        {/* User's Repo Categories */}
+        {repoCategories.length > 0 && (
+          <section className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-medium text-white/40">
+                Your GitHub imports
+              </h2>
+              <Link
+                href="/dashboard/repos"
+                className="text-xs text-white/40 hover:text-white/60 transition-colors"
+              >
+                Manage repos →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {repoCategories.map((repoCategory) => (
+                <Link
+                  key={repoCategory.id}
+                  href={`/practice/repo/${repoCategory.id}`}
+                  className="group relative rounded-2xl bg-white/[0.02] p-6 hover:bg-white/[0.04] transition-colors border border-white/[0.04]"
+                >
+                  <div className="absolute right-4 top-4">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white/60">
+                      <Github className="h-3 w-3" />
+                      Repo
+                    </span>
+                  </div>
+
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-white/50 group-hover:bg-white/10 group-hover:text-white/70 transition-colors">
+                    <GitBranch className="h-5 w-5" />
+                  </div>
+
+                  <h3 className="text-base font-medium text-white mb-1 group-hover:text-white transition-colors">
+                    {repoCategory.name}
+                  </h3>
+
+                  <p className="text-xs text-white/40 mb-2">
+                    {repoCategory.repoOwner}/{repoCategory.repoName}
+                  </p>
+
+                  <p className="text-sm text-white/50 line-clamp-2 mb-4">
+                    {repoCategory.description || `${repoCategory.challengeCount} challenges from this repository`}
+                  </p>
+
+                  <div className="flex items-center gap-2 text-sm text-white/40 group-hover:text-white/60 transition-colors">
+                    <Play className="h-3.5 w-3.5" />
+                    <span>Start practice</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* Categories */}
         {freeCategories.length > 0 && (
           <section className="mb-10">
-            {canAccessPremium && premiumCategories.length > 0 && (
+            {(canAccessPremium && premiumCategories.length > 0) || repoCategories.length > 0 ? (
               <h2 className="text-sm font-medium text-white/40 mb-4">
-                Free categories
+                {repoCategories.length > 0 ? 'Built-in categories' : 'Free categories'}
               </h2>
-            )}
+            ) : null}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {freeCategories.map((category) => (
                 <CategoryCard key={category.id} category={category} locked={false} />

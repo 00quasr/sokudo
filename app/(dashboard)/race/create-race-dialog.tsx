@@ -82,23 +82,23 @@ export function CreateRaceDialog({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
-        <h2 className="mb-6 text-xl font-bold text-gray-900">Create a Race</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="w-full max-w-lg rounded-2xl bg-[#111113] border border-white/[0.08] p-6 shadow-2xl">
+        <h2 className="mb-6 text-xl font-medium text-white">Create a Race</h2>
 
         <div className="space-y-4">
           {/* Category selection */}
           <div>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category" className="text-white/70">Category</Label>
             {loadingCategories ? (
-              <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+              <div className="mt-2 flex items-center gap-2 text-sm text-white/50">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Loading categories...
               </div>
             ) : (
               <select
                 id="category"
-                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                className="mt-2 w-full rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm text-white focus:border-white/20 focus:outline-none focus:ring-1 focus:ring-white/20"
                 value={selectedCategoryId ?? ''}
                 onChange={(e) =>
                   setSelectedCategoryId(
@@ -106,9 +106,9 @@ export function CreateRaceDialog({
                   )
                 }
               >
-                <option value="">Select a category</option>
+                <option value="" className="bg-[#111113]">Select a category</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
+                  <option key={cat.id} value={cat.id} className="bg-[#111113]">
                     {cat.name} ({cat.challengeCount} challenges)
                   </option>
                 ))}
@@ -118,9 +118,9 @@ export function CreateRaceDialog({
 
           {/* Category info */}
           {selectedCategoryId && (
-            <div className="rounded-lg bg-blue-50 p-3 text-sm text-blue-900">
-              <p className="font-medium">Race through the entire category!</p>
-              <p className="mt-1 text-xs text-blue-700">
+            <div className="rounded-xl bg-white/[0.02] border border-white/[0.08] p-4 text-sm">
+              <p className="font-medium text-white">Race through the entire category!</p>
+              <p className="mt-1 text-xs text-white/50">
                 You'll type through all challenges in this category. First to finish wins!
               </p>
             </div>
@@ -128,7 +128,7 @@ export function CreateRaceDialog({
 
           {/* Max players */}
           <div>
-            <Label htmlFor="maxPlayers">Max Players</Label>
+            <Label htmlFor="maxPlayers" className="text-white/70">Max Players</Label>
             <Input
               id="maxPlayers"
               type="number"
@@ -140,26 +140,26 @@ export function CreateRaceDialog({
                   Math.max(2, Math.min(8, parseInt(e.target.value, 10) || 2))
                 )
               }
-              className="mt-1"
+              className="mt-2 rounded-xl border-white/[0.08] bg-white/[0.02] text-white focus:border-white/20"
             />
           </div>
 
           {/* Error */}
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-red-400">{error}</p>}
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex justify-end gap-3 pt-4">
             <Button
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="rounded-full"
+              className="rounded-full border-white/20 text-white/70 hover:bg-white/5 hover:text-white"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreate}
               disabled={creating || !selectedCategoryId}
-              className="rounded-full"
+              className="rounded-full bg-white text-black hover:bg-white/90 disabled:opacity-50"
             >
               {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Race

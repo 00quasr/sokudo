@@ -21,18 +21,12 @@ import { RaceCard } from './race-card';
 import { useLobbySocket, type LobbyUpdate } from '@/lib/ws/use-race-socket';
 import { useMatchmaking } from '@/lib/matchmaking/use-matchmaking';
 
-interface RaceChallenge {
-  id: number;
-  content: string;
-  difficulty: string;
-  syntaxType: string;
-}
-
 interface RaceCategory {
   id: number;
   name: string;
   slug: string;
   icon: string;
+  difficulty: string;
 }
 
 export interface ActiveRace {
@@ -41,9 +35,9 @@ export interface ActiveRace {
   maxPlayers: number;
   createdAt: string;
   startedAt: string | null;
-  challenge: RaceChallenge;
   category: RaceCategory;
   participantCount: number;
+  challengeCount: number;
 }
 
 interface RaceLobbyProps {
@@ -60,17 +54,15 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
   const { data, error, isLoading } = useSWR<{ races: ActiveRace[] }>(
     '/api/races?status=waiting',
     fetcher,
-    { refreshInterval: 10000 } // Slower polling since WebSocket handles real-time
+    { refreshInterval: 10000 }
   );
 
-  // Fetch live (in-progress/countdown) races for spectating
   const { data: liveData } = useSWR<{ races: ActiveRace[] }>(
     '/api/races?status=in_progress,countdown',
     fetcher,
     { refreshInterval: 10000 }
   );
 
-  // Re-fetch lobby data when WebSocket notifies of changes
   const handleLobbyUpdate = useCallback((_update: LobbyUpdate) => {
     mutate('/api/races?status=waiting');
   }, []);
@@ -97,14 +89,14 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
     <div className="space-y-8">
       {/* Matchmaking banner */}
       {matchmaking.state === 'queued' && (
-        <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 flex items-center justify-between">
+        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
+            <Loader2 className="h-5 w-5 animate-spin text-white/60" />
             <div>
-              <p className="text-sm font-medium text-orange-900">
+              <p className="text-sm font-medium text-white">
                 Finding players with similar WPM...
               </p>
-              <p className="text-xs text-orange-600">
+              <p className="text-xs text-white/50">
                 Your average: {matchmaking.averageWpm ?? '...'} WPM
                 {matchmaking.queueSize
                   ? ` · ${matchmaking.queueSize} in queue`
@@ -116,7 +108,7 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
             variant="outline"
             size="sm"
             onClick={matchmaking.leaveQueue}
-            className="rounded-full border-orange-300 text-orange-700 hover:bg-orange-100"
+            className="rounded-full border-white/20 text-white/70 hover:bg-white/5 hover:text-white"
           >
             <X className="mr-1 h-3 w-3" />
             Cancel
@@ -126,7 +118,7 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
 
       {/* Actions bar */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-gray-500">
+        <div className="flex items-center gap-2 text-sm text-white/50">
           <Users className="h-4 w-4" />
           <span>
             {races.length} {races.length === 1 ? 'race' : 'races'} waiting for
@@ -138,7 +130,7 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
             <Button
               onClick={matchmaking.joinQueue}
               variant="outline"
-              className="rounded-full"
+              className="rounded-full border-white/20 text-white/70 hover:bg-white/5 hover:text-white"
             >
               <Zap className="mr-2 h-4 w-4" />
               Find Match
@@ -148,7 +140,7 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
             <Button
               onClick={() => setShowChallengeFriend(true)}
               variant="outline"
-              className="rounded-full"
+              className="rounded-full border-white/20 text-white/70 hover:bg-white/5 hover:text-white"
             >
               <Swords className="mr-2 h-4 w-4" />
               Challenge Friend
@@ -156,7 +148,7 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
           )}
           <Button
             onClick={() => setShowCreate(true)}
-            className="rounded-full"
+            className="rounded-full bg-white text-black hover:bg-white/90"
           >
             <Plus className="mr-2 h-4 w-4" />
             Create Race
@@ -167,29 +159,29 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
       {/* Race list */}
       {isLoading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+          <Loader2 className="h-6 w-6 animate-spin text-white/40" />
         </div>
       )}
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-600">
+        <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-6 text-center text-red-400">
           Failed to load races. Please try again.
         </div>
       )}
 
       {!isLoading && !error && races.length === 0 && (
-        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
-          <Trophy className="mx-auto mb-4 h-12 w-12 text-gray-300" />
-          <h3 className="mb-2 text-lg font-medium text-gray-900">
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-12 text-center">
+          <Trophy className="mx-auto mb-4 h-12 w-12 text-white/20" />
+          <h3 className="mb-2 text-lg font-medium text-white">
             No active races
           </h3>
-          <p className="mb-6 text-sm text-gray-500">
+          <p className="mb-6 text-sm text-white/50">
             Be the first to create a race and challenge other developers!
           </p>
           <Button
             onClick={() => setShowCreate(true)}
             variant="outline"
-            className="rounded-full"
+            className="rounded-full border-white/20 text-white/70 hover:bg-white/5 hover:text-white"
           >
             <Plus className="mr-2 h-4 w-4" />
             Create Race
@@ -208,9 +200,9 @@ export function RaceLobby({ userId, userName }: RaceLobbyProps) {
       {/* Live races - spectatable */}
       {liveRaces.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Eye className="h-4 w-4 text-purple-500" />
-            <span className="font-medium text-gray-700">
+          <div className="flex items-center gap-2 text-sm text-white/50">
+            <Eye className="h-4 w-4 text-white/60" />
+            <span className="font-medium text-white/70">
               Live Races ({liveRaces.length})
             </span>
             <span>- Watch in real-time</span>

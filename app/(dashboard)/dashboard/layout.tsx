@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Users, Settings, Shield, Activity, Menu, BarChart3, Trophy, FileText, Badge, Gift, Flag, KeyRound, AppWindow, Fingerprint, BookOpen } from 'lucide-react';
+import { Users, Settings, Shield, Activity, Menu, BarChart3, Trophy, FileText, Badge, Gift, Flag, KeyRound, AppWindow, Fingerprint, BookOpen, GitBranch } from 'lucide-react';
 
 export default function DashboardLayout({
   children
@@ -21,6 +21,7 @@ export default function DashboardLayout({
     { href: '/dashboard/stats', icon: BarChart3, label: 'Stats' },
     { href: '/dashboard/achievements', icon: Trophy, label: 'Achievements' },
     { href: '/dashboard/challenges', icon: FileText, label: 'Challenges' },
+    { href: '/dashboard/repos', icon: GitBranch, label: 'GitHub Repos' },
     { href: '/dashboard/races', icon: Flag, label: 'Races' },
     { href: '/dashboard/badges', icon: Badge, label: 'Badges' },
     { href: '/dashboard/referrals', icon: Gift, label: 'Referrals' },

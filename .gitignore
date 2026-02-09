@@ -49,3 +49,5 @@ extensions/vscode/out/
 .claude/
 .ralphy/
 .git-rewrite/
+
+.cursor/

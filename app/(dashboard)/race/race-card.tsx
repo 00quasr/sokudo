@@ -8,9 +8,9 @@ import { mutate } from 'swr';
 import type { ActiveRace } from './race-lobby';
 
 const difficultyColors: Record<string, string> = {
-  beginner: 'bg-green-100 text-green-800',
-  intermediate: 'bg-yellow-100 text-yellow-800',
-  advanced: 'bg-red-100 text-red-800',
+  beginner: 'bg-green-500/20 text-green-400',
+  intermediate: 'bg-yellow-500/20 text-yellow-400',
+  advanced: 'bg-red-500/20 text-red-400',
 };
 
 function formatTimeAgo(dateStr: string): string {
@@ -29,7 +29,7 @@ export function RaceCard({ race }: { race: ActiveRace }) {
   const [joinError, setJoinError] = useState<string | null>(null);
 
   const difficultyClass =
-    difficultyColors[race.challenge.difficulty] ?? difficultyColors.beginner;
+    difficultyColors[race.category.difficulty] ?? difficultyColors.beginner;
 
   const isFull = race.participantCount >= race.maxPlayers;
   const isSpectatable = race.status === 'in_progress' || race.status === 'countdown';
@@ -61,29 +61,31 @@ export function RaceCard({ race }: { race: ActiveRace }) {
   }
 
   return (
-    <div className="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-orange-300 hover:shadow-lg">
+    <div className="group rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 transition-all hover:border-white/[0.15] hover:bg-white/[0.04]">
       {/* Category & difficulty */}
       <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
+        <span className="text-xs font-medium tracking-wide text-white/50">
           {race.category.name}
         </span>
         <span
           className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize ${difficultyClass}`}
         >
-          {race.challenge.difficulty}
+          {race.category.difficulty}
         </span>
       </div>
 
-      {/* Challenge preview */}
-      <div className="mb-4 rounded-lg bg-gray-50 p-3">
-        <code className="block truncate text-sm text-gray-700">
-          {race.challenge.content.slice(0, 60)}
-          {race.challenge.content.length > 60 ? '...' : ''}
-        </code>
+      {/* Category info */}
+      <div className="mb-4 rounded-lg bg-white/[0.03] p-3">
+        <p className="text-sm text-white/70">
+          Race through {race.challengeCount} challenges
+        </p>
+        <p className="mt-1 text-xs text-white/40">
+          First to complete all challenges wins!
+        </p>
       </div>
 
       {/* Stats row */}
-      <div className="mb-4 flex items-center gap-4 text-sm text-gray-500">
+      <div className="mb-4 flex items-center gap-4 text-sm text-white/50">
         <div className="flex items-center gap-1">
           <Users className="h-3.5 w-3.5" />
           <span>
@@ -92,7 +94,7 @@ export function RaceCard({ race }: { race: ActiveRace }) {
         </div>
         <div className="flex items-center gap-1">
           <Zap className="h-3.5 w-3.5" />
-          <span>{race.challenge.syntaxType}</span>
+          <span>{race.challengeCount} challenges</span>
         </div>
         <div className="flex items-center gap-1">
           <Clock className="h-3.5 w-3.5" />
@@ -102,13 +104,13 @@ export function RaceCard({ race }: { race: ActiveRace }) {
 
       {/* Action button */}
       {joinError && (
-        <p className="mb-2 text-xs text-red-600">{joinError}</p>
+        <p className="mb-2 text-xs text-red-400">{joinError}</p>
       )}
       {isSpectatable ? (
         <Button
           onClick={() => router.push(`/race/${race.id}?spectate=true`)}
           variant="outline"
-          className="w-full rounded-full border-purple-300 text-purple-700 hover:bg-purple-50"
+          className="w-full rounded-full border-white/20 text-white/70 hover:bg-white/5 hover:text-white"
         >
           <Eye className="mr-2 h-4 w-4" />
           Watch Race
@@ -117,8 +119,11 @@ export function RaceCard({ race }: { race: ActiveRace }) {
         <Button
           onClick={handleJoin}
           disabled={joining || isFull}
-          variant={isFull ? 'secondary' : 'default'}
-          className="w-full rounded-full"
+          className={`w-full rounded-full ${
+            isFull
+              ? 'bg-white/10 text-white/50 cursor-not-allowed'
+              : 'bg-white text-black hover:bg-white/90'
+          }`}
         >
           {joining ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

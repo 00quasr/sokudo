@@ -123,7 +123,7 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+      <div className="flex items-center gap-2 text-sm font-medium text-white/70">
         <Swords className="h-4 w-4" />
         Friend Challenges
       </div>
@@ -134,16 +134,16 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
           {pendingReceived.map((fc) => (
             <div
               key={fc.id}
-              className="flex items-center justify-between rounded-lg border border-orange-200 bg-orange-50 p-3"
+              className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] p-4"
             >
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-white">
                   <span className="font-bold">
                     {fc.challenger.name || fc.challenger.username}
                   </span>{' '}
                   challenged you
                 </p>
-                <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
+                <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
                   <span>{fc.category.name}</span>
                   <span className="capitalize">{fc.challenge.difficulty}</span>
                   <span className="flex items-center gap-1">
@@ -152,7 +152,7 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
                   </span>
                 </div>
                 {fc.message && (
-                  <p className="mt-1 text-xs italic text-gray-600">
+                  <p className="mt-1 text-xs italic text-white/40">
                     &quot;{fc.message}&quot;
                   </p>
                 )}
@@ -162,7 +162,7 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
                   size="sm"
                   variant="outline"
                   onClick={() => handleAction(fc.id, 'decline')}
-                  className="h-8 rounded-full border-gray-300 text-gray-600 hover:bg-gray-100"
+                  className="h-8 rounded-full border-white/20 text-white/60 hover:bg-white/5 hover:text-white"
                 >
                   <X className="mr-1 h-3 w-3" />
                   Decline
@@ -170,7 +170,7 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
                 <Button
                   size="sm"
                   onClick={() => handleAction(fc.id, 'accept')}
-                  className="h-8 rounded-full"
+                  className="h-8 rounded-full bg-white text-black hover:bg-white/90"
                 >
                   <Check className="mr-1 h-3 w-3" />
                   Accept
@@ -187,16 +187,16 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
           {pendingSent.map((fc) => (
             <div
               key={`sent-${fc.id}`}
-              className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3"
+              className="flex items-center justify-between rounded-xl border border-white/[0.08] bg-white/[0.02] p-4"
             >
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-white">
                   You challenged{' '}
                   <span className="font-bold">
                     {fc.challenged.name || fc.challenged.username}
                   </span>
                 </p>
-                <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
+                <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
                   <span>{fc.category.name}</span>
                   <span className="capitalize">{fc.challenge.difficulty}</span>
                   <Loader2 className="h-3 w-3 animate-spin" />
@@ -207,7 +207,7 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
                 size="sm"
                 variant="outline"
                 onClick={() => handleAction(fc.id, 'cancel')}
-                className="ml-3 h-8 rounded-full border-gray-300 text-gray-600 hover:bg-gray-100"
+                className="ml-3 h-8 rounded-full border-white/20 text-white/60 hover:bg-white/5 hover:text-white"
               >
                 <X className="mr-1 h-3 w-3" />
                 Cancel
@@ -228,10 +228,10 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
             .map((fc) => (
               <div
                 key={`accepted-${fc.id}`}
-                className="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-3"
+                className="flex items-center justify-between rounded-xl border border-green-500/20 bg-green-500/10 p-4"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-white">
                     Challenge with{' '}
                     <span className="font-bold">
                       {fc.challenger.id === userId
@@ -240,14 +240,14 @@ export function FriendChallengesList({ userId }: FriendChallengesListProps) {
                     </span>{' '}
                     accepted
                   </p>
-                  <p className="mt-0.5 text-xs text-gray-500">
+                  <p className="mt-1 text-xs text-white/50">
                     {fc.category.name}
                   </p>
                 </div>
                 <Button
                   size="sm"
                   onClick={() => router.push(`/race/${fc.raceId}`)}
-                  className="ml-3 h-8 rounded-full"
+                  className="ml-3 h-8 rounded-full bg-white text-black hover:bg-white/90"
                 >
                   Join Race
                 </Button>

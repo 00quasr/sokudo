@@ -225,6 +225,13 @@
       "when": 1738887600000,
       "tag": "0033_developer_onboarding",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1739059200000,
+      "tag": "0035_repo_scanner",
+      "breakpoints": true
     }
   ]
 }

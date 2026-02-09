@@ -193,6 +193,9 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   friendChallengesReceived: many(friendChallenges, { relationName: 'challengesReceived' }),
   accounts: many(accounts),
   sessions: many(sessions),
+  connectedRepos: many(connectedRepos),
+  repoGeneratedChallenges: many(repoGeneratedChallenges),
+  repoCategories: many(repoCategories),
 }));
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -1500,6 +1503,128 @@ export type DeveloperOnboardingStep = typeof developerOnboardingSteps.$inferSele
 export type NewDeveloperOnboardingStep = typeof developerOnboardingSteps.$inferInsert;
 export type UserOnboardingProgress = typeof userOnboardingProgress.$inferSelect;
 export type NewUserOnboardingProgress = typeof userOnboardingProgress.$inferInsert;
+
+// ---- GitHub Repo Scanner (AI-powered command extraction) ----
+
+export const connectedRepos = pgTable('connected_repos', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  repoUrl: text('repo_url').notNull(),
+  owner: varchar('owner', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  defaultBranch: varchar('default_branch', { length: 255 }).notNull().default('main'),
+  isPrivate: boolean('is_private').notNull().default(false),
+  lastScannedAt: timestamp('last_scanned_at'),
+  scanStatus: varchar('scan_status', { length: 20 }).notNull().default('pending'),
+  errorMessage: text('error_message'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const scannedCommands = pgTable('scanned_commands', {
+  id: serial('id').primaryKey(),
+  repoId: integer('repo_id')
+    .notNull()
+    .references(() => connectedRepos.id, { onDelete: 'cascade' }),
+  sourceFile: varchar('source_file', { length: 500 }).notNull(),
+  rawContent: text('raw_content').notNull(),
+  extractedCommand: text('extracted_command').notNull(),
+  commandType: varchar('command_type', { length: 50 }).notNull().default('shell'),
+  frequency: integer('frequency').notNull().default(1),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const repoGeneratedChallenges = pgTable('repo_generated_challenges', {
+  id: serial('id').primaryKey(),
+  repoId: integer('repo_id')
+    .notNull()
+    .references(() => connectedRepos.id, { onDelete: 'cascade' }),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  scannedCommandId: integer('scanned_command_id')
+    .references(() => scannedCommands.id, { onDelete: 'set null' }),
+  content: text('content').notNull(),
+  difficulty: varchar('difficulty', { length: 20 }).notNull().default('beginner'),
+  syntaxType: varchar('syntax_type', { length: 50 }).notNull().default('shell'),
+  hint: text('hint'),
+  importance: integer('importance').notNull().default(5),
+  isSelected: boolean('is_selected').notNull().default(true),
+  timesCompleted: integer('times_completed').notNull().default(0),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const repoCategories = pgTable('repo_categories', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  repoId: integer('repo_id')
+    .notNull()
+    .references(() => connectedRepos.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull(),
+  description: text('description'),
+  icon: varchar('icon', { length: 50 }).default('code'),
+  challengeCount: integer('challenge_count').notNull().default(0),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const connectedReposRelations = relations(connectedRepos, ({ one, many }) => ({
+  user: one(users, {
+    fields: [connectedRepos.userId],
+    references: [users.id],
+  }),
+  scannedCommands: many(scannedCommands),
+  generatedChallenges: many(repoGeneratedChallenges),
+  repoCategories: many(repoCategories),
+}));
+
+export const scannedCommandsRelations = relations(scannedCommands, ({ one, many }) => ({
+  repo: one(connectedRepos, {
+    fields: [scannedCommands.repoId],
+    references: [connectedRepos.id],
+  }),
+  generatedChallenges: many(repoGeneratedChallenges),
+}));
+
+export const repoGeneratedChallengesRelations = relations(repoGeneratedChallenges, ({ one }) => ({
+  repo: one(connectedRepos, {
+    fields: [repoGeneratedChallenges.repoId],
+    references: [connectedRepos.id],
+  }),
+  user: one(users, {
+    fields: [repoGeneratedChallenges.userId],
+    references: [users.id],
+  }),
+  scannedCommand: one(scannedCommands, {
+    fields: [repoGeneratedChallenges.scannedCommandId],
+    references: [scannedCommands.id],
+  }),
+}));
+
+export const repoCategoriesRelations = relations(repoCategories, ({ one }) => ({
+  user: one(users, {
+    fields: [repoCategories.userId],
+    references: [users.id],
+  }),
+  repo: one(connectedRepos, {
+    fields: [repoCategories.repoId],
+    references: [connectedRepos.id],
+  }),
+}));
+
+export type ConnectedRepo = typeof connectedRepos.$inferSelect;
+export type NewConnectedRepo = typeof connectedRepos.$inferInsert;
+export type ScannedCommand = typeof scannedCommands.$inferSelect;
+export type NewScannedCommand = typeof scannedCommands.$inferInsert;
+export type RepoGeneratedChallenge = typeof repoGeneratedChallenges.$inferSelect;
+export type NewRepoGeneratedChallenge = typeof repoGeneratedChallenges.$inferInsert;
+export type RepoCategory = typeof repoCategories.$inferSelect;
+export type NewRepoCategory = typeof repoCategories.$inferInsert;
 
 export type TeamDataWithMembers = Team & {
   teamMembers: (TeamMember & {

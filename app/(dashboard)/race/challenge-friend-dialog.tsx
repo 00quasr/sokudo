@@ -125,14 +125,14 @@ export function ChallengeFriendDialog({
   const selectedChallenge = challenges.find((c) => c.id === selectedChallengeId);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
-        <h2 className="mb-6 text-xl font-bold text-gray-900">Challenge a Friend</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="w-full max-w-lg rounded-2xl bg-[#111113] border border-white/[0.08] p-6 shadow-2xl">
+        <h2 className="mb-6 text-xl font-medium text-white">Challenge a Friend</h2>
 
         {success ? (
           <div className="py-8 text-center">
-            <p className="text-lg font-medium text-green-600">Challenge sent!</p>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="text-lg font-medium text-green-400">Challenge sent!</p>
+            <p className="mt-1 text-sm text-white/50">
               Waiting for {username} to accept...
             </p>
           </div>
@@ -140,41 +140,41 @@ export function ChallengeFriendDialog({
           <div className="space-y-4">
             {/* Username input */}
             <div>
-              <Label htmlFor="username">Opponent Username</Label>
+              <Label htmlFor="username" className="text-white/70">Opponent Username</Label>
               <Input
                 id="username"
                 placeholder="Enter username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="mt-1"
+                className="mt-2 rounded-xl border-white/[0.08] bg-white/[0.02] text-white placeholder:text-white/30 focus:border-white/20"
               />
             </div>
 
             {/* Optional message */}
             <div>
-              <Label htmlFor="message">Message (optional)</Label>
+              <Label htmlFor="message" className="text-white/70">Message (optional)</Label>
               <Input
                 id="message"
                 placeholder="Think you can beat me?"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={255}
-                className="mt-1"
+                className="mt-2 rounded-xl border-white/[0.08] bg-white/[0.02] text-white placeholder:text-white/30 focus:border-white/20"
               />
             </div>
 
             {/* Category selection */}
             <div>
-              <Label htmlFor="fc-category">Category</Label>
+              <Label htmlFor="fc-category" className="text-white/70">Category</Label>
               {loadingCategories ? (
-                <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                <div className="mt-2 flex items-center gap-2 text-sm text-white/50">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Loading categories...
                 </div>
               ) : (
                 <select
                   id="fc-category"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  className="mt-2 w-full rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm text-white focus:border-white/20 focus:outline-none focus:ring-1 focus:ring-white/20"
                   value={selectedCategoryId ?? ''}
                   onChange={(e) =>
                     setSelectedCategoryId(
@@ -182,9 +182,9 @@ export function ChallengeFriendDialog({
                     )
                   }
                 >
-                  <option value="">Select a category</option>
+                  <option value="" className="bg-[#111113]">Select a category</option>
                   {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
+                    <option key={cat.id} value={cat.id} className="bg-[#111113]">
                       {cat.name} ({cat.challengeCount} challenges)
                     </option>
                   ))}
@@ -196,26 +196,26 @@ export function ChallengeFriendDialog({
             {selectedCategoryId && (
               <div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="fc-challenge">Challenge</Label>
+                  <Label htmlFor="fc-challenge" className="text-white/70">Challenge</Label>
                   {challenges.length > 0 && (
                     <button
                       type="button"
                       onClick={pickRandomChallenge}
-                      className="text-xs font-medium text-orange-600 hover:text-orange-700"
+                      className="text-xs font-medium text-white/60 hover:text-white"
                     >
                       Random
                     </button>
                   )}
                 </div>
                 {loadingChallenges ? (
-                  <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                  <div className="mt-2 flex items-center gap-2 text-sm text-white/50">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Loading challenges...
                   </div>
                 ) : (
                   <select
                     id="fc-challenge"
-                    className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    className="mt-2 w-full rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm text-white focus:border-white/20 focus:outline-none focus:ring-1 focus:ring-white/20"
                     value={selectedChallengeId ?? ''}
                     onChange={(e) =>
                       setSelectedChallengeId(
@@ -223,9 +223,9 @@ export function ChallengeFriendDialog({
                       )
                     }
                   >
-                    <option value="">Select a challenge</option>
+                    <option value="" className="bg-[#111113]">Select a challenge</option>
                     {challenges.map((ch) => (
-                      <option key={ch.id} value={ch.id}>
+                      <option key={ch.id} value={ch.id} className="bg-[#111113]">
                         {ch.content.slice(0, 50)}
                         {ch.content.length > 50 ? '...' : ''} ({ch.difficulty})
                       </option>
@@ -237,33 +237,33 @@ export function ChallengeFriendDialog({
 
             {/* Challenge preview */}
             {selectedChallenge && (
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="mb-1 flex items-center gap-2 text-xs text-gray-500">
+              <div className="rounded-xl bg-white/[0.02] border border-white/[0.08] p-4">
+                <div className="mb-2 flex items-center gap-2 text-xs text-white/50">
                   <span className="capitalize">{selectedChallenge.syntaxType}</span>
                   <span className="capitalize">{selectedChallenge.difficulty}</span>
                 </div>
-                <code className="block whitespace-pre-wrap text-sm text-gray-700">
+                <code className="block whitespace-pre-wrap text-sm text-white/70 font-mono">
                   {selectedChallenge.content}
                 </code>
               </div>
             )}
 
             {/* Error */}
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-red-400">{error}</p>}
 
             {/* Actions */}
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-3 pt-4">
               <Button
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="rounded-full"
+                className="rounded-full border-white/20 text-white/70 hover:bg-white/5 hover:text-white"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSend}
                 disabled={sending || !selectedChallengeId || !username.trim()}
-                className="rounded-full"
+                className="rounded-full bg-white text-black hover:bg-white/90 disabled:opacity-50"
               >
                 {sending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Send Challenge
