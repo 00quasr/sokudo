@@ -103,6 +103,114 @@ async function seedProduction() {
       isPremium: true,
       displayOrder: 10,
     },
+    {
+      name: 'Claude Code',
+      slug: 'claude-code',
+      description: 'Anthropic CLI slash commands for AI-assisted coding',
+      icon: 'sparkles',
+      difficulty: 'beginner',
+      isPremium: false,
+      displayOrder: 11,
+    },
+    {
+      name: 'GitHub CLI',
+      slug: 'github-cli',
+      description: 'gh commands for PRs, issues, repos, and Actions',
+      icon: 'github',
+      difficulty: 'intermediate',
+      isPremium: false,
+      displayOrder: 12,
+    },
+    {
+      name: 'kubectl',
+      slug: 'kubectl',
+      description: 'Kubernetes cluster management and deployment commands',
+      icon: 'server',
+      difficulty: 'advanced',
+      isPremium: true,
+      displayOrder: 13,
+    },
+    {
+      name: 'AWS CLI',
+      slug: 'aws-cli',
+      description: 'Amazon Web Services commands for S3, EC2, Lambda, and more',
+      icon: 'cloud',
+      difficulty: 'advanced',
+      isPremium: true,
+      displayOrder: 14,
+    },
+    {
+      name: 'Vercel CLI',
+      slug: 'vercel-cli',
+      description: 'Vercel deployment, domains, and environment management',
+      icon: 'triangle',
+      difficulty: 'beginner',
+      isPremium: false,
+      displayOrder: 15,
+    },
+    {
+      name: 'Prisma CLI',
+      slug: 'prisma-cli',
+      description: 'Database migrations, schema management, and Prisma Studio',
+      icon: 'database',
+      difficulty: 'intermediate',
+      isPremium: true,
+      displayOrder: 16,
+    },
+    {
+      name: 'Firebase CLI',
+      slug: 'firebase-cli',
+      description: 'Firebase hosting, functions, Firestore, and emulators',
+      icon: 'flame',
+      difficulty: 'intermediate',
+      isPremium: true,
+      displayOrder: 17,
+    },
+    {
+      name: 'Terraform',
+      slug: 'terraform',
+      description: 'Infrastructure as code: init, plan, apply, and state management',
+      icon: 'layers',
+      difficulty: 'advanced',
+      isPremium: true,
+      displayOrder: 18,
+    },
+    {
+      name: 'Vim',
+      slug: 'vim',
+      description: 'Vim motions, editing commands, and text manipulation',
+      icon: 'edit',
+      difficulty: 'intermediate',
+      isPremium: false,
+      displayOrder: 19,
+    },
+    {
+      name: 'tmux',
+      slug: 'tmux',
+      description: 'Terminal multiplexer: sessions, windows, and panes',
+      icon: 'layout-grid',
+      difficulty: 'intermediate',
+      isPremium: true,
+      displayOrder: 20,
+    },
+    {
+      name: 'curl',
+      slug: 'curl',
+      description: 'HTTP requests, headers, authentication, and data transfer',
+      icon: 'globe',
+      difficulty: 'beginner',
+      isPremium: false,
+      displayOrder: 21,
+    },
+    {
+      name: 'jq',
+      slug: 'jq',
+      description: 'JSON processing: filtering, transforming, and querying',
+      icon: 'braces',
+      difficulty: 'intermediate',
+      isPremium: true,
+      displayOrder: 22,
+    },
   ]).onConflictDoNothing();
 
   console.log('✓ Categories seeded');
@@ -190,6 +298,102 @@ async function seedProduction() {
     console.log('  ⚠ SQL already seeded or error:', (error as Error).message);
   }
 
+  try {
+    console.log('  - Seeding Claude Code challenges...');
+    await import('./seed-claude-code');
+    console.log('  ✓ Claude Code seeded');
+  } catch (error) {
+    console.log('  ⚠ Claude Code already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding GitHub CLI challenges...');
+    await import('./seed-github-cli');
+    console.log('  ✓ GitHub CLI seeded');
+  } catch (error) {
+    console.log('  ⚠ GitHub CLI already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding kubectl challenges...');
+    await import('./seed-kubectl');
+    console.log('  ✓ kubectl seeded');
+  } catch (error) {
+    console.log('  ⚠ kubectl already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding AWS CLI challenges...');
+    await import('./seed-aws-cli');
+    console.log('  ✓ AWS CLI seeded');
+  } catch (error) {
+    console.log('  ⚠ AWS CLI already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding Vercel CLI challenges...');
+    await import('./seed-vercel-cli');
+    console.log('  ✓ Vercel CLI seeded');
+  } catch (error) {
+    console.log('  ⚠ Vercel CLI already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding Prisma CLI challenges...');
+    await import('./seed-prisma-cli');
+    console.log('  ✓ Prisma CLI seeded');
+  } catch (error) {
+    console.log('  ⚠ Prisma CLI already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding Firebase CLI challenges...');
+    await import('./seed-firebase-cli');
+    console.log('  ✓ Firebase CLI seeded');
+  } catch (error) {
+    console.log('  ⚠ Firebase CLI already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding Terraform challenges...');
+    await import('./seed-terraform');
+    console.log('  ✓ Terraform seeded');
+  } catch (error) {
+    console.log('  ⚠ Terraform already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding Vim challenges...');
+    await import('./seed-vim');
+    console.log('  ✓ Vim seeded');
+  } catch (error) {
+    console.log('  ⚠ Vim already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding tmux challenges...');
+    await import('./seed-tmux');
+    console.log('  ✓ tmux seeded');
+  } catch (error) {
+    console.log('  ⚠ tmux already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding curl challenges...');
+    await import('./seed-curl');
+    console.log('  ✓ curl seeded');
+  } catch (error) {
+    console.log('  ⚠ curl already seeded or error:', (error as Error).message);
+  }
+
+  try {
+    console.log('  - Seeding jq challenges...');
+    await import('./seed-jq');
+    console.log('  ✓ jq seeded');
+  } catch (error) {
+    console.log('  ⚠ jq already seeded or error:', (error as Error).message);
+  }
+
   console.log('\nStep 3: Seeding achievements...');
   try {
     await import('./seed-achievements');
@@ -208,8 +412,8 @@ async function seedProduction() {
 
   console.log('\n🎉 Production database seeded successfully!');
   console.log('\nSeeded content:');
-  console.log('  - 10 challenge categories');
-  console.log('  - 250+ typing challenges');
+  console.log('  - 22 challenge categories');
+  console.log('  - 550+ typing challenges');
   console.log('  - 28 achievement definitions');
   console.log('  - Team achievements');
   console.log('\n✅ Database is ready for production use!');
