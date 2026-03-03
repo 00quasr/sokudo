@@ -26,7 +26,6 @@ interface CommunityChallenge {
   timesCompleted: number;
   createdAt: string | Date;
   authorName: string | null;
-  authorEmail: string;
   votes?: { upvotes: number; downvotes: number; score: number };
 }
 
@@ -281,7 +280,7 @@ export function CommunityBrowser({
 }
 
 function ChallengeRow({ challenge }: { challenge: CommunityChallenge }) {
-  const authorDisplay = challenge.authorName || challenge.authorEmail.split('@')[0];
+  const authorDisplay = challenge.authorName || 'Anonymous';
   const createdDate = new Date(challenge.createdAt).toLocaleDateString();
   const charCount = challenge.content.length;
   const preview =

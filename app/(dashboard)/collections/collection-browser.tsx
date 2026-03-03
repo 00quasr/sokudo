@@ -23,7 +23,6 @@ interface Collection {
   description: string | null;
   createdAt: string | Date;
   authorName: string | null;
-  authorEmail: string;
   challengeCount: number;
 }
 
@@ -238,7 +237,7 @@ export function CollectionBrowser({
 }
 
 function CollectionRow({ collection }: { collection: Collection }) {
-  const authorDisplay = collection.authorName || collection.authorEmail.split('@')[0];
+  const authorDisplay = collection.authorName || 'Anonymous';
   const createdDate = new Date(collection.createdAt).toLocaleDateString();
 
   return (

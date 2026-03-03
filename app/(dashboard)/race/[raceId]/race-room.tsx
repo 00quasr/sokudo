@@ -35,7 +35,6 @@ interface Participant {
   finishedAt: string | null;
   rank: number | null;
   userName: string | null;
-  userEmail: string;
 }
 
 interface Challenge {
@@ -173,7 +172,6 @@ export function RaceRoom({
         finishedAt: p.finishedAt,
         rank: p.rank,
         userName: p.userName,
-        userEmail: '',
       }));
     }
     return data?.participants ?? [];
@@ -192,7 +190,7 @@ export function RaceRoom({
     // Convert REST participants to ParticipantState format
     return (data?.participants ?? []).map((p) => ({
       userId: p.userId,
-      userName: p.userName ?? p.userEmail.split('@')[0],
+      userName: p.userName ?? 'Anonymous',
       progress: p.finishedAt ? 100 : 0,
       currentWpm: p.wpm ?? 0,
       currentChallengeIndex: p.currentChallengeIndex,
@@ -365,10 +363,10 @@ export function RaceRoom({
                   <Crown className="h-4 w-4 text-yellow-500" />
                 )}
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.1] text-sm font-medium text-white/70">
-                  {(p.userName ?? p.userEmail)[0].toUpperCase()}
+                  {(p.userName ?? 'A')[0].toUpperCase()}
                 </div>
                 <span className="text-sm font-medium text-white">
-                  {p.userName ?? p.userEmail.split('@')[0]}
+                  {p.userName ?? 'Anonymous'}
                 </span>
               </div>
 

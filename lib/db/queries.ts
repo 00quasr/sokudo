@@ -43,6 +43,11 @@ import {
   type TeamRole,
 } from '@/lib/auth/permissions';
 
+/** Escape LIKE/ILIKE wildcard characters in user-provided search terms */
+function escapeLikeWildcards(value: string): string {
+  return value.replace(/%/g, '\\%').replace(/_/g, '\\_');
+}
+
 export async function getUser() {
   const sessionCookie = (await cookies()).get('session');
   if (!sessionCookie || !sessionCookie.value) {
@@ -1807,7 +1812,7 @@ export async function getPublicChallenges({
 
   if (search) {
     conditions.push(
-      sql`(${customChallenges.name} ILIKE ${'%' + search + '%'} OR ${customChallenges.content} ILIKE ${'%' + search + '%'})`
+      sql`(${customChallenges.name} ILIKE ${'%' + escapeLikeWildcards(search) + '%'} OR ${customChallenges.content} ILIKE ${'%' + escapeLikeWildcards(search) + '%'})`
     );
   }
 
@@ -1837,14 +1842,13 @@ export async function getPublicChallenges({
         timesCompleted: customChallenges.timesCompleted,
         createdAt: customChallenges.createdAt,
         authorName: users.name,
-        authorEmail: users.email,
         voteScore: sql<number>`coalesce(sum(${challengeVotes.value}), 0)::int`,
       })
       .from(customChallenges)
       .innerJoin(users, eq(customChallenges.userId, users.id))
       .leftJoin(challengeVotes, eq(customChallenges.id, challengeVotes.challengeId))
       .where(whereClause)
-      .groupBy(customChallenges.id, users.name, users.email)
+      .groupBy(customChallenges.id, users.name)
       .orderBy(orderFn(sql`coalesce(sum(${challengeVotes.value}), 0)`))
       .limit(limit)
       .offset(offset);
@@ -1884,7 +1888,6 @@ export async function getPublicChallenges({
       timesCompleted: customChallenges.timesCompleted,
       createdAt: customChallenges.createdAt,
       authorName: users.name,
-      authorEmail: users.email,
     })
     .from(customChallenges)
     .innerJoin(users, eq(customChallenges.userId, users.id))
@@ -1938,7 +1941,7 @@ export async function searchChallenges({
 
   if (search) {
     conditions.push(
-      sql`(${challenges.content} ILIKE ${'%' + search + '%'} OR ${challenges.hint} ILIKE ${'%' + search + '%'})`
+      sql`(${challenges.content} ILIKE ${'%' + escapeLikeWildcards(search) + '%'} OR ${challenges.hint} ILIKE ${'%' + escapeLikeWildcards(search) + '%'})`
     );
   }
 
@@ -2015,7 +2018,6 @@ export async function getPublicChallengeById(id: number) {
       timesCompleted: customChallenges.timesCompleted,
       createdAt: customChallenges.createdAt,
       authorName: users.name,
-      authorEmail: users.email,
     })
     .from(customChallenges)
     .innerJoin(users, eq(customChallenges.userId, users.id))
@@ -2245,7 +2247,7 @@ export async function getPublicCollections({
 
   if (search) {
     conditions.push(
-      sql`(${challengeCollections.name} ILIKE ${'%' + search + '%'} OR ${challengeCollections.description} ILIKE ${'%' + search + '%'})`
+      sql`(${challengeCollections.name} ILIKE ${'%' + escapeLikeWildcards(search) + '%'} OR ${challengeCollections.description} ILIKE ${'%' + escapeLikeWildcards(search) + '%'})`
     );
   }
 
@@ -2279,7 +2281,6 @@ export async function getPublicCollections({
       description: challengeCollections.description,
       createdAt: challengeCollections.createdAt,
       authorName: users.name,
-      authorEmail: users.email,
       challengeCount: challengeCountSql,
     })
     .from(challengeCollections)
@@ -2311,7 +2312,6 @@ export async function getPublicCollectionById(id: number) {
       isPublic: challengeCollections.isPublic,
       createdAt: challengeCollections.createdAt,
       authorName: users.name,
-      authorEmail: users.email,
     })
     .from(challengeCollections)
     .innerJoin(users, eq(challengeCollections.userId, users.id))

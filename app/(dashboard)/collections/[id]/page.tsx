@@ -17,7 +17,7 @@ export default async function PublicCollectionPage({
   const collection = await getPublicCollectionById(collectionId);
   if (!collection) notFound();
 
-  const authorDisplay = collection.authorName || collection.authorEmail.split('@')[0];
+  const authorDisplay = collection.authorName || 'Anonymous';
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

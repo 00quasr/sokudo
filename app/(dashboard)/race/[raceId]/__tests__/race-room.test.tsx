@@ -89,7 +89,6 @@ const mockRace = {
       finishedAt: null,
       rank: null,
       userName: 'Alice',
-      userEmail: 'alice@test.com',
     },
     {
       id: 2,
@@ -100,7 +99,6 @@ const mockRace = {
       finishedAt: null,
       rank: null,
       userName: null,
-      userEmail: 'bob@test.com',
     },
   ],
 };

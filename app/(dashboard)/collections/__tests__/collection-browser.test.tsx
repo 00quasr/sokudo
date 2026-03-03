@@ -20,7 +20,6 @@ const mockInitialData = {
       description: 'A collection of essential git commands',
       createdAt: '2025-01-15T00:00:00.000Z',
       authorName: 'Jane Dev',
-      authorEmail: 'jane@dev.com',
       challengeCount: 5,
     },
     {
@@ -29,7 +28,6 @@ const mockInitialData = {
       description: null,
       createdAt: '2025-02-01T00:00:00.000Z',
       authorName: null,
-      authorEmail: 'anon@test.com',
       challengeCount: 3,
     },
   ],

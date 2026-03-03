@@ -21,7 +21,6 @@ const mockInitialData = {
       timesCompleted: 12,
       createdAt: '2025-01-15T00:00:00.000Z',
       authorName: 'Jane Dev',
-      authorEmail: 'jane@dev.com',
     },
     {
       id: 2,
@@ -30,7 +29,6 @@ const mockInitialData = {
       timesCompleted: 0,
       createdAt: '2025-02-01T00:00:00.000Z',
       authorName: null,
-      authorEmail: 'anon@test.com',
     },
   ],
   pagination: {

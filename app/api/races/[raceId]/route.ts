@@ -77,7 +77,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         finishedAt: raceParticipants.finishedAt,
         rank: raceParticipants.rank,
         userName: users.name,
-        userEmail: users.email,
       })
       .from(raceParticipants)
       .innerJoin(users, eq(raceParticipants.userId, users.id))
@@ -217,6 +216,25 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         );
       }
 
+      // Verify the requesting user is a participant in this race
+      const [startParticipant] = await db
+        .select()
+        .from(raceParticipants)
+        .where(
+          and(
+            eq(raceParticipants.raceId, raceId),
+            eq(raceParticipants.userId, user.id)
+          )
+        )
+        .limit(1);
+
+      if (!startParticipant) {
+        return NextResponse.json(
+          { error: 'Only race participants can start the race' },
+          { status: 403 }
+        );
+      }
+
       // Transition through countdown to in_progress with a scheduled start time
       const startTime = new Date(Date.now() + 4000); // 3s countdown + 1s buffer
       await db
@@ -308,62 +326,67 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         );
       }
 
-      // Determine rank based on existing finishers
-      const [{ finishedCount }] = await db
-        .select({
-          finishedCount: sql<number>`count(*)::int`,
-        })
-        .from(raceParticipants)
-        .where(
-          and(
-            eq(raceParticipants.raceId, raceId),
-            sql`${raceParticipants.finishedAt} IS NOT NULL`
-          )
-        );
+      // Use a transaction to atomically calculate rank and update participant
+      const result = await db.transaction(async (tx) => {
+        // Lock the race participants rows to prevent race conditions
+        const [{ finishedCount }] = await tx
+          .select({
+            finishedCount: sql<number>`count(*)::int`,
+          })
+          .from(raceParticipants)
+          .where(
+            and(
+              eq(raceParticipants.raceId, raceId),
+              sql`${raceParticipants.finishedAt} IS NOT NULL`
+            )
+          );
 
-      const rank = finishedCount + 1;
+        const rank = finishedCount + 1;
 
-      await db
-        .update(raceParticipants)
-        .set({
-          wpm,
-          accuracy,
-          finishedAt: new Date(),
-          rank,
-        })
-        .where(
-          and(
-            eq(raceParticipants.raceId, raceId),
-            eq(raceParticipants.userId, user.id)
-          )
-        );
+        await tx
+          .update(raceParticipants)
+          .set({
+            wpm,
+            accuracy,
+            finishedAt: new Date(),
+            rank,
+          })
+          .where(
+            and(
+              eq(raceParticipants.raceId, raceId),
+              eq(raceParticipants.userId, user.id)
+            )
+          );
 
-      // Check if all participants have finished
-      const [{ totalCount }] = await db
-        .select({ totalCount: sql<number>`count(*)::int` })
-        .from(raceParticipants)
-        .where(eq(raceParticipants.raceId, raceId));
+        // Check if all participants have finished
+        const [{ totalCount }] = await tx
+          .select({ totalCount: sql<number>`count(*)::int` })
+          .from(raceParticipants)
+          .where(eq(raceParticipants.raceId, raceId));
 
-      const [{ newFinishedCount }] = await db
-        .select({
-          newFinishedCount: sql<number>`count(*)::int`,
-        })
-        .from(raceParticipants)
-        .where(
-          and(
-            eq(raceParticipants.raceId, raceId),
-            sql`${raceParticipants.finishedAt} IS NOT NULL`
-          )
-        );
+        const [{ newFinishedCount }] = await tx
+          .select({
+            newFinishedCount: sql<number>`count(*)::int`,
+          })
+          .from(raceParticipants)
+          .where(
+            and(
+              eq(raceParticipants.raceId, raceId),
+              sql`${raceParticipants.finishedAt} IS NOT NULL`
+            )
+          );
 
-      if (newFinishedCount >= totalCount) {
-        await db
-          .update(races)
-          .set({ status: 'finished', updatedAt: new Date() })
-          .where(eq(races.id, raceId));
-      }
+        if (newFinishedCount >= totalCount) {
+          await tx
+            .update(races)
+            .set({ status: 'finished', updatedAt: new Date() })
+            .where(eq(races.id, raceId));
+        }
 
-      return NextResponse.json({ message: 'Finished race', rank });
+        return { rank };
+      });
+
+      return NextResponse.json({ message: 'Finished race', rank: result.rank });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
