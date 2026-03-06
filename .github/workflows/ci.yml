@@ -27,7 +27,7 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm tsc --noEmit
+      - run: npx tsc --noEmit --project tsconfig.check.json
 
   test:
     name: Tests
