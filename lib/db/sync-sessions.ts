@@ -7,6 +7,16 @@ import {
   OfflineTypingSession,
 } from './indexeddb';
 
+// Prevent concurrent sync calls
+let isSyncing = false;
+
+// Delay between individual session syncs to avoid rate limiting
+const SYNC_DELAY_MS = 1000;
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 /**
  * Sync offline sessions to the server
  * Returns number of successfully synced sessions
@@ -16,6 +26,13 @@ export async function syncOfflineSessions(): Promise<number> {
   if (typeof navigator !== 'undefined' && !navigator.onLine) {
     return 0;
   }
+
+  // Prevent concurrent syncs
+  if (isSyncing) {
+    return 0;
+  }
+
+  isSyncing = true;
 
   try {
     const unsyncedSessions = await getUnsyncedSessions();
@@ -33,7 +50,16 @@ export async function syncOfflineSessions(): Promise<number> {
         // Optionally delete after successful sync
         // await deleteSession(session.localId);
         syncedCount++;
+
+        // Delay between syncs to avoid rate limiting
+        if (syncedCount < unsyncedSessions.length) {
+          await delay(SYNC_DELAY_MS);
+        }
       } catch (error) {
+        if (error instanceof Error && error.message.includes('Too Many Requests')) {
+          console.warn('Rate limited while syncing sessions, will retry later');
+          break;
+        }
         console.error('Failed to sync session:', session.localId, error);
         // Continue with next session
       }
@@ -43,40 +69,59 @@ export async function syncOfflineSessions(): Promise<number> {
   } catch (error) {
     console.error('Failed to sync offline sessions:', error);
     return 0;
+  } finally {
+    isSyncing = false;
   }
 }
 
 /**
- * Sync a single session to the server
+ * Sync a single session to the server with retry on 429
  */
 async function syncSingleSession(session: OfflineTypingSession): Promise<void> {
-  const response = await fetch('/api/sessions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      challengeId: session.challengeId,
-      wpm: session.wpm,
-      rawWpm: session.rawWpm,
-      accuracy: session.accuracy,
-      keystrokes: session.keystrokes,
-      errors: session.errors,
-      durationMs: session.durationMs,
-      completedAt: new Date(session.completedAt).toISOString(),
-      keystrokeLogs: session.keystrokeLogs.map((log) => ({
-        timestamp: log.timestamp,
-        expected: log.expected,
-        actual: log.actual,
-        isCorrect: log.isCorrect,
-        latencyMs: log.latencyMs,
-      })),
-    }),
-  });
+  const maxRetries = 3;
 
-  if (!response.ok) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const response = await fetch('/api/sessions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        challengeId: session.challengeId,
+        wpm: session.wpm,
+        rawWpm: session.rawWpm,
+        accuracy: session.accuracy,
+        keystrokes: session.keystrokes,
+        errors: session.errors,
+        durationMs: session.durationMs,
+        completedAt: new Date(session.completedAt).toISOString(),
+        keystrokeLogs: session.keystrokeLogs.map((log) => ({
+          timestamp: log.timestamp,
+          expected: log.expected,
+          actual: log.actual,
+          isCorrect: log.isCorrect,
+          latencyMs: log.latencyMs,
+        })),
+      }),
+    });
+
+    if (response.ok) {
+      return;
+    }
+
+    if (response.status === 429) {
+      const retryAfter = response.headers.get('Retry-After');
+      const backoffMs = retryAfter
+        ? parseInt(retryAfter, 10) * 1000
+        : Math.min(1000 * Math.pow(2, attempt), 10000);
+      await delay(backoffMs);
+      continue;
+    }
+
     throw new Error(`Failed to sync session: ${response.statusText}`);
   }
+
+  throw new Error('Failed to sync session: Too Many Requests');
 }
 
 /**
