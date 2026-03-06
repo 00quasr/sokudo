@@ -43,7 +43,6 @@ interface RaceDetail {
     finishedAt: string | null;
     rank: number | null;
     userName: string | null;
-    userEmail: string;
   }>;
 }
 
@@ -91,7 +90,7 @@ export function SpectatorView({ raceId }: { raceId: string }) {
     }
     return (data?.participants ?? []).map((p) => ({
       userId: p.userId,
-      userName: p.userName ?? p.userEmail.split('@')[0],
+      userName: p.userName ?? 'Anonymous',
       progress: p.finishedAt ? 100 : 0,
       currentWpm: p.wpm ?? 0,
       currentChallengeIndex: p.currentChallengeIndex ?? 0,

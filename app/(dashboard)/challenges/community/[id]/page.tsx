@@ -26,7 +26,7 @@ export default async function CommunityChallengePage({
     notFound();
   }
 
-  const authorDisplay = challenge.authorName || challenge.authorEmail.split('@')[0];
+  const authorDisplay = challenge.authorName || 'Anonymous';
 
   return (
     <main className="min-h-screen bg-background">

@@ -33,7 +33,6 @@ describe('GET /api/community-challenges', () => {
           timesCompleted: 5,
           createdAt: new Date().toISOString(),
           authorName: 'Test User',
-          authorEmail: 'test@test.com',
         },
       ],
       pagination: {

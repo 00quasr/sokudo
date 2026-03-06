@@ -6,7 +6,8 @@ import { redirect } from 'next/navigation';
 export type ActionState = {
   error?: string;
   success?: string;
-  [key: string]: any; // This allows for additional properties
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 };
 
 type ValidatedActionFunction<S extends z.ZodType<any, any>, T> = (
@@ -64,8 +65,8 @@ export function withTeam<T>(action: ActionWithTeamFunction<T>) {
     if (!user) {
       // Preserve checkout redirect if priceId is present
       const priceId = formData.get('priceId') as string | null;
-      if (priceId) {
-        redirect(`/sign-in?redirect=checkout&priceId=${priceId}`);
+      if (priceId && /^price_[a-zA-Z0-9_]+$/.test(priceId)) {
+        redirect(`/sign-in?redirect=checkout&priceId=${encodeURIComponent(priceId)}`);
       }
       redirect('/sign-in');
     }

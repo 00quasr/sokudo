@@ -120,7 +120,6 @@ describe('GET /api/races/[raceId]', () => {
         finishedAt: null,
         rank: null,
         userName: 'Test User',
-        userEmail: 'test@test.com',
       },
     ];
 

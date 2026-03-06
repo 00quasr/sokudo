@@ -87,8 +87,20 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || 'waiting';
 
+    const VALID_STATUSES = ['waiting', 'countdown', 'in_progress', 'finished'];
+
     // Support comma-separated statuses (e.g., "in_progress,countdown" for spectatable races)
-    const statuses = status.split(',').map((s) => s.trim()).filter(Boolean);
+    const statuses = status
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => VALID_STATUSES.includes(s));
+
+    if (statuses.length === 0) {
+      return NextResponse.json(
+        { error: 'Invalid status filter. Allowed: waiting, countdown, in_progress, finished' },
+        { status: 400 }
+      );
+    }
 
     const activeRaces = await db
       .select({

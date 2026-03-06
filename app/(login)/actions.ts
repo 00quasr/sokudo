@@ -30,6 +30,7 @@ import {
 } from '@/lib/auth/middleware';
 import { signIn as nextAuthSignIn } from '@/lib/auth/auth';
 import { dispatchWebhookEvent } from '@/lib/webhooks/deliver';
+import { canRemoveMember, getTeamMembership, isAdmin } from '@/lib/auth/permissions';
 
 async function logActivity(
   teamId: number | null | undefined,
@@ -72,7 +73,6 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     return {
       error: 'Invalid email or password. Please try again.',
       email,
-      password
     };
   }
 
@@ -83,7 +83,6 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     return {
       error: 'This account uses social sign-in. Please use the "Continue with Google" or "Continue with GitHub" button.',
       email,
-      password
     };
   }
 
@@ -96,7 +95,6 @@ export const signIn = validatedAction(signInSchema, async (data, formData) => {
     return {
       error: 'Invalid email or password. Please try again.',
       email,
-      password
     };
   }
 
@@ -134,7 +132,6 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
     return {
       error: 'Failed to create user. Please try again.',
       email,
-      password
     };
   }
 
@@ -152,7 +149,6 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
     return {
       error: 'Failed to create user. Please try again.',
       email,
-      password
     };
   }
 
@@ -191,7 +187,7 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
         .where(eq(teams.id, teamId))
         .limit(1);
     } else {
-      return { error: 'Invalid or expired invitation.', email, password };
+      return { error: 'Invalid or expired invitation.', email };
     }
   } else {
     // Create a new team if there's no invitation
@@ -205,7 +201,6 @@ export const signUp = validatedAction(signUpSchema, async (data, formData) => {
       return {
         error: 'Failed to create team. Please try again.',
         email,
-        password
       };
     }
 
@@ -308,9 +303,6 @@ export const updatePassword = validatedActionWithUser(
     // Check if user has a password (not OAuth-only user)
     if (!user.passwordHash) {
       return {
-        currentPassword,
-        newPassword,
-        confirmPassword,
         error: 'This account uses social sign-in and does not have a password.'
       };
     }
@@ -322,27 +314,18 @@ export const updatePassword = validatedActionWithUser(
 
     if (!isPasswordValid) {
       return {
-        currentPassword,
-        newPassword,
-        confirmPassword,
         error: 'Current password is incorrect.'
       };
     }
 
     if (currentPassword === newPassword) {
       return {
-        currentPassword,
-        newPassword,
-        confirmPassword,
         error: 'New password must be different from the current password.'
       };
     }
 
     if (confirmPassword !== newPassword) {
       return {
-        currentPassword,
-        newPassword,
-        confirmPassword,
         error: 'New password and confirmation password do not match.'
       };
     }
@@ -358,6 +341,9 @@ export const updatePassword = validatedActionWithUser(
       logActivity(userWithTeam?.teamId, user.id, ActivityType.UPDATE_PASSWORD)
     ]);
 
+    // Re-issue session to invalidate old tokens
+    await setSession(user);
+
     return {
       success: 'Password updated successfully.'
     };
@@ -365,21 +351,28 @@ export const updatePassword = validatedActionWithUser(
 );
 
 const deleteAccountSchema = z.object({
-  password: z.string().min(8).max(100)
+  password: z.string().min(1).max(100),
+  confirmText: z.string().optional(),
 });
 
 export const deleteAccount = validatedActionWithUser(
   deleteAccountSchema,
   async (data, _, user) => {
-    const { password } = data;
+    const { password, confirmText } = data;
 
-    // For OAuth users, allow deletion with any password (or skip password check)
     if (user.passwordHash) {
+      // Password-based users: verify password
       const isPasswordValid = await comparePasswords(password, user.passwordHash);
       if (!isPasswordValid) {
         return {
-          password,
           error: 'Incorrect password. Account deletion failed.'
+        };
+      }
+    } else {
+      // OAuth-only users: require typing "DELETE" as confirmation
+      if (confirmText !== 'DELETE') {
+        return {
+          error: 'Please type DELETE to confirm account deletion.'
         };
       }
     }
@@ -467,6 +460,39 @@ export const removeTeamMember = validatedActionWithUser(
       return { error: 'User is not part of a team' };
     }
 
+    // Verify actor has permission to remove members
+    const actorMembership = await getTeamMembership(user.id);
+    if (!actorMembership) {
+      return { error: 'User is not part of a team' };
+    }
+
+    // Get the target member
+    const [targetMember] = await db
+      .select()
+      .from(teamMembers)
+      .where(
+        and(
+          eq(teamMembers.id, memberId),
+          eq(teamMembers.teamId, userWithTeam.teamId)
+        )
+      )
+      .limit(1);
+
+    if (!targetMember) {
+      return { error: 'Team member not found' };
+    }
+
+    const allowed = await canRemoveMember(
+      actorMembership.role,
+      targetMember.role,
+      user.id,
+      targetMember.userId
+    );
+
+    if (!allowed) {
+      return { error: 'Insufficient permissions to remove this member' };
+    }
+
     await db
       .delete(teamMembers)
       .where(
@@ -499,6 +525,17 @@ export const inviteTeamMember = validatedActionWithUser(
 
     if (!userWithTeam?.teamId) {
       return { error: 'User is not part of a team' };
+    }
+
+    // Verify actor has admin+ permissions to invite members
+    const actorMembership = await getTeamMembership(user.id);
+    if (!actorMembership || !isAdmin(actorMembership.role)) {
+      return { error: 'Only admins and owners can invite team members' };
+    }
+
+    // Only owners can invite with owner role
+    if (role === 'owner' && actorMembership.role !== 'owner') {
+      return { error: 'Only owners can invite new owners' };
     }
 
     const existingMember = await db
@@ -565,6 +602,12 @@ export const cancelInvitation = validatedActionWithUser(
 
     if (!userWithTeam?.teamId) {
       return { error: 'User is not part of a team' };
+    }
+
+    // Verify actor has admin+ permissions to cancel invitations
+    const actorMembership = await getTeamMembership(user.id);
+    if (!actorMembership || !isAdmin(actorMembership.role)) {
+      return { error: 'Only admins and owners can cancel invitations' };
     }
 
     const [invitation] = await db
